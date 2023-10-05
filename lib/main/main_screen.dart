@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:jb_finance/main/main_model.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -13,9 +12,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final channel = WebSocketChannel.connect(
-    Uri.parse('wss://echo.websocket.events'),
-  );
+  final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
 
   Future<MainModel> fetchAlbum() async {
     final response = await http
@@ -47,23 +44,30 @@ class _MainScreenState extends State<MainScreen> {
     try {
       print('response 들어간다');
       final response = await http.post(
-        Uri.parse("http://localhost:8080/post/test"),
+        Uri.parse("http://192.168.148.221:8080/appApi/test"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(model.toJson()),
       );
       print('response 나왔다 ${response.statusCode}');
-      if (response.statusCode != 201) {
-        throw Exception("Failed to send data");
-      } else {
+      if (response.statusCode == 200) {
         Map<String, dynamic> responseData = json.decode(response.body);
         print("Server Response: $responseData");
         print("User Data sent successfully");
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception("Failed to send data");
       }
     } catch (e) {
       print("Failed to send post data: $e");
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -73,29 +77,10 @@ class _MainScreenState extends State<MainScreen> {
         centerTitle: true,
         title: const Text("테스트 메인화면"),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              TextButton(
-                onPressed: () async {
-                  await saveUser();
-                },
-                child: const Text('버튼1'),
-              ),
-              TextButton(
-                onPressed: () {},
-                child: const Text('버튼2'),
-              ),
-              TextButton(
-                onPressed: () {},
-                child: const Text('버튼3'),
-              ),
-            ],
-          )
-        ],
+      body: Form(
+        key: _globalKey,
+        child: const Column(
+            mainAxisAlignment: MainAxisAlignment.center, children: []),
       ),
     );
   }
