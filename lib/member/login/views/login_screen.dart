@@ -1,53 +1,39 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
+import 'package:jb_finance/member/login/models/login_model.dart';
+import 'package:jb_finance/member/login/view_models/login_vm.dart';
 import 'package:jb_finance/member/signup/views/signup_screen.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   static const String routeName = "login";
   static const String routeURL = "/login";
 
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   final TextEditingController _pwEditController = TextEditingController();
 
-  String _inputId = "";
-  String _inputPw = "";
+  late final LoginModel _loginData;
+
+  String _userId = "";
+  String _password = "";
   bool _isSecure = true;
 
-  Map<String, dynamic> member = {};
+  void loginPressed() async {
+    final state = _globalKey.currentState;
 
-  void loginPressed() {
-    if (_globalKey.currentState != null) {
-      if (_globalKey.currentState!.validate()) {
-        member['user_id'] = _inputId;
-        member['password'] = _inputPw;
-        memberLogin();
+    if (state != null) {
+      if (state.validate()) {
+        state.save();
+        _loginData = LoginModel(userId: _userId, password: _password);
+        await ref.read(loginVMProvider.notifier).memberLogin(_loginData);
       }
-    }
-  }
-
-  Future<void> memberLogin() async {
-    final response = await http.post(
-      Uri.parse("http://192.168.148.221:8080/appApi/member/login"),
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(member),
-    );
-
-    if (response.statusCode == 200) {
-      print("User Data sent successfully");
-    } else {
-      throw Exception("Failed to send data");
     }
   }
 
@@ -97,8 +83,16 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         onChanged: (value) {
-                          _inputId = value;
-                          setState(() {});
+                          _userId = value;
+                        },
+                        validator: (value) {
+                          if (value == "") {
+                            return '아이디는 필수값입니다';
+                          }
+                          return null;
+                        },
+                        onSaved: (newValue) {
+                          _userId = newValue!;
                         },
                       ),
                       TextFormField(
@@ -110,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             horizontal: 10,
                             vertical: 15,
                           ),
-                          suffixIcon: _inputPw != ""
+                          suffixIcon: _password != ""
                               ? Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -129,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     IconButton(
                                       onPressed: () {
                                         _pwEditController.clear();
-                                        _inputPw = _pwEditController.text;
+                                        _password = _pwEditController.text;
                                         setState(() {});
                                       },
                                       icon: const Icon(
@@ -142,12 +136,21 @@ class _LoginScreenState extends State<LoginScreen> {
                               : null,
                         ),
                         onChanged: (value) {
-                          _inputPw = value;
+                          _password = value;
                           setState(() {});
+                        },
+                        validator: (value) {
+                          if (value == "") {
+                            return '비밀번호는 필수값입니다';
+                          }
+                          return null;
+                        },
+                        onSaved: (newValue) {
+                          _password = newValue!;
                         },
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: loginPressed,
                         child: const Text('로그인'),
                       ),
                       TextButton(

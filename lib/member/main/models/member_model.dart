@@ -10,10 +10,10 @@ class MemberModel {
   final String phone_number;
   final String email;
   final String session_id;
-  final DateTime pw_change_date;
-  final DateTime create_date;
-  final DateTime change_date;
-  final DateTime error_time;
+  final String pw_change_date;
+  final String create_date;
+  final String change_date;
+  final String error_time;
   final int error_count;
   final String file_id;
 
@@ -49,10 +49,10 @@ class MemberModel {
         phone_number = "",
         email = "",
         session_id = "",
-        pw_change_date = DateTime.now(),
-        create_date = DateTime.now(),
-        change_date = DateTime.now(),
-        error_time = DateTime.now(),
+        pw_change_date = "",
+        create_date = "",
+        change_date = "",
+        error_time = "",
         error_count = 0,
         file_id = "";
 
