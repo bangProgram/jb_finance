@@ -14,21 +14,23 @@ class LoginRepo {
       },
       body: jsonEncode(loginData.toJson()),
     );
+    Map<String, dynamic> responseData = json.decode(response.body);
     if (response.statusCode == 200) {
-      Map<String, dynamic> responseData = json.decode(response.body);
+      print(responseData['memberData']);
       return responseData;
     } else {
-      throw Exception("Failed to send data");
+      print(responseData['message']);
+      throw Exception(responseData['message']);
     }
   }
 
-  Future<Map<String, dynamic>> getMember(String token) async {
+  Future<Map<String, dynamic>> getMember(String userId) async {
     final response = await http.post(
       Uri.parse("${Consts.mainUrl}/appApi/member/getMember"),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode({'token': token}),
+      body: jsonEncode({'userId': userId}),
     );
     if (response.statusCode == 200) {
       Map<String, dynamic> memberData = json.decode(response.body);

@@ -19,7 +19,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   final TextEditingController _pwEditController = TextEditingController();
 
-  late final LoginModel _loginData;
+  late LoginModel _loginData;
 
   String _userId = "";
   String _password = "";
@@ -32,7 +32,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (state.validate()) {
         state.save();
         _loginData = LoginModel(userId: _userId, password: _password);
-        await ref.read(loginVMProvider.notifier).memberLogin(_loginData);
+        await ref
+            .read(loginVMProvider.notifier)
+            .memberLogin(context, _loginData);
       }
     }
   }

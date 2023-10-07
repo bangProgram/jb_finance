@@ -15,8 +15,10 @@ class JBFinance extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return MaterialApp.router(
-      routerConfig: ref.watch(routerProvider),
+    return SafeArea(
+      child: MaterialApp.router(
+        routerConfig: ref.watch(routerProvider),
+      ),
     );
   }
 }
