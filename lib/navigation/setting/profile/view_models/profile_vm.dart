@@ -13,9 +13,11 @@ class ProfileVM extends AsyncNotifier<MemberModel> {
   FutureOr<MemberModel> build() async {
     _auth = ref.read(authProvider);
     _loginRepo = ref.read(loginRepo);
+    print('ProfileVM build : ${_auth.isLogin}');
     if (_auth.isLogin) {
       final userId = _auth.getUserId;
       final memberData = await _loginRepo.getMember(userId);
+      print('memberData : $memberData');
       return MemberModel.fromJson(memberData);
     } else {
       return MemberModel.empty();
@@ -23,6 +25,6 @@ class ProfileVM extends AsyncNotifier<MemberModel> {
   }
 }
 
-final profileProvider = AsyncNotifierProvider<ProfileVM, MemberModel>(
+final profileVMProvider = AsyncNotifierProvider<ProfileVM, MemberModel>(
   () => ProfileVM(),
 );

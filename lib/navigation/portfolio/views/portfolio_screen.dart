@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:jb_finance/member/login/view_models/login_vm.dart';
-import 'package:jb_finance/navigation/finance/views/finance_screen.dart';
-import 'package:jb_finance/navigation/profile/views/profile_screen.dart';
 
 class PortfolioScreen extends ConsumerStatefulWidget {
   static const String routeName = "portfolio";
@@ -17,10 +14,6 @@ class PortfolioScreen extends ConsumerStatefulWidget {
 }
 
 class _PortfolioScreenState extends ConsumerState<PortfolioScreen> {
-  void goProfileScreen() {
-    context.pushNamed(ProfileScreen.routeName);
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -36,14 +29,12 @@ class _PortfolioScreenState extends ConsumerState<PortfolioScreen> {
                 return NestedScrollView(
                   headerSliverBuilder: (context, innerBoxIsScrolled) {
                     return [
-                      SliverAppBar(
-                        title: const Text('포트폴리오'),
-                        actions: [
-                          IconButton(
-                            onPressed: goProfileScreen,
-                            icon: const FaIcon(FontAwesomeIcons.gear),
-                          ),
-                        ],
+                      const SliverAppBar(
+                        centerTitle: true,
+                        title: Text('포트폴리오'),
+                        elevation: 0,
+                        foregroundColor: Colors.black,
+                        backgroundColor: Colors.transparent,
                       )
                     ];
                   },

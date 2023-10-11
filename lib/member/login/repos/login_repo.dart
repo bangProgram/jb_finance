@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jb_finance/consts.dart';
 import 'package:jb_finance/member/login/models/login_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:jb_finance/member/main/models/member_model.dart';
 
 class LoginRepo {
   Future<Map<String, dynamic>> loginMember(LoginModel loginData) async {
@@ -38,6 +39,11 @@ class LoginRepo {
     } else {
       throw Exception("Failed to send data");
     }
+  }
+
+  Future<MemberModel> logoutMember() async {
+    final responseData = MemberModel.empty();
+    return responseData;
   }
 }
 

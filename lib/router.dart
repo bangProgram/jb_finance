@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:jb_finance/member/authentications.dart';
 import 'package:jb_finance/member/login/views/login_screen.dart';
 import 'package:jb_finance/member/signup/views/signup_screen.dart';
-import 'package:jb_finance/navigation/profile/views/profile_screen.dart';
+import 'package:jb_finance/navigation/setting/profile/views/profile_screen.dart';
 import 'package:jb_finance/navigation/views/navigation_screen.dart';
 
 final routerProvider = Provider(
@@ -24,8 +24,8 @@ final routerProvider = Provider(
           print('사용자 아이디 정보 없음');
         }
       }
-
-      if (url != LoginScreen.routeURL && url != SignupScreen.routeURL) {
+      if (url.toString() != LoginScreen.routeURL &&
+          url.toString() != SignupScreen.routeURL) {
         if (!auth.isLogin) {
           return LoginScreen.routeURL;
         }
@@ -44,7 +44,7 @@ final routerProvider = Provider(
         builder: (context, state) => const SignupScreen(),
       ),
       GoRoute(
-        path: '/:tap(finance|portfolio)',
+        path: '/:tap(finance|portfolio|setting)',
         name: NavigationScreen.routeName,
         builder: (context, state) {
           final tap = state.pathParameters['tap'];

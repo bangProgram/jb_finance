@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:jb_finance/consts.dart';
 
 class Authentications {
   static String? memberToken;
@@ -22,7 +23,7 @@ class Authentications {
 
   Future<void> refreshToken(String? token, String userId) async {
     final response = await http.post(
-      Uri.parse("http://192.168.148.221:8080/appApi/member/auth"),
+      Uri.parse("${Consts.mainUrl}/appApi/member/auth"),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },

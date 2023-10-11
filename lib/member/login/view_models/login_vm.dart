@@ -6,8 +6,9 @@ import 'package:go_router/go_router.dart';
 import 'package:jb_finance/member/authentications.dart';
 import 'package:jb_finance/member/login/models/login_model.dart';
 import 'package:jb_finance/member/login/repos/login_repo.dart';
+import 'package:jb_finance/member/login/views/login_screen.dart';
 import 'package:jb_finance/member/main/models/member_model.dart';
-import 'package:jb_finance/navigation/profile/views/portfolio_screen.dart';
+import 'package:jb_finance/navigation/portfolio/views/portfolio_screen.dart';
 import 'package:jb_finance/utils.dart';
 
 class LoginVM extends AsyncNotifier<MemberModel> {
@@ -45,6 +46,21 @@ class LoginVM extends AsyncNotifier<MemberModel> {
       print('token 발급 세팅 : $token');
       _auth.setToken(token: token, userId: loginData.userId);
       context.go(PortfolioScreen.routeURL);
+    }
+  }
+
+  Future<void> memberLogout(BuildContext context) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      final responseData = await _loginRepo.logoutMember();
+      return responseData;
+    });
+
+    if (state.hasError) {
+      serverMessage(context, state.error.toString());
+    } else {
+      _auth.setToken(token: null);
+      context.go(LoginScreen.routeURL);
     }
   }
 }

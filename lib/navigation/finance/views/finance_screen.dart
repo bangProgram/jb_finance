@@ -17,6 +17,9 @@ class _FinanceScreenState extends State<FinanceScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text('주식'),
+        elevation: 0,
+        foregroundColor: Colors.black,
+        backgroundColor: Colors.transparent,
       ),
     );
   }
