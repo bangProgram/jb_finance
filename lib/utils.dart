@@ -8,3 +8,7 @@ void serverMessage(BuildContext context, String message) {
     ),
   );
 }
+
+void focusOut(BuildContext context) {
+  FocusScope.of(context).unfocus();
+}

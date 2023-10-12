@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jb_finance/navigation/finance/views/finance_screen.dart';
 import 'package:jb_finance/navigation/portfolio/views/portfolio_screen.dart';
+import 'package:jb_finance/navigation/setting/profile/view_models/profile_vm.dart';
 import 'package:jb_finance/navigation/setting/views/setting_screen.dart';
 
-class NavigationScreen extends StatefulWidget {
+class NavigationScreen extends ConsumerStatefulWidget {
   static const String routeName = "navigation";
   static const String routeURL = "/finance";
 
@@ -14,16 +16,19 @@ class NavigationScreen extends StatefulWidget {
   const NavigationScreen({super.key, required this.tap});
 
   @override
-  State<NavigationScreen> createState() => _NavigationScreenState();
+  ConsumerState<NavigationScreen> createState() => _NavigationScreenState();
 }
 
-class _NavigationScreenState extends State<NavigationScreen>
+class _NavigationScreenState extends ConsumerState<NavigationScreen>
     with SingleTickerProviderStateMixin {
   final taps = ['finance', 'portfolio', 'setting'];
 
   void goNavigationScreen(int index) {
     final url = '/${taps[index]}';
-    print('url : $url');
+    print('url : $url / ${url.contains('setting')}');
+    if (url.contains('setting')) {
+      ref.read(profileVMProvider.notifier).getMember();
+    }
     context.replace(url);
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jb_finance/consts.dart';
 import 'package:jb_finance/member/login/view_models/login_vm.dart';
 import 'package:jb_finance/navigation/setting/profile/view_models/profile_vm.dart';
 import 'package:jb_finance/navigation/setting/profile/views/profile_screen.dart';
@@ -70,6 +71,10 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                 data: (data) => ListTile(
                   leading: CircleAvatar(
                     radius: 25,
+                    foregroundImage: data.fileName == ""
+                        ? null
+                        : NetworkImage(
+                            '${Consts.mainUrl}/appApi/member/downloadAvatar/${data.fileName}'),
                     child: Text(
                       data.userId,
                       style: const TextStyle(fontSize: 10),

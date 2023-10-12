@@ -15,7 +15,7 @@ class MemberModel {
   final int changeDate;
   final int errorTime;
   final int errorCount;
-  final String fileId;
+  final String fileName;
 
   MemberModel({
     required this.userId,
@@ -34,7 +34,7 @@ class MemberModel {
     required this.changeDate,
     required this.errorTime,
     required this.errorCount,
-    required this.fileId,
+    required this.fileName,
   });
 
   MemberModel.empty()
@@ -54,7 +54,7 @@ class MemberModel {
         changeDate = 0,
         errorTime = 0,
         errorCount = 0,
-        fileId = "";
+        fileName = "";
 
   MemberModel.fromJson(Map<String, dynamic> json)
       : userId = json["userId"],
@@ -73,7 +73,7 @@ class MemberModel {
         changeDate = json["changeDate"] ?? 0,
         errorTime = json["errorTime"] ?? 0,
         errorCount = json["errorCount"] ?? 0,
-        fileId = json["fileId"] ?? "";
+        fileName = json["fileName"] ?? "";
 
   Map<String, dynamic> toJson() {
     return {
@@ -93,7 +93,7 @@ class MemberModel {
       'changeDate': changeDate,
       'errorTime': errorTime,
       'errorCount': errorCount,
-      'fileId': fileId,
+      'fileName': fileName,
     };
   }
 }
