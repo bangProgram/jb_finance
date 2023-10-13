@@ -1,9 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:jb_finance/member/login/models/login_model.dart';
 import 'package:jb_finance/member/login/view_models/login_vm.dart';
 import 'package:jb_finance/member/signup/views/signup_screen.dart';
+
+GoogleSignIn _googleSignIn = GoogleSignIn(
+  // Optional clientId
+  // clientId: 'your-client_id.apps.googleusercontent.com',
+  scopes: ['email'],
+);
+
+enum LoginPlatform {
+  google,
+  kakao,
+  naver,
+  none, // logout
+}
 
 class LoginScreen extends ConsumerStatefulWidget {
   static const String routeName = "login";
@@ -24,6 +38,50 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   String _userId = "";
   String _password = "";
   bool _isSecure = true;
+
+  LoginPlatform _loginPlatform = LoginPlatform.none;
+
+  Future<void> _handleSignIn() async {
+    try {
+      final googleUser = await _googleSignIn.signIn();
+
+      if (googleUser != null) {
+        print('name = ${googleUser.displayName}');
+        print('email = ${googleUser.email}');
+        print('id = ${googleUser.id}');
+        print('googleUser = ${googleUser.authentication.toString()}');
+
+        setState(() {
+          _loginPlatform = LoginPlatform.google;
+        });
+      }
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  void signInWithGoogle() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    if (googleUser != null) {
+      print('name = ${googleUser.displayName}');
+      print('email = ${googleUser.email}');
+      print('id = ${googleUser.id}');
+      print('googleUser = ${googleUser.authentication.toString()}');
+
+      setState(() {
+        _loginPlatform = LoginPlatform.google;
+      });
+    }
+  }
+
+  Future<void> _signOutWithGoogle() async {
+    try {
+      await _googleSignIn.disconnect();
+    } catch (error) {
+      print(error);
+    }
+  }
 
   void loginPressed() async {
     final state = _globalKey.currentState;
@@ -158,6 +216,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       TextButton(
                         onPressed: goSignupScreen,
                         child: const Text('회원가입'),
+                      ),
+                      TextButton(
+                        onPressed: _handleSignIn,
+                        child: const Text('구글로그인'),
+                      ),
+                      TextButton(
+                        onPressed: _signOutWithGoogle,
+                        child: const Text('구글로그아웃'),
+                      ),
+                      TextButton(
+                        onPressed: _handleSignIn,
+                        child: const Text('카카오로그인'),
+                      ),
+                      TextButton(
+                        onPressed: _signOutWithGoogle,
+                        child: const Text('카카오로그아웃'),
                       ),
                     ],
                   ),

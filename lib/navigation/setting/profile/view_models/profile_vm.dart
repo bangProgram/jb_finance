@@ -32,9 +32,7 @@ class ProfileVM extends AsyncNotifier<MemberModel> {
     final userId = _auth.getUserId;
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      print('profileVM uploadAvatar 진입');
       final result = await _profileRepo.uploadAvatar(file, userId);
-      print('result code : $result');
       if (result == 200) {
         final memberData = await _loginRepo.getMember(userId);
         return MemberModel.fromJson(memberData);

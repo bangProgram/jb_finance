@@ -23,13 +23,13 @@ final routerProvider = Provider(
         } else {
           print('사용자 아이디 정보 없음');
         }
-      }
-      if (url.toString() != LoginScreen.routeURL &&
-          url.toString() != SignupScreen.routeURL) {
-        if (!auth.isLogin) {
+      } else {
+        if (url.toString() != LoginScreen.routeURL &&
+            url.toString() != SignupScreen.routeURL) {
           return LoginScreen.routeURL;
         }
       }
+
       return null;
     },
     routes: [

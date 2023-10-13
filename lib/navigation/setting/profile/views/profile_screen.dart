@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jb_finance/consts.dart';
 import 'package:jb_finance/navigation/setting/profile/view_models/profile_vm.dart';
@@ -18,17 +19,29 @@ class ProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
+
   final ImagePicker _picker = ImagePicker();
+
+  Map<String, dynamic> updataForm = {};
 
   Future<void> uploadAvatar() async {
     final xFile =
         await _picker.pickImage(source: ImageSource.gallery, imageQuality: 30);
 
-    print('file upload 진입 : ${(xFile != null)}');
     if (xFile != null) {
       final file = File(xFile.path);
-      print('file 확인 : ${file.path}');
       await ref.read(profileVMProvider.notifier).uploadAvatar(file);
+    }
+  }
+
+  Future<void> updateMember() async {
+    final formState = _globalKey.currentState;
+    if (formState != null) {
+      if (formState.validate()) {
+        formState.save();
+        print('memberData : $updataForm');
+      }
     }
   }
 
@@ -49,98 +62,154 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           elevation: 0,
           foregroundColor: Colors.black,
           backgroundColor: Colors.transparent,
+          actions: [
+            IconButton(
+              onPressed: updateMember,
+              icon: const FaIcon(FontAwesomeIcons.penToSquare),
+            ),
+          ],
         ),
         body: ref.watch(profileVMProvider).when(
               loading: () => Container(),
               error: (error, stackTrace) => Container(),
-              data: (data) => Container(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    GestureDetector(
-                      onTap: uploadAvatar,
-                      child: CircleAvatar(
-                        radius: MediaQuery.of(context).size.width / 2 * 0.33,
-                        foregroundImage: data.fileName == ""
-                            ? null
-                            : NetworkImage(
-                                '${Consts.mainUrl}/appApi/member/downloadAvatar/${data.fileName}'),
-                        child: Text(data.userId),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
+              data: (data) => SingleChildScrollView(
+                child: Form(
+                  key: _globalKey,
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
                       children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.15,
-                          child: const Text('이름'),
+                        GestureDetector(
+                          onTap: uploadAvatar,
+                          child: CircleAvatar(
+                            radius:
+                                MediaQuery.of(context).size.width / 2 * 0.33,
+                            foregroundImage: data.fileName == ""
+                                ? null
+                                : NetworkImage(
+                                    '${Consts.mainUrl}/appApi/member/downloadAvatar/${data.fileName}'),
+                            child: Text(data.userId),
+                          ),
                         ),
-                        Expanded(
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 15,
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.15,
+                              child: const Text('이름*'),
+                            ),
+                            Expanded(
+                              child: TextFormField(
+                                initialValue: data.userName,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 15,
+                                  ),
+                                ),
+                                onSaved: (newValue) {
+                                  updataForm['userName'] = newValue;
+                                },
+                                validator: (value) {
+                                  if (value != null && value != '') {
+                                    if (value.length < 2) {
+                                      return '이름은 두글자 이상이여야 합니다';
+                                    }
+                                  } else {
+                                    return '이름을 입력해주세요';
+                                  }
+                                  return null;
+                                },
                               ),
                             ),
-                          ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.15,
+                              child: const Text('닉네임*'),
+                            ),
+                            Expanded(
+                              child: TextFormField(
+                                  initialValue: data.userNick,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                      vertical: 15,
+                                    ),
+                                  ),
+                                  onSaved: (newValue) {
+                                    updataForm['userNick'] = newValue;
+                                  },
+                                  validator: (value) {
+                                    if (value != null && value != '') {
+                                      if (value.length < 2) {
+                                        return '닉네임은 두글자 이상이여야 합니다';
+                                      }
+                                    } else {
+                                      return '닉네임을 입력해주세요';
+                                    }
+                                    return null;
+                                  }),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.15,
+                              child: const Text('이메일*'),
+                            ),
+                            Expanded(
+                              child: TextFormField(
+                                  initialValue: data.email,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                      vertical: 15,
+                                    ),
+                                  ),
+                                  onSaved: (newValue) {
+                                    updataForm['email'] = newValue;
+                                  },
+                                  validator: (value) {
+                                    if (value != null && value != '') {
+                                      final bool emailValid = RegExp(
+                                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                          .hasMatch(value);
+
+                                      if (!emailValid) {
+                                        return '이메일 형식이 맞지않습니다';
+                                      }
+                                    } else {
+                                      return '이메일을 입력해주세요';
+                                    }
+                                    return null;
+                                  }),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.15,
-                          child: const Text('별명'),
-                        ),
-                        Expanded(
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 15,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.15,
-                          child: const Text('이메일'),
-                        ),
-                        Expanded(
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 15,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
