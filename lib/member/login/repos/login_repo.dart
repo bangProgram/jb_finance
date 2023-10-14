@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jb_finance/Users.dart';
 import 'package:jb_finance/consts.dart';
 import 'package:jb_finance/member/login/models/login_model.dart';
 import 'package:http/http.dart' as http;
@@ -44,6 +45,27 @@ class LoginRepo {
   Future<MemberModel> logoutMember() async {
     final responseData = MemberModel.empty();
     return responseData;
+  }
+
+  Future<String> loginWithKAKAO(String token) async {
+    try {
+      final response = await http.get(
+        Uri.parse("https://kapi.kakao.com/v2/user/me"),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
+      if (response.statusCode == 200) {
+        Users.loginPlatform = LoginPlatform.kakao;
+        final userData = response.body;
+
+        print('사용자 정보 가져오기 성공 ${response.body}');
+        return userData;
+      } else {
+        throw Exception('사용자 정보 가져오기 실패');
+      }
+    } catch (error) {
+      throw Exception('사용자 정보 가져오기 실패');
+    }
   }
 }
 

@@ -42,7 +42,7 @@ dependencies:
   font_awesome_flutter: ^10.5.0
   image_picker: ^1.0.4
   google_sign_in: ^6.1.5
-  kakao_flutter_sdk_user: ^1.6.1
+  kakao_flutter_sdk: ^1.6.1
 
 dev_dependencies:
   flutter_test:

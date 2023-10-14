@@ -5,19 +5,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:jb_finance/member/login/models/login_model.dart';
 import 'package:jb_finance/member/login/view_models/login_vm.dart';
 import 'package:jb_finance/member/signup/views/signup_screen.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
   // Optional clientId
   // clientId: 'your-client_id.apps.googleusercontent.com',
   scopes: ['email'],
 );
-
-enum LoginPlatform {
-  google,
-  kakao,
-  naver,
-  none, // logout
-}
 
 class LoginScreen extends ConsumerStatefulWidget {
   static const String routeName = "login";
@@ -39,9 +33,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   String _password = "";
   bool _isSecure = true;
 
-  LoginPlatform _loginPlatform = LoginPlatform.none;
-
-  Future<void> _handleSignIn() async {
+  Future<void> _signinWithGoogle() async {
     try {
       final googleUser = await _googleSignIn.signIn();
 
@@ -52,7 +44,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         print('googleUser = ${googleUser.authentication.toString()}');
 
         setState(() {
-          _loginPlatform = LoginPlatform.google;
+          // loginPlatform = LoginPlatform.google;
         });
       }
     } catch (error) {
@@ -60,19 +52,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
-  void signInWithGoogle() async {
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-    if (googleUser != null) {
-      print('name = ${googleUser.displayName}');
-      print('email = ${googleUser.email}');
-      print('id = ${googleUser.id}');
-      print('googleUser = ${googleUser.authentication.toString()}');
-
-      setState(() {
-        _loginPlatform = LoginPlatform.google;
-      });
-    }
+  void _signinWithKAKAO() async {
+    await ref.read(loginVMProvider.notifier).signinWithKAKAO(context);
   }
 
   Future<void> _signOutWithGoogle() async {
@@ -80,6 +61,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       await _googleSignIn.disconnect();
     } catch (error) {
       print(error);
+    }
+  }
+
+  Future<void> _signOutWithKAKAO() async {
+    try {
+      await UserApi.instance.unlink();
+      print('연결 끊기 성공, SDK에서 토큰 삭제');
+    } catch (error) {
+      print('연결 끊기 실패 $error');
     }
   }
 
@@ -218,7 +208,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         child: const Text('회원가입'),
                       ),
                       TextButton(
-                        onPressed: _handleSignIn,
+                        onPressed: _signinWithGoogle,
                         child: const Text('구글로그인'),
                       ),
                       TextButton(
@@ -226,11 +216,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         child: const Text('구글로그아웃'),
                       ),
                       TextButton(
-                        onPressed: _handleSignIn,
+                        onPressed: _signinWithKAKAO,
                         child: const Text('카카오로그인'),
                       ),
                       TextButton(
-                        onPressed: _signOutWithGoogle,
+                        onPressed: _signOutWithKAKAO,
                         child: const Text('카카오로그아웃'),
                       ),
                     ],

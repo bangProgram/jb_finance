@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jb_finance/keys.dart';
 import 'package:jb_finance/router.dart';
 
+import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
+
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  KakaoSdk.init(
+    nativeAppKey: Keys.nativeAppKeyForKAKAO,
+    javaScriptAppKey: Keys.nativeAppKeyForKAKAO,
+  );
+
   runApp(
     const ProviderScope(
       child: JBFinance(),
