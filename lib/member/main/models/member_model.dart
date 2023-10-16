@@ -8,7 +8,6 @@ class MemberModel {
   final String groupAuthor;
   final String useAt;
   final String phoneNumber;
-  final String email;
   final String sessionId;
   final int pwChangeDate;
   final int createDate;
@@ -16,6 +15,8 @@ class MemberModel {
   final int errorTime;
   final int errorCount;
   final String fileName;
+  final String platform;
+  final String avatarUrl;
 
   MemberModel({
     required this.userId,
@@ -27,7 +28,6 @@ class MemberModel {
     required this.groupAuthor,
     required this.useAt,
     required this.phoneNumber,
-    required this.email,
     required this.sessionId,
     required this.pwChangeDate,
     required this.createDate,
@@ -35,6 +35,8 @@ class MemberModel {
     required this.errorTime,
     required this.errorCount,
     required this.fileName,
+    required this.platform,
+    required this.avatarUrl,
   });
 
   MemberModel.empty()
@@ -47,14 +49,15 @@ class MemberModel {
         groupAuthor = "",
         useAt = "",
         phoneNumber = "",
-        email = "",
         sessionId = "",
         pwChangeDate = 0,
         createDate = 0,
         changeDate = 0,
         errorTime = 0,
         errorCount = 0,
-        fileName = "";
+        fileName = "",
+        platform = "",
+        avatarUrl = "";
 
   MemberModel.fromJson(Map<String, dynamic> json)
       : userId = json["userId"],
@@ -66,14 +69,15 @@ class MemberModel {
         groupAuthor = json["groupAuthor"] ?? "",
         useAt = json["useAt"] ?? "",
         phoneNumber = json["phoneNumber"] ?? "",
-        email = json["email"] ?? "",
         sessionId = json["sessionId"] ?? "",
         pwChangeDate = json["pwChangeDate"] ?? 0,
         createDate = json["createDate"] ?? 0,
         changeDate = json["changeDate"] ?? 0,
         errorTime = json["errorTime"] ?? 0,
         errorCount = json["errorCount"] ?? 0,
-        fileName = json["fileName"] ?? "";
+        fileName = json["fileName"] ?? "",
+        platform = json["platform"] ?? "",
+        avatarUrl = json["avatarUrl"] ?? "";
 
   Map<String, dynamic> toJson() {
     return {
@@ -86,7 +90,6 @@ class MemberModel {
       'groupAuthor': groupAuthor,
       'useAt': useAt,
       'phoneNumber': phoneNumber,
-      'email': email,
       'sessionId': sessionId,
       'pwChangeDate': pwChangeDate,
       'createDate': createDate,
@@ -94,6 +97,8 @@ class MemberModel {
       'errorTime': errorTime,
       'errorCount': errorCount,
       'fileName': fileName,
+      'platform': platform,
+      'avatarUrl': avatarUrl,
     };
   }
 }

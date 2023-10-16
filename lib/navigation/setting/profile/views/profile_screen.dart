@@ -85,7 +85,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             radius:
                                 MediaQuery.of(context).size.width / 2 * 0.33,
                             foregroundImage: data.fileName == ""
-                                ? null
+                                ? data.avatarUrl == ""
+                                    ? null
+                                    : NetworkImage(data.avatarUrl)
                                 : NetworkImage(
                                     '${Consts.mainUrl}/appApi/member/downloadAvatar/${data.fileName}'),
                             child: Text(data.userId),
@@ -168,44 +170,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         ),
                         const SizedBox(
                           height: 20,
-                        ),
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.15,
-                              child: const Text('이메일*'),
-                            ),
-                            Expanded(
-                              child: TextFormField(
-                                  initialValue: data.email,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 20,
-                                      vertical: 15,
-                                    ),
-                                  ),
-                                  onSaved: (newValue) {
-                                    updataForm['email'] = newValue;
-                                  },
-                                  validator: (value) {
-                                    if (value != null && value != '') {
-                                      final bool emailValid = RegExp(
-                                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                          .hasMatch(value);
-
-                                      if (!emailValid) {
-                                        return '이메일 형식이 맞지않습니다';
-                                      }
-                                    } else {
-                                      return '이메일을 입력해주세요';
-                                    }
-                                    return null;
-                                  }),
-                            ),
-                          ],
                         ),
                       ],
                     ),

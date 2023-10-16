@@ -1,33 +1,39 @@
 class SignupModel {
   final String userId;
   final String password;
-  final String userNick;
-  final String email;
+  final String userName;
+  final String avatarUrl;
+  final String platform;
 
-  SignupModel(
-      {required this.userId,
-      required this.password,
-      required this.userNick,
-      required this.email});
+  SignupModel({
+    required this.userId,
+    required this.password,
+    required this.userName,
+    required this.avatarUrl,
+    required this.platform,
+  });
 
   SignupModel.fromJson(Map<String, dynamic> json)
       : userId = json['userId'],
         password = json['password'],
-        userNick = json['userNick'],
-        email = json['email'];
+        userName = json['userName'],
+        avatarUrl = json['avatarUrl'],
+        platform = json['platform'];
 
   SignupModel.empty()
       : userId = "",
         password = "",
-        userNick = "",
-        email = "";
+        userName = "",
+        avatarUrl = "",
+        platform = "";
 
   Map<String, dynamic> toJson() {
     return {
       'userId': userId,
       'password': password,
-      'userNick': userNick,
-      'email': email,
+      'userName': userName,
+      'avatarUrl': avatarUrl,
+      'platform': platform,
     };
   }
 }

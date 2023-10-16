@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:jb_finance/Users.dart';
 import 'package:jb_finance/consts.dart';
 import 'package:jb_finance/member/login/models/login_model.dart';
 import 'package:http/http.dart' as http;
@@ -26,28 +25,12 @@ class LoginRepo {
     }
   }
 
-  Future<Map<String, dynamic>> getMember(String userId) async {
-    final response = await http.post(
-      Uri.parse("${Consts.mainUrl}/appApi/member/getMember"),
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode({'userId': userId}),
-    );
-    if (response.statusCode == 200) {
-      Map<String, dynamic> memberData = json.decode(response.body);
-      return memberData;
-    } else {
-      throw Exception("Failed to send data");
-    }
-  }
-
   Future<MemberModel> logoutMember() async {
     final responseData = MemberModel.empty();
     return responseData;
   }
 
-  Future<String> loginWithKAKAO(String token) async {
+  Future<Map<String, dynamic>> loginWithKAKAO(String token) async {
     try {
       final response = await http.get(
         Uri.parse("https://kapi.kakao.com/v2/user/me"),
@@ -55,10 +38,9 @@ class LoginRepo {
       );
 
       if (response.statusCode == 200) {
-        Users.loginPlatform = LoginPlatform.kakao;
-        final userData = response.body;
+        final Map<String, dynamic> userData = json.decode(response.body);
 
-        print('사용자 정보 가져오기 성공 ${response.body}');
+        print('사용자 정보 가져오기 성공 $userData');
         return userData;
       } else {
         throw Exception('사용자 정보 가져오기 실패');

@@ -73,7 +73,9 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                   leading: CircleAvatar(
                     radius: 25,
                     foregroundImage: data.fileName == ""
-                        ? null
+                        ? data.avatarUrl == ""
+                            ? null
+                            : NetworkImage(data.avatarUrl)
                         : NetworkImage(
                             '${Consts.mainUrl}/appApi/member/downloadAvatar/${data.fileName}'),
                     child: Text(
@@ -81,8 +83,8 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                       style: const TextStyle(fontSize: 10),
                     ),
                   ),
-                  title: Text(data.userNick),
-                  subtitle: Text(data.email),
+                  title: Text(data.userName),
+                  subtitle: Text(data.userId),
                   trailing: IconButton(
                     onPressed: goProfileScreen,
                     icon: const FaIcon(

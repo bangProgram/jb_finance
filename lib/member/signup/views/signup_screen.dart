@@ -1,22 +1,20 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jb_finance/member/login/views/login_screen.dart';
 import 'package:jb_finance/member/signup/models/signup_model.dart';
-import 'package:jb_finance/utils.dart';
+import 'package:jb_finance/member/signup/view_models/signup_vm.dart';
 
-class SignupScreen extends StatefulWidget {
+class SignupScreen extends ConsumerStatefulWidget {
   static const String routeName = "signup";
   static const String routeURL = "/signup";
   const SignupScreen({super.key});
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  ConsumerState<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _SignupScreenState extends ConsumerState<SignupScreen> {
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   final TextEditingController _pwEditController = TextEditingController();
 
@@ -28,44 +26,22 @@ class _SignupScreenState extends State<SignupScreen> {
 
   bool _isSecure = true;
 
-  late final SignupModel _signupData;
-
-  void signupPressed() {
+  void signupPressed() async {
     final state = _globalKey.currentState;
     if (state != null) {
       if (state.validate()) {
         state.save();
-        _signupData = SignupModel(
+        final SignupModel signupModel = SignupModel(
             userId: _userId,
             password: _password,
-            userNick: _userNick,
-            email: _email);
-        print('memberData : ${_signupData.toJson()}');
-        createMember();
+            userName: _userNick,
+            avatarUrl: '',
+            platform: '');
+
+        await ref
+            .read(signupProvider.notifier)
+            .createMember(context, signupModel);
       }
-    }
-  }
-
-  Future<void> createMember() async {
-    final response = await http.post(
-      Uri.parse("http://192.168.148.221:8080/appApi/member/create"),
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(_signupData.toJson()),
-    );
-
-    print('response : ${response.statusCode}');
-    if (response.statusCode == 200) {
-      Map<String, dynamic> responseData = json.decode(response.body);
-      print('사용자 가입 성공 : ${responseData['message']}');
-      final message = responseData['message'];
-      serverMessage(context, message);
-      await Future.delayed(const Duration(seconds: 2));
-      context.goNamed(LoginScreen.routeName);
-    } else {
-      const message = '회원가입에 실패했습니다.';
-      serverMessage(context, message);
     }
   }
 
