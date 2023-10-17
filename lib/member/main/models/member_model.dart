@@ -101,4 +101,46 @@ class MemberModel {
       'avatarUrl': avatarUrl,
     };
   }
+
+  MemberModel copyWith({
+    String? userId,
+    String? password,
+    String? userName,
+    String? userNick,
+    String? certified,
+    String? userGroup,
+    String? groupAuthor,
+    String? useAt,
+    String? phoneNumber,
+    String? sessionId,
+    int? pwChangeDate,
+    int? createDate,
+    int? changeDate,
+    int? errorTime,
+    int? errorCount,
+    String? fileName,
+    String? platform,
+    String? avatarUrl,
+  }) {
+    return MemberModel(
+      userId: userId ?? this.userId,
+      password: password ?? this.password,
+      userName: userName ?? this.userName,
+      userNick: userNick ?? this.userNick,
+      certified: certified ?? this.certified,
+      userGroup: userGroup ?? this.userGroup,
+      groupAuthor: groupAuthor ?? this.groupAuthor,
+      useAt: useAt ?? this.useAt,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      sessionId: sessionId ?? this.sessionId,
+      pwChangeDate: pwChangeDate ?? this.pwChangeDate,
+      createDate: createDate ?? this.createDate,
+      changeDate: changeDate ?? this.changeDate,
+      errorTime: errorTime ?? this.errorTime,
+      errorCount: errorCount ?? this.errorCount,
+      fileName: fileName ?? this.fileName,
+      platform: platform ?? this.platform,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+    );
+  }
 }

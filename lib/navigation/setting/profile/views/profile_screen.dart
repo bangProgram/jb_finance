@@ -23,7 +23,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   final ImagePicker _picker = ImagePicker();
 
-  Map<String, dynamic> updataForm = {};
+  Map<String, dynamic> formData = {};
 
   Future<void> uploadAvatar() async {
     final xFile =
@@ -40,7 +40,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     if (formState != null) {
       if (formState.validate()) {
         formState.save();
-        print('memberData : $updataForm');
+        print('memberData : $formData');
+        await ref
+            .read(profileVMProvider.notifier)
+            .updateMember(context, formData);
       }
     }
   }
@@ -115,7 +118,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                   ),
                                 ),
                                 onSaved: (newValue) {
-                                  updataForm['userName'] = newValue;
+                                  formData['userName'] = newValue;
                                 },
                                 validator: (value) {
                                   if (value != null && value != '') {
@@ -153,7 +156,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                     ),
                                   ),
                                   onSaved: (newValue) {
-                                    updataForm['userNick'] = newValue;
+                                    formData['userNick'] = newValue;
                                   },
                                   validator: (value) {
                                     if (value != null && value != '') {
