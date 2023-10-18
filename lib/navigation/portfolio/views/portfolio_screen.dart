@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jb_finance/member/login/view_models/login_vm.dart';
+import 'package:jb_finance/navigation/portfolio/widgets/piechart_widget.dart';
 
 class PortfolioScreen extends ConsumerStatefulWidget {
   static const String routeName = "portfolio";
@@ -16,6 +16,7 @@ class PortfolioScreen extends ConsumerStatefulWidget {
 class _PortfolioScreenState extends ConsumerState<PortfolioScreen> {
   @override
   Widget build(BuildContext context) {
+    final screenW = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
         body: ref.read(loginVMProvider).when(
@@ -38,7 +39,26 @@ class _PortfolioScreenState extends ConsumerState<PortfolioScreen> {
                       )
                     ];
                   },
-                  body: const Column(),
+                  body: Container(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            PiechartWidget(
+                              size: screenW / 2,
+                              values: [
+                                PieChartSegment(0.3, Colors.blue),
+                                PieChartSegment(0.2, Colors.green),
+                                PieChartSegment(0.15, Colors.red),
+                                PieChartSegment(0.35, Colors.orange),
+                              ],
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
                 );
               },
             ),
