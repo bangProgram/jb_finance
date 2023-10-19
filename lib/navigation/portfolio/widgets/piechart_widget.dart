@@ -48,7 +48,7 @@ class PieChartPainter extends CustomPainter {
     for (final segment in values) {
       final arcAngle = 2 * pi * (segment.value / total);
       print('${segment.value} : $startAngle / $arcAngle');
-      canvas.drawArc(rectCircle, startAngle, arcAngle, true,
+      canvas.drawArc(rectPoint, startAngle, arcAngle, true,
           Paint()..color = segment.color);
       startAngle += arcAngle;
     }
