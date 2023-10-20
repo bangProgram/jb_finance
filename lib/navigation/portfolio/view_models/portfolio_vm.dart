@@ -27,12 +27,23 @@ class PortfolioVM extends AsyncNotifier<PortfolioModel> {
     }
   }
 
+  Future<void> getPortfolio() async {
+    final userId = _auth.getUserId;
+    final responseData = await _portfolioRepo.getPortAmount(userId);
+    final portfolioData = responseData['portAmountData'];
+    state = AsyncValue.data(PortfolioModel.fromJson(portfolioData));
+  }
+
   Future<void> updatePortfolio(
       BuildContext context, Map<String, dynamic> formData) async {
     state = const AsyncValue.loading();
     final userId = _auth.getUserId;
     state = await AsyncValue.guard(() async {
-      final result = await _portfolioRepo.updatePortfolio(formData);
+      final Map<String, dynamic> newForm = {
+        ...formData,
+        'userId': userId,
+      };
+      final result = await _portfolioRepo.updatePortfolio(newForm);
       //true 일경우 update 성공
       if (result) {
         final responseData = await _portfolioRepo.getPortAmount(userId);

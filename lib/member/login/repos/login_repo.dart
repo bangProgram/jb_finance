@@ -9,7 +9,7 @@ import 'package:jb_finance/member/main/models/member_model.dart';
 class LoginRepo {
   Future<Map<String, dynamic>> loginMember(LoginModel loginData) async {
     final response = await http.post(
-      Uri.parse("${Consts.mainUrl}/appApi/member/login"),
+      Uri.parse("${Consts.mainUrl}/appApi/auth/loginPorc"),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -26,8 +26,18 @@ class LoginRepo {
   }
 
   Future<MemberModel> logoutMember() async {
-    final responseData = MemberModel.empty();
-    return responseData;
+    final response = await http.post(
+      Uri.parse("${Consts.mainUrl}/appApi/auth/logoutPorc"),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({}),
+    );
+    if (response.statusCode == 200) {
+      return MemberModel.empty();
+    } else {
+      throw Exception('로그아웃 실패');
+    }
   }
 
   Future<Map<String, dynamic>> loginWithKAKAO(String token) async {

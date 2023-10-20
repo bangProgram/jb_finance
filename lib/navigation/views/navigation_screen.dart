@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jb_finance/navigation/finance/views/finance_screen.dart';
+import 'package:jb_finance/navigation/portfolio/view_models/portfolio_vm.dart';
 import 'package:jb_finance/navigation/portfolio/views/portfolio_screen.dart';
 import 'package:jb_finance/navigation/setting/profile/view_models/profile_vm.dart';
 import 'package:jb_finance/navigation/setting/views/setting_screen.dart';
@@ -23,11 +24,13 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
     with SingleTickerProviderStateMixin {
   final taps = ['finance', 'portfolio', 'setting'];
 
-  void goNavigationScreen(int index) {
+  void goNavigationScreen(int index) async {
     final url = '/${taps[index]}';
     print('url : $url / ${url.contains('setting')}');
     if (url.contains('setting')) {
-      ref.read(profileVMProvider.notifier).getMember();
+      await ref.read(profileVMProvider.notifier).getMember();
+    } else if (url.contains('portfolio')) {
+      await ref.read(portfolioProvider.notifier).getPortfolio();
     }
     context.replace(url);
   }
