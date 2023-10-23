@@ -28,7 +28,6 @@ class PieChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    print('size? $size');
     final rectPoint =
         Rect.fromPoints(const Offset(0, 0), Offset(size.width, size.height));
     final centerX = size.width / 2;
@@ -47,7 +46,6 @@ class PieChartPainter extends CustomPainter {
 
     for (final segment in values) {
       final arcAngle = 2 * pi * (segment.value / total);
-      print('${segment.value} : $startAngle / $arcAngle');
       canvas.drawArc(rectPoint, startAngle, arcAngle, true,
           Paint()..color = segment.color);
       startAngle += arcAngle;

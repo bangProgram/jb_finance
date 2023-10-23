@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class SliverTabbarHeader extends SliverPersistentHeaderDelegate {
+class PortfolioTabbarHeader extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
@@ -20,28 +19,19 @@ class SliverTabbarHeader extends SliverPersistentHeaderDelegate {
         indicatorWeight: 2,
         indicatorColor: Colors.black,
         labelColor: Colors.black,
+        labelStyle: const TextStyle(
+          fontWeight: FontWeight.bold,
+        ),
         unselectedLabelColor: Colors.grey.shade400,
         dividerColor: Colors.grey.shade400,
         tabs: const [
           Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: 14,
-              horizontal: 24,
-            ),
-            child: Icon(
-              Icons.grid_4x4_sharp,
-              size: 18,
-            ),
+            padding: EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+            child: Text('자산평가'),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: 14,
-              horizontal: 24,
-            ),
-            child: FaIcon(
-              FontAwesomeIcons.heart,
-              size: 18,
-            ),
+            padding: EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+            child: Text('거래내역'),
           ),
         ],
       ),

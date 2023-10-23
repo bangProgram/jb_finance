@@ -10,6 +10,11 @@ class Authentications {
   bool get isLogin => memberToken != null;
   String get getUserId => memberToken == null ? "" : memberId;
 
+  void removeToken() {
+    memberToken = null;
+    memberId = "";
+  }
+
   void setToken({String? token, String? userId}) {
     memberToken = token;
     if (userId != null) {
@@ -38,10 +43,7 @@ class Authentications {
       print('refresh token : $token');
     } else {
       Map<String, dynamic> responseData = json.decode(response.body);
-      final token = responseData['token'];
-      setToken(token: token);
-      print('refresh token message : ${responseData['message']}');
-      print('refresh token : $token');
+      throw Exception('${responseData['message']}');
     }
   }
 }

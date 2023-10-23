@@ -5,6 +5,7 @@ import 'package:jb_finance/member/login/views/login_screen.dart';
 import 'package:jb_finance/member/signup/views/signup_screen.dart';
 import 'package:jb_finance/navigation/setting/profile/views/profile_screen.dart';
 import 'package:jb_finance/navigation/views/navigation_screen.dart';
+import 'package:jb_finance/utils.dart';
 
 final routerProvider = Provider(
   (ref) => GoRouter(
@@ -19,7 +20,15 @@ final routerProvider = Provider(
         final token = auth.getToken();
         print('로그인 사용자 아이디 : $userId');
         if (userId != "") {
-          await auth.refreshToken(token, userId);
+          final state = await AsyncValue.guard(() async {
+            await auth.refreshToken(token, userId);
+          });
+
+          if (state.hasError) {
+            auth.removeToken();
+            serverMessage(context, '${state.error}');
+            return LoginScreen.routeURL;
+          }
         } else {
           print('사용자 아이디 정보 없음');
         }
