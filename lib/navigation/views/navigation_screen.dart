@@ -3,9 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jb_finance/navigation/finance/views/finance_screen.dart';
-import 'package:jb_finance/navigation/portfolio/view_models/portfolio_vm.dart';
+import 'package:jb_finance/navigation/planbook/views/planbook_screen.dart';
 import 'package:jb_finance/navigation/portfolio/views/portfolio_screen.dart';
-import 'package:jb_finance/navigation/setting/profile/view_models/profile_vm.dart';
 import 'package:jb_finance/navigation/setting/views/setting_screen.dart';
 
 class NavigationScreen extends ConsumerStatefulWidget {
@@ -22,16 +21,11 @@ class NavigationScreen extends ConsumerStatefulWidget {
 
 class _NavigationScreenState extends ConsumerState<NavigationScreen>
     with SingleTickerProviderStateMixin {
-  final taps = ['finance', 'portfolio', 'setting'];
+  final taps = ['finance', 'planbook', 'portfolio', 'setting'];
 
   void goNavigationScreen(int index) async {
     final url = '/${taps[index]}';
     print('url : $url / ${url.contains('setting')}');
-    if (url.contains('setting')) {
-      await ref.read(profileVMProvider.notifier).getMember();
-    } else if (url.contains('portfolio')) {
-      await ref.read(portfolioProvider.notifier).getPortfolio();
-    }
     context.replace(url);
   }
 
@@ -46,18 +40,25 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
           ),
           Offstage(
             offstage: taps.indexOf(widget.tap) != 1,
-            child: const PortfolioScreen(),
+            child: const PlanbookScreen(),
           ),
           Offstage(
             offstage: taps.indexOf(widget.tap) != 2,
+            child: const PortfolioScreen(),
+          ),
+          Offstage(
+            offstage: taps.indexOf(widget.tap) != 3,
             child: const SettingScreen(),
           ),
         ],
       ),
       bottomNavigationBar: BottomAppBar(
         child: BottomNavigationBar(
-          elevation: 0,
+          elevation: 1,
           iconSize: 20,
+          type: BottomNavigationBarType.fixed,
+          unselectedItemColor: Colors.grey,
+          selectedItemColor: Colors.blue,
           onTap: (index) {
             goNavigationScreen(index);
           },
@@ -68,8 +69,12 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
               label: '종목',
             ),
             BottomNavigationBarItem(
+              icon: Icon(FontAwesomeIcons.book),
+              label: '목표관리',
+            ),
+            BottomNavigationBarItem(
               icon: Icon(FontAwesomeIcons.solidUser),
-              label: '포트폴리오',
+              label: '자산관리',
             ),
             BottomNavigationBarItem(
               icon: Icon(FontAwesomeIcons.gear),

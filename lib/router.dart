@@ -53,7 +53,7 @@ final routerProvider = Provider(
         builder: (context, state) => const SignupScreen(),
       ),
       GoRoute(
-        path: '/:tap(finance|portfolio|setting)',
+        path: '/:tap(finance|planbook|portfolio|setting)',
         name: NavigationScreen.routeName,
         builder: (context, state) {
           final tap = state.pathParameters['tap'];

@@ -21,6 +21,8 @@ class PortfolioScreen extends ConsumerStatefulWidget {
 }
 
 class _PortfolioScreenState extends ConsumerState<PortfolioScreen> {
+  final ScrollController _scrollController = ScrollController();
+
   late final TextEditingController _startDtController =
       TextEditingController(text: '$startYear/$startMonth/$startDay');
   late final TextEditingController _endDtController =
@@ -50,6 +52,26 @@ class _PortfolioScreenState extends ConsumerState<PortfolioScreen> {
   ];
 
   String? selectedGubn;
+  double valPadding = 8.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      double offset = _scrollController.offset;
+      if (offset > 382) {
+        setState(() {
+          valPadding = (offset - 382.0);
+        });
+      } else {
+        if (valPadding != 8.0) {
+          setState(() {
+            valPadding = 8.0;
+          });
+        }
+      }
+    });
+  }
 
   void goPortfolioEdit() {
     Navigator.of(context).push(
@@ -101,6 +123,7 @@ class _PortfolioScreenState extends ConsumerState<PortfolioScreen> {
           child: DefaultTabController(
             length: 2,
             child: NestedScrollView(
+              controller: _scrollController,
               headerSliverBuilder: (context, innerBoxIsScrolled) {
                 return [
                   SliverAppBar(
@@ -309,9 +332,11 @@ class _PortfolioScreenState extends ConsumerState<PortfolioScreen> {
                     ],
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: screenW * 0.015,
-                      vertical: 8,
+                    padding: EdgeInsets.only(
+                      left: screenW * 0.015,
+                      right: screenW * 0.015,
+                      top: valPadding,
+                      bottom: 8,
                     ),
                     child: Column(
                       children: [
