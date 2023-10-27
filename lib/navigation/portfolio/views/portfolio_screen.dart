@@ -59,6 +59,7 @@ class _PortfolioScreenState extends ConsumerState<PortfolioScreen> {
     super.initState();
     _scrollController.addListener(() {
       double offset = _scrollController.offset;
+      print('offset : $offset');
       if (offset > 382) {
         setState(() {
           valPadding = (offset - 382.0);
@@ -503,66 +504,73 @@ class _PortfolioScreenState extends ConsumerState<PortfolioScreen> {
                                 ),
                                 child: Column(
                                   children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Text(
-                                          data == '0101' ? '매수' : '매도',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20,
-                                              color: data == '0101'
-                                                  ? Colors.red
-                                                  : Colors.blue),
-                                        ),
-                                        const Text(
-                                          '종목이름',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                          width: screenW * 0.90,
-                                          child: const Flex(
+                                    Container(
+                                      child: Column(
+                                        children: [
+                                          Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            direction: Axis.horizontal,
+                                                MainAxisAlignment.spaceAround,
                                             children: [
-                                              Flexible(
-                                                flex: 1,
-                                                fit: FlexFit.tight,
-                                                child: Text('거래일자'),
+                                              Text(
+                                                data == '0101' ? '매수' : '매도',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 20,
+                                                    color: data == '0101'
+                                                        ? Colors.red
+                                                        : Colors.blue),
                                               ),
-                                              Flexible(
-                                                flex: 1,
-                                                fit: FlexFit.tight,
-                                                child: Text('23/08/07'),
-                                              ),
-                                              Flexible(
-                                                flex: 1,
-                                                fit: FlexFit.tight,
-                                                child: Text('거래금액'),
-                                              ),
-                                              Flexible(
-                                                flex: 1,
-                                                fit: FlexFit.tight,
-                                                child: Text('1000000'),
+                                              const Text(
+                                                '종목이름',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20,
+                                                ),
                                               ),
                                             ],
                                           ),
-                                        ),
-                                      ],
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              SizedBox(
+                                                width: screenW * 0.90,
+                                                child: const Flex(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  direction: Axis.horizontal,
+                                                  children: [
+                                                    Flexible(
+                                                      flex: 1,
+                                                      fit: FlexFit.tight,
+                                                      child: Text('거래일자'),
+                                                    ),
+                                                    Flexible(
+                                                      flex: 1,
+                                                      fit: FlexFit.tight,
+                                                      child: Text('23/08/07'),
+                                                    ),
+                                                    Flexible(
+                                                      flex: 1,
+                                                      fit: FlexFit.tight,
+                                                      child: Text('거래금액'),
+                                                    ),
+                                                    Flexible(
+                                                      flex: 1,
+                                                      fit: FlexFit.tight,
+                                                      child: Text('1000000'),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                     const SizedBox(
                                       height: 5,

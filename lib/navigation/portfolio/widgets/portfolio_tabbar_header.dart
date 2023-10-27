@@ -5,6 +5,7 @@ class PortfolioTabbarHeader extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
+      height: 50,
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.symmetric(
