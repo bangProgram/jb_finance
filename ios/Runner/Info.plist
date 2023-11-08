@@ -47,5 +47,72 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+
+	<!-- IOS 소셜 로그인 관련 추가 START -->
+    <array>
+      <dict>
+		<key>CFBundleURLTypes</key>
+		<string>Editor</string>
+      	<key>CFBundleURLSchemes</key>
+		<array>
+
+			<!-- google login -->
+			<string>google url schemes</string>
+
+			<!-- kakao login -->
+			<string>kakao네이티브 앱 키</string>
+
+			<!-- naver login -->
+			<string>jbfinance</string>
+		</array>
+      </dict>
+    </array>
+
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+       <string>naversearchapp</string>
+       <string>naversearchthirdlogin</string>
+    </array>
+
+    <key>naverServiceAppUrlScheme</key>
+    <string>jbfinance</string>
+	
+    <!-- naver client_id -->
+    <key>naverConsumerKey</key>
+    <string>5IBfHqLGuT2by6iHusU1</string>
+    
+    <!-- naver client_secret -->
+    <key>naverConsumerSecret</key>
+    <string>EHZJuvKsAV</string>
+
+    <key>naverServiceAppName</key>
+    <string>주토피아</string>
+
+    <!-- http allows configurations -->
+    <key>NSAppTransportSecurity</key>
+    <dict>
+       <key>NSAllowsArbitraryLoads</key>
+       <true/>
+       <key>NSExceptionDomains</key>
+       <dict>
+          <key>naver.com</key>
+          <dict>
+             <key>NSExceptionRequiresForwardSecrecy</key>
+             <false/>
+             <key>NSIncludesSubdomains</key>
+             <true/>
+          </dict>
+          <key>naver.net</key>
+          <dict>
+             <key>NSExceptionRequiresForwardSecrecy</key>
+             <false/>
+             <key>NSIncludesSubdomains</key>
+             <true/>
+          </dict>
+        </dict>
+    </dict>
+	<!-- IOS 소셜 로그인 관련 추가 END -->
+
 </dict>
 </plist>

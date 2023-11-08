@@ -27,7 +27,8 @@ class JBFinance extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SafeArea(
       child: MaterialApp.router(
-        title: "JB_Finance",
+        title: "주토피아",
+        theme: ThemeData(fontFamily: 'AppleSDGothicNeo'),
         routerConfig: ref.watch(routerProvider),
       ),
     );

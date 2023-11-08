@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -51,13 +52,13 @@ class LoginVM extends AsyncNotifier<MemberModel> {
       final responseData = await _loginRepo.loginMember(loginData);
       message = responseData['message'];
       final Map<String, dynamic> memberData = responseData["memberData"];
-      print('member Login Success? ${responseData['message']}');
       token = responseData['token'];
       return MemberModel.fromJson(memberData);
     });
 
     if (state.hasError) {
       serverMessage(context, state.error.toString());
+      return;
     } else {
       print('token 발급 세팅 : $token');
       _auth.setToken(token: token, userId: loginData.userId);
@@ -74,6 +75,8 @@ class LoginVM extends AsyncNotifier<MemberModel> {
         await UserApi.instance.logout();
       } else if (platForm.name == 'google') {
         await _googleSignIn.disconnect();
+      } else if (platForm.name == 'naver') {
+        await FlutterNaverLogin.logOut();
       }
       final responseData = await _loginRepo.logoutMember();
       return responseData;
@@ -84,6 +87,54 @@ class LoginVM extends AsyncNotifier<MemberModel> {
     } else {
       _auth.setToken(token: null);
       context.go(LoginScreen.routeURL);
+    }
+  }
+
+  Future<void> signinWithNaver(BuildContext context) async {
+    final NaverLoginResult result = await FlutterNaverLogin.logIn();
+
+    if (result.status == NaverLoginStatus.loggedIn) {
+      final NaverAccountResult accountData = result.account;
+      final String userEmail = accountData.email;
+      Users.loginPlatform = LoginPlatform.naver;
+
+      final String password = '${Users.loginPlatform.name}$userEmail';
+      //서버 사용자 유무 확인
+      final serverUserData = await _memberRepo.getMember(userEmail);
+
+      if (serverUserData.isEmpty) {
+        //회원가입 모델 데이터 초기화
+        final SignupModel signupModel = SignupModel(
+            userId: userEmail,
+            password: password,
+            userName: accountData.name,
+            avatarUrl: accountData.profileImage,
+            platform: Users.loginPlatform.name);
+
+        //초기화 한 회원가입모델 기준으로 회원등록 진행
+        final createResult = await AsyncValue.guard(() async {
+          return await _signupRepo.createMember(signupModel.toJson());
+        });
+
+        //회원 등록이 에러없이 정상으로 처리 되었으면 로그인 프로세스 진행
+        if (createResult.hasError) {
+          serverMessage(context, state.error.toString());
+          return;
+        } else {
+          final String password = '${Users.loginPlatform.name}$userEmail';
+          LoginModel loginData =
+              LoginModel(userId: userEmail, password: password);
+          await memberLogin(context, loginData);
+        }
+      } else {
+        final String password = '${Users.loginPlatform.name}$userEmail';
+        LoginModel loginData =
+            LoginModel(userId: userEmail, password: password);
+        await memberLogin(context, loginData);
+      }
+    } else {
+      serverMessage(context, '네이버로그인에 실패했습니다.');
+      return;
     }
   }
 
@@ -104,6 +155,7 @@ class LoginVM extends AsyncNotifier<MemberModel> {
           token = await UserApi.instance.loginWithKakaoAccount();
         } catch (error) {
           serverMessage(context, '카카오 로그인에 실패했습니다.');
+          return;
         }
       }
     } else {
@@ -111,6 +163,7 @@ class LoginVM extends AsyncNotifier<MemberModel> {
         token = await UserApi.instance.loginWithKakaoAccount();
       } catch (error) {
         serverMessage(context, '카카오 로그인에 실패했습니다.');
+        return;
       }
     }
 
@@ -153,6 +206,7 @@ class LoginVM extends AsyncNotifier<MemberModel> {
               }
             } else {
               serverMessage(context, '카카오계정에 이메일 등록이 되지 않은경우\n카카오로그인이 불가능합니다.');
+              return;
             }
           }
           //사용자 테이블에 회원이 존재하면 로그인 프로세스 진행
@@ -164,9 +218,11 @@ class LoginVM extends AsyncNotifier<MemberModel> {
           }
         } else {
           serverMessage(context, '카카오 사용자정보 호출에 실패했습니다.');
+          return;
         }
       } catch (error) {
         serverMessage(context, '$error');
+        return;
       }
     }
   }
@@ -201,6 +257,7 @@ class LoginVM extends AsyncNotifier<MemberModel> {
           //회원 등록이 에러없이 정상으로 처리 되었으면 로그인 프로세스 진행
           if (createResult.hasError) {
             serverMessage(context, state.error.toString());
+            return;
           } else {
             final String password = '${Users.loginPlatform.name}$userEmail';
             LoginModel loginData =
@@ -217,6 +274,7 @@ class LoginVM extends AsyncNotifier<MemberModel> {
         }
       }
     } catch (error) {
+      serverMessage(context, '$error');
       print(error);
     }
   }

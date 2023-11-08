@@ -46,6 +46,7 @@ class ProfileVM extends AsyncNotifier<MemberModel> {
 
   Future<void> getMember() async {
     final userId = _auth.getUserId;
+    print('profile : $userId');
     final memberData = await _memberRepo.getMember(userId);
     state = AsyncValue.data(MemberModel.fromJson(memberData));
   }

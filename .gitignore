@@ -152,3 +152,5 @@ functions/package.json
 functions/tsconfig.json
 android/app/client_secret_352208824522-khl2d5ki5j50ucedkg8ptkavqiiksu5g.apps.googleusercontent.com.json
 lib/keys.dart
+android/app/src/main/res/values/strings.xml
+ios/Runner/Info.plist

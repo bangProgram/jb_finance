@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 void serverMessage(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: Text(message),
+      backgroundColor: Colors.red.shade300,
+      content: Center(child: Text(message)),
       duration: const Duration(seconds: 3),
     ),
   );
