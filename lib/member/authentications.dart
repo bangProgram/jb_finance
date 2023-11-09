@@ -15,7 +15,7 @@ class Authentications {
     memberId = "";
   }
 
-  void setToken({String? token, String? userId}) {
+  Future<void> setToken({String? token, String? userId}) async {
     memberToken = token;
     if (userId != null) {
       memberId = userId;

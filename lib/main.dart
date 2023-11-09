@@ -28,7 +28,10 @@ class JBFinance extends ConsumerWidget {
     return SafeArea(
       child: MaterialApp.router(
         title: "주토피아",
-        theme: ThemeData(fontFamily: 'AppleSDGothicNeo'),
+        theme: ThemeData(
+          fontFamily: 'AppleSDGothicNeo',
+          colorScheme: const ColorScheme.light(background: Colors.white),
+        ),
         routerConfig: ref.watch(routerProvider),
       ),
     );

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:jb_finance/navigation/finance/views/finance_corporation_screen.dart';
+import 'package:jb_finance/utils.dart';
 
 class FinanceScreen extends StatefulWidget {
   static const String routeName = "finance";
@@ -13,13 +15,56 @@ class FinanceScreen extends StatefulWidget {
 class _FinanceScreenState extends State<FinanceScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('주식'),
-        elevation: 0,
-        foregroundColor: Colors.black,
-        backgroundColor: Colors.transparent,
+    return DefaultTabController(
+      length: 2,
+      child: GestureDetector(
+        onTap: () => focusOut(context),
+        child: Scaffold(
+          body: NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  centerTitle: true,
+                  title: const Text('종목찾기'),
+                  elevation: 0,
+                  foregroundColor: Colors.black,
+                  backgroundColor: Colors.transparent,
+                  bottom: TabBar(
+                    labelColor: Colors.black,
+                    indicatorColor: Colors.black,
+                    unselectedLabelColor: Colors.black.withOpacity(0.3),
+                    tabs: const [
+                      Tab(
+                        child: Text(
+                          '전체',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      Tab(
+                        child: Text(
+                          '관심',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ];
+            },
+            body: TabBarView(
+              children: [
+                const FinanceCorpScreen(),
+                Container(),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

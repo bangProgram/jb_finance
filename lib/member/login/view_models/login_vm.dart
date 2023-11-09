@@ -16,6 +16,7 @@ import 'package:jb_finance/member/main/repos/member_repo.dart';
 import 'package:jb_finance/member/signup/models/signup_model.dart';
 import 'package:jb_finance/member/signup/repos/signup_repo.dart';
 import 'package:jb_finance/navigation/portfolio/views/portfolio_screen.dart';
+import 'package:jb_finance/navigation/setting/profile/view_models/profile_vm.dart';
 import 'package:jb_finance/utils.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
@@ -38,6 +39,7 @@ class LoginVM extends AsyncNotifier<MemberModel> {
     _loginRepo = ref.read(loginRepo);
     _memberRepo = ref.read(memberRepo);
     _signupRepo = ref.read(signupRepo);
+
     if (_auth.isLogin) {
       final memberData = await _memberRepo.getMember(_auth.getUserId);
       return MemberModel.fromJson(memberData);
@@ -61,7 +63,9 @@ class LoginVM extends AsyncNotifier<MemberModel> {
       return;
     } else {
       print('token 발급 세팅 : $token');
-      _auth.setToken(token: token, userId: loginData.userId);
+      final userId = loginData.userId;
+      await _auth.setToken(token: token, userId: userId);
+      ref.read(profileVMProvider.notifier).getMember();
       context.go(PortfolioScreen.routeURL);
     }
   }
