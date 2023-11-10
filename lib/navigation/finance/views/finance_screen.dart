@@ -15,6 +15,8 @@ class FinanceScreen extends StatefulWidget {
 class _FinanceScreenState extends State<FinanceScreen> {
   @override
   Widget build(BuildContext context) {
+    final screenW = MediaQuery.of(context).size.width;
+
     return DefaultTabController(
       length: 2,
       child: GestureDetector(
@@ -58,8 +60,9 @@ class _FinanceScreenState extends State<FinanceScreen> {
               ];
             },
             body: TabBarView(
+              physics: const NeverScrollableScrollPhysics(),
               children: [
-                const FinanceCorpScreen(),
+                SizedBox(width: screenW, child: const FinanceCorpScreen()),
                 Container(),
               ],
             ),

@@ -105,18 +105,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: _signinWithGoogle,
-                    child: const SocialLoginBtnWidget(
-                      btnColor: Colors.white,
-                      btnImage: 'assets/images/buttons/google_login_btn.png',
-                      btnText: 'Google 계정으로 로그인',
-                      textColor: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  GestureDetector(
                     onTap: _signinWithKAKAO,
                     child: const SocialLoginBtnWidget(
                       btnColor: Color(0xFFFFED4B),
@@ -126,7 +114,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ),
                   const SizedBox(
-                    height: 15,
+                    height: 24,
                   ),
                   GestureDetector(
                     onTap: _signinWithNaver,
@@ -136,7 +124,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       btnText: '네이버 계정으로 시작하기',
                       textColor: Colors.white,
                     ),
-                  )
+                  ),
+                  const SizedBox(
+                    height: 24,
+                  ),
+                  GestureDetector(
+                    onTap: _signinWithGoogle,
+                    child: const SocialLoginBtnWidget(
+                      btnColor: Colors.white,
+                      btnImage: 'assets/images/buttons/google_login_btn.png',
+                      btnText: 'Google 계정으로 로그인',
+                      textColor: Colors.black,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -165,15 +165,11 @@ class SocialLoginBtnWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(
-        vertical: 18,
+        vertical: 17,
       ),
       decoration: BoxDecoration(
         color: btnColor,
-        border: Border.all(
-          color: Colors.grey,
-          width: 1,
-        ),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
