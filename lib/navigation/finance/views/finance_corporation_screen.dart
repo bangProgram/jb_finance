@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jb_finance/navigation/finance/views/finance_corp_detail_screen.dart';
 import 'package:jb_finance/navigation/finance/widgets/select_account_widget.dart';
 import 'package:jb_finance/navigation/finance/widgets/select_date_widget.dart';
 
@@ -68,7 +69,7 @@ class _FinanceCorpScreenState extends State<FinanceCorpScreen>
 
   void _filterHide() {
     var direction = _scrollController.position.userScrollDirection;
-    if (isToggle == false) {
+    if (isToggle == false && !_animationController.isCompleted) {
       if (direction == ScrollDirection.reverse) {
         _animationController.forward();
         setState(() {
@@ -98,8 +99,17 @@ class _FinanceCorpScreenState extends State<FinanceCorpScreen>
     setState(() {});
   }
 
+  void _goCorpDetailScreen(String corpNm) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => FinanceCorpDetailScreen(corpNm: corpNm),
+      ),
+    );
+  }
+
   @override
   void dispose() {
+    print('finance corp main dispose !!!!');
     _scrollController.dispose();
     _animationController.dispose();
     super.dispose();
@@ -354,6 +364,7 @@ class _FinanceCorpScreenState extends State<FinanceCorpScreen>
                           SizedBox(
                             width: 100,
                             child: TextField(
+                              keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 hintText: '직접입력(%)',
                                 hintStyle: TextStyle(
@@ -471,85 +482,129 @@ class _FinanceCorpScreenState extends State<FinanceCorpScreen>
                       );
                     },
                     itemBuilder: (context, index) {
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 20,
-                          horizontal: 15,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: const Color(0xFFEFEFEF),
-                            width: 1,
+                      final corpNm = '삼성전자_$index';
+
+                      return GestureDetector(
+                        onTap: () => _goCorpDetailScreen(corpNm),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 20,
+                            horizontal: 15,
                           ),
-                        ),
-                        child: Row(
-                          children: [
-                            const CircleAvatar(
-                              backgroundColor: Colors.blue,
-                              radius: 35,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: const Color(0xFFEFEFEF),
+                              width: 1,
                             ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Expanded(
-                                        child: Text('삼성전자'),
-                                      ),
-                                      IconButton(
-                                        onPressed: () {},
-                                        icon: const FaIcon(
-                                          FontAwesomeIcons.heart,
-                                          size: 24,
-                                        ),
-                                      ),
-                                      IconButton(
-                                        onPressed: () {},
-                                        icon: const FaIcon(
-                                          FontAwesomeIcons.squarePlus,
-                                          size: 24,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text('매출액'),
-                                          Text('3조 9천억'),
-                                        ],
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text('영업이익'),
-                                          Text('1조 3천억'),
-                                        ],
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text('순이익'),
-                                          Text('3천 3백만'),
-                                        ],
-                                      ),
-                                    ],
-                                  )
-                                ],
+                          ),
+                          child: Row(
+                            children: [
+                              const CircleAvatar(
+                                backgroundColor: Colors.blue,
+                                radius: 35,
                               ),
-                            )
-                          ],
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            corpNm,
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                        IconButton(
+                                          onPressed: () {},
+                                          icon: const FaIcon(
+                                            FontAwesomeIcons.heart,
+                                            size: 24,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const FractionallySizedBox(
+                                      widthFactor: 0.9,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '매출액',
+                                                style: TextStyle(
+                                                  color: Color(0xFFC4C4C4),
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              Text(
+                                                '3조 9천억',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '영업이익',
+                                                style: TextStyle(
+                                                  color: Color(0xFFC4C4C4),
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              Text(
+                                                '1조 3천억',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '순이익',
+                                                style: TextStyle(
+                                                  color: Color(0xFFC4C4C4),
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              Text(
+                                                '3천 3백만',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       );
                     },

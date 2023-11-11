@@ -22,50 +22,59 @@ class _FinanceScreenState extends State<FinanceScreen> {
       child: GestureDetector(
         onTap: () => focusOut(context),
         child: Scaffold(
-          body: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return [
-                SliverAppBar(
-                  centerTitle: true,
-                  title: const Text('종목찾기'),
-                  elevation: 0,
-                  foregroundColor: Colors.black,
-                  backgroundColor: Colors.transparent,
-                  bottom: TabBar(
-                    labelColor: Colors.black,
-                    indicatorColor: Colors.black,
-                    unselectedLabelColor: Colors.black.withOpacity(0.3),
-                    tabs: const [
-                      Tab(
-                        child: Text(
-                          '전체',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                      Tab(
-                        child: Text(
-                          '관심',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ],
+          appBar: AppBar(
+            centerTitle: true,
+            title: const Text('종목찾기'),
+            elevation: 0,
+            foregroundColor: Colors.black,
+            backgroundColor: Colors.transparent,
+            bottom: TabBar(
+              labelColor: Colors.black,
+              indicatorColor: Colors.black,
+              unselectedLabelColor: Colors.black.withOpacity(0.3),
+              tabs: const [
+                Tab(
+                  child: Text(
+                    '전체',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                )
-              ];
-            },
-            body: TabBarView(
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                SizedBox(width: screenW, child: const FinanceCorpScreen()),
-                Container(),
+                ),
+                Tab(
+                  child: Text(
+                    '관심',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
               ],
             ),
+          ),
+          body: TabBarView(
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              SizedBox(
+                width: screenW,
+                child: const FinanceCorpScreen(),
+              ),
+              Container(
+                color: Colors.amber,
+                child: ListView.builder(
+                  itemCount: 10,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      height: 80,
+                      color: Colors.amber.withOpacity(0.5),
+                      child: Text('$index 번째 컨테이너'),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ),
