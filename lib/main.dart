@@ -20,6 +20,7 @@ void main() async {
   );
 }
 
+//메인화면에서 테스트
 class JBFinance extends ConsumerWidget {
   const JBFinance({super.key});
 
