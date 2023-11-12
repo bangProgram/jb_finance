@@ -10,7 +10,7 @@ void main() async {
 
   KakaoSdk.init(
     nativeAppKey: Keys.nativeAppKeyForKAKAO,
-    javaScriptAppKey: Keys.nativeAppKeyForKAKAO,
+    javaScriptAppKey: Keys.jsAppKeyForKAKAO,
   );
 
   runApp(

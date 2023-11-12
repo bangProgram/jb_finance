@@ -154,3 +154,4 @@ android/app/client_secret_352208824522-khl2d5ki5j50ucedkg8ptkavqiiksu5g.apps.goo
 lib/keys.dart
 android/app/src/main/res/values/strings.xml
 ios/Runner/Info.plist
+lib/consts.dart
