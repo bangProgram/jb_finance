@@ -130,7 +130,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     onTap: _signinWithGoogle,
                     child: const SocialLoginBtnWidget(
                       btnColor: Colors.white,
-                      btnImage: 'assets/images/buttons/google_login_btn.png',
+                      btnImage: 'assets/images/buttons/googleIcon.png',
                       btnText: 'Google 계정으로 로그인',
                       textColor: Colors.black,
                     ),
@@ -186,7 +186,6 @@ class SocialLoginBtnWidget extends StatelessWidget {
         children: [
           Image.asset(
             btnImage,
-            width: 24,
           ),
           const SizedBox(
             width: 16,

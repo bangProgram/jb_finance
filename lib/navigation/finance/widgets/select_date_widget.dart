@@ -23,7 +23,7 @@ class SelectDateWidget extends StatelessWidget {
             ? const Color(0xFF333333)
             : Colors.white,
         border: Border.all(
-          color: Colors.grey,
+          color: const Color(0xFFEFEFEF),
           width: 1,
         ),
         borderRadius: BorderRadius.circular(10),
@@ -33,7 +33,7 @@ class SelectDateWidget extends StatelessWidget {
         style: TextStyle(
           color: diffCnt == thisCnt && selType == type
               ? Colors.white
-              : Colors.black,
+              : const Color(0xFF333333),
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),

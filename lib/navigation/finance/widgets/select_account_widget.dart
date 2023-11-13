@@ -19,7 +19,7 @@ class SelectAccountWidget extends StatelessWidget {
             ? const Color(0xFF333333)
             : Colors.white,
         border: Border.all(
-          color: Colors.grey,
+          color: const Color(0xFFEFEFEF),
           width: 1,
         ),
         borderRadius: BorderRadius.circular(10),
@@ -27,8 +27,9 @@ class SelectAccountWidget extends StatelessWidget {
       child: Text(
         thisAccount,
         style: TextStyle(
-          color:
-              accountList.contains(thisAccount) ? Colors.white : Colors.black,
+          color: accountList.contains(thisAccount)
+              ? Colors.white
+              : const Color(0xFF333333),
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
