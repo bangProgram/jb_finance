@@ -13,10 +13,10 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final int _currentImageIndex = 0;
   final List<String> _imageList = [
-    'assets/images/backgrounds/login_background1.png',
-    'assets/images/pepe.jpg',
+    'assets/images/main_frame.png',
+    'assets/images/main_logo_frame.png',
+    'assets/images/main_logo.png',
   ];
 
   Future<void> _signinWithGoogle() async {
@@ -46,18 +46,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
+        backgroundColor: Colors.black,
         body: Stack(
           children: [
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(_imageList[_currentImageIndex]),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
             Padding(
               padding: const EdgeInsets.symmetric(
                 vertical: 40,
@@ -66,43 +57,62 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    alignment: Alignment.center,
-                    height: screenH * 0.3,
-                    child: RichText(
-                      textAlign: TextAlign.center,
-                      text: const TextSpan(
-                        children: [
-                          TextSpan(
-                            text: 'ZU',
-                            style: TextStyle(
-                              letterSpacing: 6,
-                              fontSize: 50,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                  const SizedBox(
+                    height: 55,
+                  ),
+                  SizedBox(
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      alignment: Alignment.center,
+                      children: [
+                        Positioned(
+                          bottom: 50,
+                          child: Container(
+                            width: 200,
+                            height: 200,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(_imageList[0]),
+                              ),
                             ),
                           ),
-                          TextSpan(
-                            text: ':',
-                            style: TextStyle(
-                              letterSpacing: 6,
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                        ),
+                        Opacity(
+                          opacity: 0.96,
+                          child: Container(
+                            width: 238,
+                            height: 141,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(_imageList[1]),
+                              ),
                             ),
                           ),
-                          TextSpan(
-                            text: 'topia',
-                            style: TextStyle(
-                              letterSpacing: 6,
-                              fontSize: 44,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                        ),
+                        Positioned(
+                          right: 40,
+                          bottom: 34,
+                          child: Column(
+                            children: [
+                              const Text(
+                                '누구나 누리는 주식',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Image.asset(_imageList[2]),
+                            ],
                           ),
-                        ],
-                      ),
+                        )
+                      ],
                     ),
+                  ),
+                  const SizedBox(
+                    height: 55,
                   ),
                   GestureDetector(
                     onTap: _signinWithKAKAO,
@@ -117,24 +127,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     height: 24,
                   ),
                   GestureDetector(
-                    onTap: _signinWithNaver,
-                    child: const SocialLoginBtnWidget(
-                      btnColor: Color(0xFF03CF5D),
-                      btnImage: 'assets/images/buttons/naverIcon.png',
-                      btnText: '네이버 계정으로 시작하기',
-                      textColor: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                  GestureDetector(
                     onTap: _signinWithGoogle,
                     child: const SocialLoginBtnWidget(
                       btnColor: Colors.white,
                       btnImage: 'assets/images/buttons/google_login_btn.png',
                       btnText: 'Google 계정으로 로그인',
                       textColor: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 24,
+                  ),
+                  GestureDetector(
+                    onTap: _signinWithNaver,
+                    child: const SocialLoginBtnWidget(
+                      btnColor: Color(0xFF03CF5D),
+                      btnImage: 'assets/images/buttons/naverIcon.png',
+                      btnText: '네이버 계정으로 시작하기',
+                      textColor: Colors.white,
                     ),
                   ),
                 ],
