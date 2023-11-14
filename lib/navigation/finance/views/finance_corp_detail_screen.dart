@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jb_finance/navigation/finance/views/finance_corp_detail_pages/corp_detail_info_page.dart';
-import 'package:jb_finance/navigation/finance/widgets/fianance_tabbar_header.dart';
+import 'package:jb_finance/navigation/finance/views/finance_corp_detail_pages/corp_detail_news_page.dart';
 
 class FinanceCorpDetailScreen extends StatefulWidget {
   final String corpNm;
@@ -21,75 +21,109 @@ class _FinanceCorpDetailScreenState extends State<FinanceCorpDetailScreen> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        body: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return [
-              SliverAppBar(
-                centerTitle: true,
-                elevation: 0,
-                foregroundColor: Colors.black,
-                backgroundColor: Colors.transparent,
-                title: Text('${widget.corpNm} 상세'),
-                actions: [
-                  IconButton(
-                    onPressed: () {},
-                    icon: const FaIcon(
-                      FontAwesomeIcons.heart,
-                      color: Colors.grey,
-                    ),
-                  )
-                ],
-              ),
-              SliverToBoxAdapter(
-                child: Column(
+        body: Column(
+          children: [
+            Column(
+              children: [
+                Row(
                   children: [
-                    ListTile(
-                      leading: const CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Colors.blue,
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const FaIcon(
+                        Icons.arrow_back_ios_new,
+                        color: Colors.grey,
                       ),
-                      title: Text(
-                        widget.corpNm,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        color: Colors.transparent,
                       ),
-                      subtitle: const Text(
-                        '기업 업종구분',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      trailing: const Text(
-                        '73,210원',
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 18,
-                        ),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: const FaIcon(
+                        FontAwesomeIcons.heart,
+                        color: Colors.grey,
                       ),
                     )
                   ],
                 ),
+                ListTile(
+                  leading: const CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.blue,
+                  ),
+                  title: Text(
+                    widget.corpNm,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  subtitle: const Text(
+                    '기업 업종구분',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  trailing: const Text(
+                    '73,210원',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            TabBar(
+              labelColor: Colors.black,
+              indicatorColor: Colors.black,
+              unselectedLabelColor: Colors.black.withOpacity(0.3),
+              tabs: const [
+                Tab(
+                  child: Text(
+                    '기업정보',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                Tab(
+                  child: Text(
+                    '공시정보',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                Tab(
+                  child: Text(
+                    '뉴스',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Expanded(
+              child: TabBarView(
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  const CorpDetailInfoPage(),
+                  Container(
+                    color: Colors.blue,
+                  ),
+                  const CorpDetailNewsPage(),
+                ],
               ),
-              const SliverPersistentHeader(
-                pinned: true,
-                delegate: FinanceTabbarHeader(tabList: ['기업정보', '공시정보', '뉴스']),
-              ),
-            ];
-          },
-          body: TabBarView(
-            children: [
-              const CorpDetailInfoPage(),
-              Container(
-                color: Colors.red,
-              ),
-              Container(
-                color: Colors.blue,
-              )
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

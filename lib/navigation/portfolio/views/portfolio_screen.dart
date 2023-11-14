@@ -128,8 +128,8 @@ class _PortfolioScreenState extends ConsumerState<PortfolioScreen> {
               headerSliverBuilder: (context, innerBoxIsScrolled) {
                 return [
                   SliverAppBar(
-                    centerTitle: true,
                     title: const Text('포트폴리오'),
+                    centerTitle: true,
                     elevation: 0,
                     foregroundColor: Colors.black,
                     backgroundColor: Colors.transparent,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jb_finance/navigation/finance/widgets/naver_finance_crolling.dart';
 
 class CorpDetailInfoPage extends StatefulWidget {
   const CorpDetailInfoPage({super.key});
@@ -11,9 +12,12 @@ class _CorpDetailInfoPageState extends State<CorpDetailInfoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
+      body: NestedScrollView(
         scrollDirection: Axis.vertical,
-        child: Column(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [];
+        },
+        body: Column(
           children: [
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -91,7 +95,13 @@ class _CorpDetailInfoPageState extends State<CorpDetailInfoPage> {
                   )
                 ],
               ),
-            )
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const NaverFinanceCrolling(),
+              )),
+              child: const Text('네이버크롤링 이동'),
+            ),
           ],
         ),
       ),
