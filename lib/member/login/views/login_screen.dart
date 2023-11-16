@@ -131,7 +131,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     child: const SocialLoginBtnWidget(
                       btnColor: Colors.white,
                       btnImage: 'assets/images/buttons/googleIcon.png',
-                      btnText: 'Google 계정으로 로그인',
+                      btnText: '구글로 시작하기',
                       textColor: Colors.black,
                     ),
                   ),
@@ -194,6 +194,7 @@ class SocialLoginBtnWidget extends StatelessWidget {
             // onPressed: _signinWithGoogle,
             btnText,
             style: TextStyle(
+              fontFamily: 'AppleSDGothicNeo',
               fontSize: 16,
               fontWeight: FontWeight.w400,
               color: textColor,

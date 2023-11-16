@@ -30,7 +30,7 @@ class JBFinance extends ConsumerWidget {
       child: MaterialApp.router(
         title: "주토피아",
         theme: ThemeData(
-          fontFamily: 'AppleSDGothicNeo',
+          fontFamily: 'Pretendard',
           colorScheme: const ColorScheme.light(background: Colors.white),
         ),
         routerConfig: ref.watch(routerProvider),

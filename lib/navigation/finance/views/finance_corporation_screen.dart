@@ -109,7 +109,7 @@ class _FinanceCorpScreenState extends State<FinanceCorpScreen>
 
   @override
   void dispose() {
-    print('finance corp main dispose !!!!');
+    print('finance Corporation Screen dispose !!!!');
     _scrollController.dispose();
     _animationController.dispose();
     super.dispose();
