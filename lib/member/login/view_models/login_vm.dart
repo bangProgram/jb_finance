@@ -65,6 +65,7 @@ class LoginVM extends AsyncNotifier<MemberModel> {
       print('token 발급 세팅 : $token');
       final userId = loginData.userId;
       await _auth.setToken(token: token, userId: userId);
+      await _auth.setTokenForKisDev();
       ref.read(profileVMProvider.notifier).getMember();
       context.go(FinanceScreen.routeURL);
     }

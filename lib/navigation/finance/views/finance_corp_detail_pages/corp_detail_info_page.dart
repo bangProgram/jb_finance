@@ -1,16 +1,62 @@
-import 'package:flutter/material.dart';
-import 'package:jb_finance/navigation/finance/widgets/naver_finance_crolling.dart';
+import 'dart:convert';
 
-class CorpDetailInfoPage extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jb_finance/member/authentications.dart';
+import 'package:jb_finance/navigation/finance/widgets/candlechart_widget.dart';
+import 'package:jb_finance/navigation/finance/widgets/naver_finance_crolling.dart';
+import 'package:http/http.dart' as http;
+import 'package:jb_finance/keys.dart';
+
+class CorpDetailInfoPage extends ConsumerStatefulWidget {
   const CorpDetailInfoPage({super.key});
 
   @override
-  State<CorpDetailInfoPage> createState() => _CorpDetailInfoPageState();
+  ConsumerState<CorpDetailInfoPage> createState() => _CorpDetailInfoPageState();
 }
 
-class _CorpDetailInfoPageState extends State<CorpDetailInfoPage> {
+class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
+  Future<void> getCorpStockPrice() async {
+    final auth = ref.read(authProvider);
+    const proxyUrl = "http://192.168.168.221:8080";
+    const targetUrl =
+        "https://openapi.koreainvestment.com:9443/uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice";
+    final url = Uri.parse('$proxyUrl/$targetUrl');
+
+    final params = {
+      "fid_cond_mrkt_div_code": "J",
+      "fid_input_date_1": "20230101",
+      "fid_input_date_2": "20230501",
+      "fid_input_iscd": "005930",
+      "fid_org_adj_prc": "0",
+      "fid_period_div_code": "D"
+    };
+
+    var uri = Uri.https(url.authority, url.path, params);
+
+    final response = await http.get(
+      uri,
+      headers: {
+        "content-type": "application/json; charset=utf-8",
+        "authorization": auth.getKisDevToken,
+        "appkey": Keys.kisDeveloperAppKey,
+        "appsecret": Keys.kisDeveloperAppSecretKey,
+        "tr_id": "FHKST03010100"
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      print('정보 가져오기 성공 ${data['output2']}');
+    } else {
+      print('정보 가져오기 실패');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final screenW = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -97,10 +143,16 @@ class _CorpDetailInfoPageState extends State<CorpDetailInfoPage> {
                 thickness: 8,
                 color: Color(0xFFF4F4F4),
               ),
-              Container(
-                color: Colors.blue,
-                height: 200,
-                width: 300,
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      color: Colors.blue,
+                      height: 200,
+                      child: const CandlechartWidget(),
+                    ),
+                  ),
+                ],
               ),
               const Divider(
                 thickness: 8,
@@ -757,6 +809,10 @@ class _CorpDetailInfoPageState extends State<CorpDetailInfoPage> {
                   builder: (context) => const NaverFinanceCrolling(),
                 )),
                 child: const Text('네이버크롤링 이동'),
+              ),
+              TextButton(
+                onPressed: getCorpStockPrice,
+                child: const Text('기간별 주가정보 가져오기'),
               ),
             ],
           ),
