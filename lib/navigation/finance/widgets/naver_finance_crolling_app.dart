@@ -3,14 +3,15 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
-class NaverFinanceCrolling extends StatefulWidget {
-  const NaverFinanceCrolling({super.key});
+class NaverFinanceCrollingApp extends StatefulWidget {
+  const NaverFinanceCrollingApp({super.key});
 
   @override
-  State<NaverFinanceCrolling> createState() => _NaverFinanceCrollingState();
+  State<NaverFinanceCrollingApp> createState() =>
+      _NaverFinanceCrollingAppState();
 }
 
-class _NaverFinanceCrollingState extends State<NaverFinanceCrolling> {
+class _NaverFinanceCrollingAppState extends State<NaverFinanceCrollingApp> {
   late final WebViewController _webViewController;
 
   @override

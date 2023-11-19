@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jb_finance/consts.dart';
+import 'package:jb_finance/keys.dart';
 
 import 'package:jb_finance/member/login/view_models/login_vm.dart';
 import 'package:jb_finance/navigation/setting/profile/view_models/profile_vm.dart';
@@ -77,7 +78,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                             ? null
                             : NetworkImage(data.avatarUrl)
                         : NetworkImage(
-                            '${Consts.mainUrl}/appApi/member/downloadAvatar/${data.fileName}'),
+                            '${Keys.forwardURL}/appApi/member/downloadAvatar/${data.fileName}'),
                     child: Text(
                       data.userId,
                       style: const TextStyle(fontSize: 10),

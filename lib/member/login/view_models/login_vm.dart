@@ -6,7 +6,6 @@ import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:jb_finance/Users.dart';
 import 'package:jb_finance/member/authentications.dart';
 import 'package:jb_finance/member/login/models/login_model.dart';
 import 'package:jb_finance/member/login/repos/login_repo.dart';
@@ -17,12 +16,16 @@ import 'package:jb_finance/member/signup/models/signup_model.dart';
 import 'package:jb_finance/member/signup/repos/signup_repo.dart';
 import 'package:jb_finance/navigation/finance/views/finance_screen.dart';
 import 'package:jb_finance/navigation/setting/profile/view_models/profile_vm.dart';
+import 'package:jb_finance/platforms.dart';
 import 'package:jb_finance/utils.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
   // Optional clientId
-  scopes: ['email'],
+  scopes: [
+    'email',
+    'https://www.googleapis.com/auth/contacts.readonly',
+  ],
 );
 
 class LoginVM extends AsyncNotifier<MemberModel> {
@@ -72,7 +75,7 @@ class LoginVM extends AsyncNotifier<MemberModel> {
   }
 
   Future<void> memberLogout(BuildContext context) async {
-    final platForm = Users.loginPlatform;
+    final platForm = Platforms.loginPlatform;
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       print('platFrom : ${platForm.name} / ${platForm.name == 'kakao'}');
@@ -101,9 +104,9 @@ class LoginVM extends AsyncNotifier<MemberModel> {
     if (result.status == NaverLoginStatus.loggedIn) {
       final NaverAccountResult accountData = result.account;
       final String userEmail = accountData.email;
-      Users.loginPlatform = LoginPlatform.naver;
+      Platforms.loginPlatform = LoginPlatform.naver;
 
-      final String password = '${Users.loginPlatform.name}$userEmail';
+      final String password = '${Platforms.loginPlatform.name}$userEmail';
       //서버 사용자 유무 확인
       final serverUserData = await _memberRepo.getMember(userEmail);
 
@@ -114,7 +117,7 @@ class LoginVM extends AsyncNotifier<MemberModel> {
             password: password,
             userName: accountData.name,
             avatarUrl: accountData.profileImage,
-            platform: Users.loginPlatform.name);
+            platform: Platforms.loginPlatform.name);
 
         //초기화 한 회원가입모델 기준으로 회원등록 진행
         final createResult = await AsyncValue.guard(() async {
@@ -126,13 +129,13 @@ class LoginVM extends AsyncNotifier<MemberModel> {
           serverMessage(context, state.error.toString());
           return;
         } else {
-          final String password = '${Users.loginPlatform.name}$userEmail';
+          final String password = '${Platforms.loginPlatform.name}$userEmail';
           LoginModel loginData =
               LoginModel(userId: userEmail, password: password);
           await memberLogin(context, loginData);
         }
       } else {
-        final String password = '${Users.loginPlatform.name}$userEmail';
+        final String password = '${Platforms.loginPlatform.name}$userEmail';
         LoginModel loginData =
             LoginModel(userId: userEmail, password: password);
         await memberLogin(context, loginData);
@@ -176,7 +179,7 @@ class LoginVM extends AsyncNotifier<MemberModel> {
       try {
         final response = await _loginRepo.loginWithKAKAO(token.accessToken);
         if (response.isNotEmpty) {
-          Users.loginPlatform = LoginPlatform.kakao;
+          Platforms.loginPlatform = LoginPlatform.kakao;
           final accountData = response['kakao_account'];
           final userData = accountData['profile'];
           //해당 이메일이 기존에 회원가입 되어있는 사용자 인지 확인
@@ -186,14 +189,15 @@ class LoginVM extends AsyncNotifier<MemberModel> {
           //사용자 테이블에 회원이 존재하지 않으면 회원등록 프로세스 진행
           if (serverUserData.isEmpty) {
             if (accountData['has_email'] == true) {
-              final String password = '${Users.loginPlatform.name}$userEmail';
+              final String password =
+                  '${Platforms.loginPlatform.name}$userEmail';
               //회원가입 모델 데이터 초기화
               final SignupModel signupModel = SignupModel(
                   userId: userEmail,
                   password: password,
                   userName: userData['nickname'],
                   avatarUrl: userData['profile_image_url'] ?? '',
-                  platform: Users.loginPlatform.name);
+                  platform: Platforms.loginPlatform.name);
 
               //초기화 한 회원가입모델 기준으로 회원등록 진행
               final createResult = await AsyncValue.guard(() async {
@@ -204,7 +208,8 @@ class LoginVM extends AsyncNotifier<MemberModel> {
               if (createResult.hasError) {
                 serverMessage(context, state.error.toString());
               } else {
-                final String password = '${Users.loginPlatform.name}$userEmail';
+                final String password =
+                    '${Platforms.loginPlatform.name}$userEmail';
                 LoginModel loginData =
                     LoginModel(userId: userEmail, password: password);
                 await memberLogin(context, loginData);
@@ -216,7 +221,7 @@ class LoginVM extends AsyncNotifier<MemberModel> {
           }
           //사용자 테이블에 회원이 존재하면 로그인 프로세스 진행
           else {
-            final String password = '${Users.loginPlatform.name}$userEmail';
+            final String password = '${Platforms.loginPlatform.name}$userEmail';
             LoginModel loginData =
                 LoginModel(userId: userEmail, password: password);
             await memberLogin(context, loginData);
@@ -235,16 +240,18 @@ class LoginVM extends AsyncNotifier<MemberModel> {
   Future<void> signinWithGoogle(BuildContext context) async {
     try {
       final googleUser = await _googleSignIn.signIn();
-
       //구글 사용자 로그인 정보가 있을경우 로그인/회원등록 프로세스 진행
+
       if (googleUser != null) {
-        Users.loginPlatform = LoginPlatform.google;
+        Platforms.loginPlatform = LoginPlatform.google;
+
         final userEmail = googleUser.email;
+
         final serverUserData = await _memberRepo.getMember(userEmail);
 
         //사용자 테이블에 회원이 존재하지 않으면 회원등록 프로세스 진행
         if (serverUserData.isEmpty) {
-          final String password = '${Users.loginPlatform.name}$userEmail';
+          final String password = '${Platforms.loginPlatform.name}$userEmail';
           print('google password : $password');
           //회원가입 모델 데이터 초기화
           final SignupModel signupModel = SignupModel(
@@ -252,7 +259,7 @@ class LoginVM extends AsyncNotifier<MemberModel> {
               password: password,
               userName: googleUser.displayName ?? '미등록',
               avatarUrl: googleUser.photoUrl ?? '',
-              platform: Users.loginPlatform.name);
+              platform: Platforms.loginPlatform.name);
 
           //초기화 한 회원가입모델 기준으로 회원등록 진행
           final createResult = await AsyncValue.guard(() async {
@@ -264,7 +271,7 @@ class LoginVM extends AsyncNotifier<MemberModel> {
             serverMessage(context, state.error.toString());
             return;
           } else {
-            final String password = '${Users.loginPlatform.name}$userEmail';
+            final String password = '${Platforms.loginPlatform.name}$userEmail';
             LoginModel loginData =
                 LoginModel(userId: userEmail, password: password);
             await memberLogin(context, loginData);
@@ -272,7 +279,7 @@ class LoginVM extends AsyncNotifier<MemberModel> {
         }
         //사용자 테이블에 회원이 존재하면 로그인 프로세스 진행
         else {
-          final String password = '${Users.loginPlatform.name}$userEmail';
+          final String password = '${Platforms.loginPlatform.name}$userEmail';
           LoginModel loginData =
               LoginModel(userId: userEmail, password: password);
           await memberLogin(context, loginData);

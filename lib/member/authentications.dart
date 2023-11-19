@@ -32,7 +32,7 @@ class Authentications {
 
   Future<void> refreshToken(String? token, String userId) async {
     final response = await http.post(
-      Uri.parse("${Consts.mainUrl}/appApi/auth/refreshMember"),
+      Uri.parse("${Keys.forwardURL}/appApi/auth/refreshMember"),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },

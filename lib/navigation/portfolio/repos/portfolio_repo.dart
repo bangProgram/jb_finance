@@ -3,11 +3,12 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:jb_finance/consts.dart';
+import 'package:jb_finance/keys.dart';
 
 class PortfolioRepo {
   Future<Map<String, dynamic>> getPortAmount(String userId) async {
     final response = await http.post(
-      Uri.parse("${Consts.mainUrl}/appApi/portfolio/getPortAmount"),
+      Uri.parse("${Keys.forwardURL}/appApi/portfolio/getPortAmount"),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -25,7 +26,7 @@ class PortfolioRepo {
 
   Future<bool> updatePortfolio(Map<String, dynamic> formData) async {
     final response = await http.post(
-      Uri.parse("${Consts.mainUrl}/appApi/portfolio/updatePortfolio"),
+      Uri.parse("${Keys.forwardURL}/appApi/portfolio/updatePortfolio"),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },

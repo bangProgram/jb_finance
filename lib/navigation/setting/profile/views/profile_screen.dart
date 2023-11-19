@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jb_finance/consts.dart';
+import 'package:jb_finance/keys.dart';
 import 'package:jb_finance/navigation/setting/profile/view_models/profile_vm.dart';
 import 'package:jb_finance/utils.dart';
 
@@ -92,7 +93,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                     ? null
                                     : NetworkImage(data.avatarUrl)
                                 : NetworkImage(
-                                    '${Consts.mainUrl}/appApi/member/downloadAvatar/${data.fileName}'),
+                                    '${Keys.forwardURL}/appApi/member/downloadAvatar/${data.fileName}'),
                             child: Text(data.userId),
                           ),
                         ),

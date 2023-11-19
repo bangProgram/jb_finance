@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:jb_finance/consts.dart';
+import 'package:jb_finance/keys.dart';
 
 class ProfileRepo {
   Future<int> uploadAvatar(File file, String userId) async {
@@ -11,7 +12,7 @@ class ProfileRepo {
 
     final request = http.MultipartRequest(
       'POST',
-      Uri.parse("${Consts.mainUrl}/appApi/member/uploadAvatar"),
+      Uri.parse("${Keys.forwardURL}/appApi/member/uploadAvatar"),
     );
     request.files.add(uploadFile);
     request.fields['userId'] = userId;

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:jb_finance/consts.dart';
+import 'package:jb_finance/keys.dart';
 import 'package:jb_finance/member/signup/models/signup_model.dart';
 
 class SignupRepo {
@@ -10,7 +11,7 @@ class SignupRepo {
       Map<String, dynamic> signupData) async {
     print('signupData : $signupData');
     final response = await http.post(
-      Uri.parse("${Consts.mainUrl}/appApi/member/create"),
+      Uri.parse("${Keys.forwardURL}/appApi/member/create"),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },

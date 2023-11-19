@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jb_finance/consts.dart';
+import 'package:jb_finance/keys.dart';
 import 'package:jb_finance/member/login/models/login_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:jb_finance/member/main/models/member_model.dart';
@@ -9,7 +10,7 @@ import 'package:jb_finance/member/main/models/member_model.dart';
 class LoginRepo {
   Future<Map<String, dynamic>> loginMember(LoginModel loginData) async {
     final response = await http.post(
-      Uri.parse("${Consts.mainUrl}/appApi/auth/loginPorc"),
+      Uri.parse("${Keys.forwardURL}/appApi/auth/loginPorc"),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -27,7 +28,7 @@ class LoginRepo {
 
   Future<MemberModel> logoutMember() async {
     final response = await http.post(
-      Uri.parse("${Consts.mainUrl}/appApi/auth/logoutPorc"),
+      Uri.parse("${Keys.forwardURL}/appApi/auth/logoutPorc"),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },

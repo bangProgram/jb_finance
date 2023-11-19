@@ -1,3 +1,3 @@
 class Consts {
-  static const mainUrl = "http://192.168.168.221:8080";
+  static const mainUrl = "http://192.168.0.101:8080";
 }

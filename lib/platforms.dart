@@ -5,6 +5,8 @@ enum LoginPlatform {
   none, // logout
 }
 
-class Users {
+class Platforms {
   static LoginPlatform loginPlatform = LoginPlatform.none;
+
+  static String accessDevice = '';
 }

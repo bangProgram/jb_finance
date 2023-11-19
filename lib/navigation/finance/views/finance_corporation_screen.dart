@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jb_finance/navigation/finance/views/finance_corp_detail_screen.dart';
 import 'package:jb_finance/navigation/finance/widgets/select_account_widget.dart';
 import 'package:jb_finance/navigation/finance/widgets/select_date_widget.dart';
+import 'package:jb_finance/utils.dart';
 
 class FinanceCorpScreen extends StatefulWidget {
   const FinanceCorpScreen({super.key});
@@ -121,6 +122,7 @@ class _FinanceCorpScreenState extends State<FinanceCorpScreen>
 
     return Scaffold(
         body: NestedScrollView(
+      scrollBehavior: MyCustomScrollBehavior(),
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return [
           SliverToBoxAdapter(
