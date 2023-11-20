@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:jb_finance/member/authentications.dart';
 import 'package:jb_finance/navigation/finance/widgets/candlechart_widget.dart';
 import 'package:jb_finance/navigation/finance/widgets/naver_finance_crolling_app.dart';
 import 'package:http/http.dart' as http;
@@ -20,41 +19,19 @@ class CorpDetailInfoPage extends ConsumerStatefulWidget {
 
 class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
   Future<void> getCorpStockPrice() async {
-    final auth = ref.read(authProvider);
-    const proxyUrl = Keys.forwardURL;
-    const targetUrl =
-        "https://openapi.koreainvestment.com:9443/uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice";
-    final url = Uri.parse(targetUrl);
-
-    final params = {
-      "fid_cond_mrkt_div_code": "J",
-      "fid_input_date_1": "20230101",
-      "fid_input_date_2": "20230501",
-      "fid_input_iscd": "005930",
-      "fid_org_adj_prc": "0",
-      "fid_period_div_code": "D"
-    };
-
-    var uri = Uri.https(url.authority, url.path, params);
-
     final response = await http.get(
-      uri,
+      Uri.parse("${Keys.forwardURL}/appApi/report/getCorpStockPrice"),
       headers: {
-        'User-agent': 'Mozilla/5.0',
-        "content-type": "application/json; charset=utf-8",
-        "authorization": auth.getKisDevToken,
-        "appkey": Keys.kisDeveloperAppKey,
-        "appsecret": Keys.kisDeveloperAppSecretKey,
-        "tr_id": "FHKST03010100"
+        'Content-Type': 'application/json; charset=UTF-8',
       },
     );
-
-    print('request : ${response.request}');
+    print('reponse : ${response.request}');
     if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-      print('정보 가져오기 성공 ${data['output2']}');
+      Map<String, dynamic> memberData = json.decode(response.body);
+      print('memberData : $memberData');
     } else {
-      print('정보 가져오기 실패');
+      Map<String, dynamic> resultData = {};
+      print('정보 전달 실패');
     }
   }
 
