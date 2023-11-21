@@ -100,10 +100,11 @@ class _FinanceCorpScreenState extends State<FinanceCorpScreen>
     setState(() {});
   }
 
-  void _goCorpDetailScreen(String corpNm) {
+  void _goCorpDetailScreen(String corpNm, String corpCd) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => FinanceCorpDetailScreen(corpNm: corpNm),
+        builder: (context) =>
+            FinanceCorpDetailScreen(corpNm: corpNm, corpCd: corpCd),
       ),
     );
   }
@@ -485,9 +486,10 @@ class _FinanceCorpScreenState extends State<FinanceCorpScreen>
                     },
                     itemBuilder: (context, index) {
                       final corpNm = '삼성전자_$index';
+                      const corpCd = '005930';
 
                       return GestureDetector(
-                        onTap: () => _goCorpDetailScreen(corpNm),
+                        onTap: () => _goCorpDetailScreen(corpNm, corpCd),
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                             vertical: 20,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jb_finance/navigation/assetmanage/views/assetmanage_screen.dart';
 import 'package:jb_finance/navigation/finance/views/finance_screen.dart';
 import 'package:jb_finance/navigation/planbook/views/planbook_screen.dart';
 import 'package:jb_finance/navigation/portfolio/views/portfolio_screen.dart';
@@ -44,7 +45,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
           ),
           Offstage(
             offstage: taps.indexOf(widget.tap) != 2,
-            child: const PortfolioScreen(),
+            child: const AssetmanageScreen(),
           ),
           Offstage(
             offstage: taps.indexOf(widget.tap) != 3,
@@ -65,7 +66,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
           currentIndex: taps.indexOf(widget.tap),
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.house),
+              icon: Icon(FontAwesomeIcons.book),
               label: '종목',
             ),
             BottomNavigationBarItem(

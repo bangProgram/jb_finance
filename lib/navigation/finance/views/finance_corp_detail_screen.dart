@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jb_finance/navigation/finance/views/finance_corp_detail_pages/corp_detail_info_page.dart';
 import 'package:jb_finance/navigation/finance/views/finance_corp_detail_pages/corp_detail_news_page.dart';
+import 'package:jb_finance/navigation/finance/views/finance_corp_detail_pages/corp_detail_report_page.dart';
 
 class FinanceCorpDetailScreen extends StatefulWidget {
   final String corpNm;
+  final String corpCd;
+
   const FinanceCorpDetailScreen({
     super.key,
     required this.corpNm,
+    required this.corpCd,
   });
 
   @override
@@ -115,11 +119,9 @@ class _FinanceCorpDetailScreenState extends State<FinanceCorpDetailScreen> {
               child: TabBarView(
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  const CorpDetailInfoPage(),
-                  Container(
-                    color: Colors.blue,
-                  ),
-                  const CorpDetailNewsPage(),
+                  CorpDetailInfoPage(corpCd: widget.corpCd),
+                  CorpDetailReportPage(corpCd: widget.corpCd),
+                  CorpDetailNewsPage(corpCd: widget.corpCd),
                 ],
               ),
             ),

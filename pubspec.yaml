@@ -78,6 +78,7 @@ flutter:
     - assets/images/
     - assets/images/buttons/
     - assets/images/backgrounds/
+    - assets/images/icons/
     - assets/videos/
 
   # An image asset can refer to one or more resolution-specific "variants", see
