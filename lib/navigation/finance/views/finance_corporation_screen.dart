@@ -158,10 +158,32 @@ class _FinanceCorpScreenState extends State<FinanceCorpScreen>
                               child: Row(
                                 children: [
                                   GestureDetector(
+                                    onTap: () => _selectDate(2, "년"),
+                                    child: SelectDateWidget(
+                                        type: '년',
+                                        thisCnt: 2,
+                                        diffCnt: diffCnt,
+                                        selType: selType),
+                                  ),
+                                  const SizedBox(
+                                    width: 7,
+                                  ),
+                                  GestureDetector(
                                     onTap: () => _selectDate(3, "년"),
                                     child: SelectDateWidget(
                                         type: '년',
                                         thisCnt: 3,
+                                        diffCnt: diffCnt,
+                                        selType: selType),
+                                  ),
+                                  const SizedBox(
+                                    width: 7,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () => _selectDate(4, "년"),
+                                    child: SelectDateWidget(
+                                        type: '년',
+                                        thisCnt: 4,
                                         diffCnt: diffCnt,
                                         selType: selType),
                                   ),
@@ -180,32 +202,10 @@ class _FinanceCorpScreenState extends State<FinanceCorpScreen>
                                     width: 7,
                                   ),
                                   GestureDetector(
-                                    onTap: () => _selectDate(7, "년"),
+                                    onTap: () => _selectDate(6, "년"),
                                     child: SelectDateWidget(
                                         type: '년',
-                                        thisCnt: 7,
-                                        diffCnt: diffCnt,
-                                        selType: selType),
-                                  ),
-                                  const SizedBox(
-                                    width: 7,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => _selectDate(9, "년"),
-                                    child: SelectDateWidget(
-                                        type: '년',
-                                        thisCnt: 9,
-                                        diffCnt: diffCnt,
-                                        selType: selType),
-                                  ),
-                                  const SizedBox(
-                                    width: 7,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => _selectDate(10, "년"),
-                                    child: SelectDateWidget(
-                                        type: '년',
-                                        thisCnt: 10,
+                                        thisCnt: 6,
                                         diffCnt: diffCnt,
                                         selType: selType),
                                   ),
@@ -248,6 +248,17 @@ class _FinanceCorpScreenState extends State<FinanceCorpScreen>
                                     width: 7,
                                   ),
                                   GestureDetector(
+                                    onTap: () => _selectDate(4, "반기"),
+                                    child: SelectDateWidget(
+                                        type: '반기',
+                                        thisCnt: 4,
+                                        diffCnt: diffCnt,
+                                        selType: selType),
+                                  ),
+                                  const SizedBox(
+                                    width: 7,
+                                  ),
+                                  GestureDetector(
                                     onTap: () => _selectDate(5, "반기"),
                                     child: SelectDateWidget(
                                         type: '반기',
@@ -259,32 +270,21 @@ class _FinanceCorpScreenState extends State<FinanceCorpScreen>
                                     width: 7,
                                   ),
                                   GestureDetector(
+                                    onTap: () => _selectDate(6, "반기"),
+                                    child: SelectDateWidget(
+                                        type: '반기',
+                                        thisCnt: 6,
+                                        diffCnt: diffCnt,
+                                        selType: selType),
+                                  ),
+                                  const SizedBox(
+                                    width: 7,
+                                  ),
+                                  GestureDetector(
                                     onTap: () => _selectDate(7, "반기"),
                                     child: SelectDateWidget(
                                         type: '반기',
                                         thisCnt: 7,
-                                        diffCnt: diffCnt,
-                                        selType: selType),
-                                  ),
-                                  const SizedBox(
-                                    width: 7,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => _selectDate(9, "반기"),
-                                    child: SelectDateWidget(
-                                        type: '반기',
-                                        thisCnt: 9,
-                                        diffCnt: diffCnt,
-                                        selType: selType),
-                                  ),
-                                  const SizedBox(
-                                    width: 7,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => _selectDate(10, "반기"),
-                                    child: SelectDateWidget(
-                                        type: '반기',
-                                        thisCnt: 10,
                                         diffCnt: diffCnt,
                                         selType: selType),
                                   ),
@@ -365,26 +365,29 @@ class _FinanceCorpScreenState extends State<FinanceCorpScreen>
                             ),
                           ),
                           Container(
-                            width: 100,
+                            width: 60,
                             height: 38,
+                            alignment: Alignment.center,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 10,
+                              vertical: 5,
                             ),
                             decoration: BoxDecoration(
+                              color: Colors.white,
                               border: Border.all(
                                 color: const Color(0xFFEFEFEF),
                                 width: 1,
                               ),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: TextField(
+                            child: const TextField(
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
-                                hintText: '직접입력(%)',
-                                hintStyle: TextStyle(
-                                  color: Colors.black.withOpacity(0.3),
-                                ),
                                 border: InputBorder.none,
+                              ),
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
@@ -423,16 +426,20 @@ class _FinanceCorpScreenState extends State<FinanceCorpScreen>
                                 shape: MaterialStateProperty.all<
                                     RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(4),
+                                    borderRadius: BorderRadius.circular(6),
                                     side: const BorderSide(
-                                      color: Color(0xffDCDEE0),
+                                      color: Color(0xffE9E9EC),
                                     ),
                                   ),
                                 ),
                               ),
                               child: const Text(
                                 '조회하기',
-                                style: TextStyle(color: Colors.black),
+                                style: TextStyle(
+                                  color: Color(0xff444447),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ),
@@ -452,6 +459,9 @@ class _FinanceCorpScreenState extends State<FinanceCorpScreen>
                             ),
                           ),
                         ],
+                      ),
+                      const SizedBox(
+                        height: 5,
                       ),
                     ],
                   ),

@@ -39,120 +39,118 @@ class _AssetmanageListPageState extends State<AssetmanageListPage> {
                   ),
                   Container(
                     child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Spacer(),
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '평가손익',
-                                    style: TextStyle(
-                                      color: Color(0xffC4C4C4),
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                        Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '평가손익',
+                                  style: TextStyle(
+                                    color: Color(0xffC4C4C4),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
                                   ),
-                                  SizedBox(
-                                    height: 10,
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  '손익률',
+                                  style: TextStyle(
+                                    color: Color(0xffC4C4C4),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
                                   ),
-                                  Text(
-                                    '손익률',
-                                    style: TextStyle(
-                                      color: Color(0xffC4C4C4),
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '12,000',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
                                   ),
-                                ],
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '12,000',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  '35.12%',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
                                   ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    '35.12%',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '보유주수',
-                                    style: TextStyle(
-                                      color: Color(0xffC4C4C4),
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                        SizedBox(
+                          width: 35,
+                        ),
+                        Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '보유주수',
+                                  style: TextStyle(
+                                    color: Color(0xffC4C4C4),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
                                   ),
-                                  SizedBox(
-                                    height: 10,
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  '평균단가',
+                                  style: TextStyle(
+                                    color: Color(0xffC4C4C4),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
                                   ),
-                                  Text(
-                                    '평균단가',
-                                    style: TextStyle(
-                                      color: Color(0xffC4C4C4),
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '1,000주',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
                                   ),
-                                ],
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '1,000주',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  '12,403원',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
                                   ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    '12,403원',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                ),
+                              ],
+                            ),
+                          ],
                         )
                       ],
                     ),
