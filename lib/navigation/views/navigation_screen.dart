@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:jb_finance/navigation/assetmanage/views/assetmanage_screen.dart';
 import 'package:jb_finance/navigation/finance/views/finance_screen.dart';
 import 'package:jb_finance/navigation/planbook/views/planbook_screen.dart';
-import 'package:jb_finance/navigation/portfolio/views/portfolio_screen.dart';
 import 'package:jb_finance/navigation/setting/views/setting_screen.dart';
 
 class NavigationScreen extends ConsumerStatefulWidget {
@@ -54,8 +53,9 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
         ],
       ),
       bottomNavigationBar: BottomAppBar(
+        surfaceTintColor: Colors.white,
         child: BottomNavigationBar(
-          elevation: 1,
+          elevation: 0,
           iconSize: 20,
           type: BottomNavigationBarType.fixed,
           unselectedItemColor: Colors.grey,
@@ -66,19 +66,19 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
           currentIndex: taps.indexOf(widget.tap),
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.book),
+              icon: Icon(FontAwesomeIcons.chartLine),
               label: '종목',
             ),
             BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.book),
+              icon: Icon(FontAwesomeIcons.flag),
               label: '목표관리',
             ),
             BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.solidUser),
+              icon: Icon(FontAwesomeIcons.wonSign),
               label: '자산관리',
             ),
             BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.gear),
+              icon: Icon(FontAwesomeIcons.user),
               label: '설정',
             ),
           ],

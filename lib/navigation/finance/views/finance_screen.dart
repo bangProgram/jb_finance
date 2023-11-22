@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jb_finance/navigation/finance/views/finance_corporation_screen.dart';
+import 'package:jb_finance/navigation/finance/views/finance_interest_screen.dart';
 import 'package:jb_finance/utils.dart';
 
 class FinanceScreen extends StatefulWidget {
@@ -54,26 +55,11 @@ class _FinanceScreenState extends State<FinanceScreen> {
               ],
             ),
           ),
-          body: TabBarView(
-            physics: const NeverScrollableScrollPhysics(),
+          body: const TabBarView(
+            physics: NeverScrollableScrollPhysics(),
             children: [
-              SizedBox(
-                width: screenW,
-                child: const FinanceCorpScreen(),
-              ),
-              Container(
-                color: Colors.amber,
-                child: ListView.builder(
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      height: 80,
-                      color: Colors.amber.withOpacity(0.5),
-                      child: Text('$index 번째 컨테이너'),
-                    );
-                  },
-                ),
-              ),
+              FinanceCorpScreen(),
+              FinanceInterestScreen(),
             ],
           ),
         ),

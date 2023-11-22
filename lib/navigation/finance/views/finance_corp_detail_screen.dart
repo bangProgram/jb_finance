@@ -71,12 +71,25 @@ class _FinanceCorpDetailScreenState extends State<FinanceCorpDetailScreen> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  trailing: const Text(
-                    '73,210원',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 18,
-                    ),
+                  trailing: const Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '73,210원',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 18,
+                        ),
+                      ),
+                      Text(
+                        '*전일종가',
+                        style: TextStyle(
+                          color: Color(0xFFA8A8A8),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )
+                    ],
                   ),
                 ),
               ],

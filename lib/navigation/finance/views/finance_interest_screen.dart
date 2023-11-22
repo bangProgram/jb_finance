@@ -6,14 +6,14 @@ import 'package:jb_finance/navigation/finance/widgets/select_account_widget.dart
 import 'package:jb_finance/navigation/finance/widgets/select_date_widget.dart';
 import 'package:jb_finance/utils.dart';
 
-class FinanceCorpScreen extends StatefulWidget {
-  const FinanceCorpScreen({super.key});
+class FinanceInterestScreen extends StatefulWidget {
+  const FinanceInterestScreen({super.key});
 
   @override
-  State<FinanceCorpScreen> createState() => _FinanceCorpScreenState();
+  State<FinanceInterestScreen> createState() => _FinanceInterestScreenState();
 }
 
-class _FinanceCorpScreenState extends State<FinanceCorpScreen>
+class _FinanceInterestScreenState extends State<FinanceInterestScreen>
     with SingleTickerProviderStateMixin {
   final List<GlobalKey> _containerKeys = List.generate(10, (_) => GlobalKey());
 

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:jb_finance/navigation/assetmanage/view_models/assetmanage_vm.dart';
-import 'package:jb_finance/navigation/assetmanage/widgets/assetmanage_tabbar_header.dart';
+import 'package:jb_finance/navigation/assetmanage/views/pages/aseetmanage_list_page.dart';
 import 'package:jb_finance/utils.dart';
 
 class AssetmanageScreen extends ConsumerStatefulWidget {
@@ -18,18 +18,25 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
 
   int curPage = 0;
 
-  List<String> test = [
-    '0101',
-    '0102',
-    '0101',
-    '0102',
-    '0101',
-    '0101',
-    '0102',
-    '0102',
+  DateTime now = DateTime.now();
+  late DateTime stDate = DateTime(now.year, now.month, 1);
+  late DateTime edDate = now;
+
+  late String stDateStr = '${stDate.year}. ${stDate.month}. ${stDate.day}';
+  late String edDateStr = '${edDate.year}. ${edDate.month}. ${edDate.day}';
+
+  final test = [
+    {'gubn': '0101', 'date': '2023-01-01'},
+    {'gubn': '0101', 'date': '2023-01-01'},
+    {'gubn': '0102', 'date': '2023-01-01'},
+    {'gubn': '0102', 'date': '2023-01-02'},
+    {'gubn': '0102', 'date': '2023-01-02'},
+    {'gubn': '0101', 'date': '2023-01-03'},
+    {'gubn': '0102', 'date': '2023-01-03'},
+    {'gubn': '0101', 'date': '2023-01-03'},
   ];
 
-  void changePage(int page) {
+  void _changePage(int page) {
     _pageController.animateToPage(
       page,
       duration: const Duration(
@@ -37,6 +44,27 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
       ),
       curve: Curves.linear,
     );
+  }
+
+  Future<void> _selectDate(BuildContext context, String flag) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: flag == 'st' ? stDate : edDate,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+    );
+
+    if (picked != null) {
+      setState(() {
+        if (flag == 'st') {
+          stDate = picked;
+          stDateStr = '${picked.year}. ${picked.month}. ${picked.day}';
+        } else {
+          edDate = picked;
+          edDateStr = '${picked.year}. ${picked.month}. ${picked.day}';
+        }
+      });
+    }
   }
 
   @override
@@ -59,9 +87,15 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
               headerSliverBuilder: (context, innerBoxIsScrolled) {
                 return [
                   const SliverAppBar(
-                    title: Text('자산관리'),
+                    title: Text(
+                      '자산관리',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                     centerTitle: true,
-                    elevation: 0,
+                    elevation: 1,
                     foregroundColor: Color(0xFFA8A8A8),
                     backgroundColor: Colors.transparent,
                   ),
@@ -72,148 +106,200 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                             child: Text('error $error'),
                           ),
                           data: (data) {
-                            final modelData = data;
-                            final totalReturn =
-                                (data.evaluationAmount / data.investAmount) *
-                                        100 -
-                                    100;
-                            return Container(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 5,
-                                horizontal: screenW * 0.01,
-                              ),
-                              child: Column(
-                                children: [
-                                  const SizedBox(
-                                    height: 15,
+                            int totalAmount = data.depositAmount +
+                                data.investAmount +
+                                data.reserveAmount;
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Divider(
+                                  height: 0,
+                                  thickness: 1,
+                                  color: Color(0xFFF4F4F4),
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 20,
+                                    horizontal: 12,
                                   ),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: 20,
-                                      horizontal: screenW * 0.03,
+                                  child: Text(
+                                    '나의 자산',
+                                    style: TextStyle(
+                                      color: Color(0xFF333333),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
                                     ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: Colors.grey.shade200,
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            SizedBox(
-                                              width: screenW * 0.90,
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Container(
+                                              height: 50,
+                                              clipBehavior: Clip.hardEdge,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
                                               child: Flex(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
                                                 direction: Axis.horizontal,
                                                 children: [
-                                                  const Flexible(
-                                                    flex: 1,
-                                                    fit: FlexFit.tight,
-                                                    child: Text('평가수익률',
-                                                        textAlign:
-                                                            TextAlign.center),
+                                                  Flexible(
+                                                    flex: ((data.investAmount /
+                                                                totalAmount) *
+                                                            100)
+                                                        .round(),
+                                                    child: Container(
+                                                      color: Colors.red,
+                                                    ),
                                                   ),
                                                   Flexible(
-                                                    flex: 1,
-                                                    fit: FlexFit.tight,
-                                                    child: Text(
-                                                        '${NumberFormat("#,###.##").format(totalReturn)}%',
-                                                        style: TextStyle(
-                                                          color: totalReturn > 0
-                                                              ? Colors.red
-                                                              : Colors.blue,
-                                                        ),
-                                                        textAlign:
-                                                            TextAlign.center),
-                                                  ),
-                                                  const Flexible(
-                                                    flex: 1,
-                                                    fit: FlexFit.tight,
-                                                    child: Text('총평가손익',
-                                                        textAlign:
-                                                            TextAlign.center),
+                                                    flex: ((data.depositAmount /
+                                                                totalAmount) *
+                                                            100)
+                                                        .round(),
+                                                    child: Container(
+                                                      color: const Color(
+                                                          0xffFFC84D),
+                                                    ),
                                                   ),
                                                   Flexible(
-                                                    flex: 1,
-                                                    fit: FlexFit.tight,
-                                                    child: Text(
-                                                        '${data.evaluationProfit}',
-                                                        style: TextStyle(
-                                                          color: totalReturn > 0
-                                                              ? Colors.red
-                                                              : Colors.blue,
-                                                        ),
-                                                        textAlign:
-                                                            TextAlign.center),
+                                                    flex: ((data.reserveAmount /
+                                                                totalAmount) *
+                                                            100)
+                                                        .round(),
+                                                    child: Container(
+                                                      color: const Color(
+                                                          0xFF2DB400),
+                                                    ),
                                                   ),
                                                 ],
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 15,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            SizedBox(
-                                              width: screenW * 0.90,
-                                              child: Flex(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                direction: Axis.horizontal,
-                                                children: [
-                                                  const Flexible(
-                                                    flex: 1,
-                                                    fit: FlexFit.tight,
-                                                    child: Text('총매입금액',
-                                                        textAlign:
-                                                            TextAlign.center),
-                                                  ),
-                                                  Flexible(
-                                                    flex: 1,
-                                                    fit: FlexFit.tight,
-                                                    child: Text(
-                                                        '${data.investAmount}',
-                                                        maxLines: 3,
-                                                        textAlign:
-                                                            TextAlign.center),
-                                                  ),
-                                                  const Flexible(
-                                                    flex: 1,
-                                                    fit: FlexFit.tight,
-                                                    child: Text('총평가금액',
-                                                        textAlign:
-                                                            TextAlign.center),
-                                                  ),
-                                                  Flexible(
-                                                    flex: 1,
-                                                    fit: FlexFit.tight,
-                                                    child: Text(
-                                                        '${data.evaluationAmount}',
-                                                        textAlign:
-                                                            TextAlign.center),
-                                                  ),
-                                                ],
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 17,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              const Text(
+                                                '투자금',
+                                                style: TextStyle(
+                                                  color: Color(0xFFA8A8A8),
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
                                               ),
+                                              const SizedBox(
+                                                width: 5,
+                                              ),
+                                              Text(
+                                                NumberFormat("#,###")
+                                                    .format(data.investAmount),
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Text(
+                                                '예수금',
+                                                style: TextStyle(
+                                                  color: Color(0xFFA8A8A8),
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 5,
+                                              ),
+                                              Text(
+                                                NumberFormat("#,###")
+                                                    .format(data.depositAmount),
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Text(
+                                                '예비금',
+                                                style: TextStyle(
+                                                  color: Color(0xFFA8A8A8),
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 5,
+                                              ),
+                                              Text(
+                                                NumberFormat("#,###")
+                                                    .format(data.reserveAmount),
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 19,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          const Text(
+                                            '총액',
+                                            style: TextStyle(
+                                              color: Color(0xFFA8A8A8),
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
                                             ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(
+                                            NumberFormat("#,###")
+                                                .format(totalAmount),
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                ],
-                              ),
+                                ),
+                                const Divider(
+                                  height: 50,
+                                  thickness: 8,
+                                  color: Color(0xFFF4F4F4),
+                                ),
+                              ],
                             );
                           },
                         ),
@@ -226,7 +312,7 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                       children: [
                         Expanded(
                           child: GestureDetector(
-                            onTap: () => changePage(0),
+                            onTap: () => _changePage(0),
                             child: Container(
                               alignment: Alignment.center,
                               height: 50,
@@ -254,7 +340,7 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                         ),
                         Expanded(
                           child: GestureDetector(
-                            onTap: () => changePage(1),
+                            onTap: () => _changePage(1),
                             child: Container(
                               alignment: Alignment.center,
                               height: 50,
@@ -292,105 +378,300 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                             data.investAmount) *
                                         100 -
                                     100;
-                                return Container(
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: 5,
-                                    horizontal: screenW * 0.01,
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Container(
+                                return Column(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 20,
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 10,
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    const Text(
+                                                      '총 수익률',
+                                                      style: TextStyle(
+                                                        color:
+                                                            Color(0xFFC4C4C4),
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 11,
+                                                    ),
+                                                    Text(
+                                                      '${NumberFormat("#,###.##").format(totalReturn)}%',
+                                                      style: TextStyle(
+                                                        color: totalReturn > 0
+                                                            ? Colors.red
+                                                            : Colors.blue,
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 10,
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    const Text(
+                                                      '총 수익',
+                                                      style: TextStyle(
+                                                        color:
+                                                            Color(0xFFC4C4C4),
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 11,
+                                                    ),
+                                                    Text(
+                                                      NumberFormat("#,###")
+                                                          .format(data
+                                                              .evaluationProfit),
+                                                      style: TextStyle(
+                                                        color: totalReturn > 0
+                                                            ? Colors.red
+                                                            : Colors.blue,
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const Divider(
+                                      color: Color(0xFFF4F4F4),
+                                      height: 0,
+                                      thickness: 1,
+                                    )
+                                  ],
+                                );
+                              },
+                            )
+                        : Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 10,
+                              horizontal: 20,
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        height: 44,
                                         padding: const EdgeInsets.symmetric(
-                                          vertical: 20,
+                                          horizontal: 17,
                                         ),
-                                        child: Column(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: const Color(0xffDCDEE0),
+                                            width: 1,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(6),
+                                        ),
+                                        child: Row(
                                           children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
-                                              children: [
-                                                Container(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    horizontal: 10,
-                                                  ),
-                                                  child: Row(
-                                                    children: [
-                                                      const Text(
-                                                        '총 수익률',
-                                                        style: TextStyle(
-                                                          color:
-                                                              Color(0xFFC4C4C4),
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 11,
-                                                      ),
-                                                      Text(
-                                                        '${NumberFormat("#,###.##").format(totalReturn)}%',
-                                                        style: TextStyle(
-                                                          color: totalReturn > 0
-                                                              ? Colors.red
-                                                              : Colors.blue,
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                      )
-                                                    ],
+                                            Expanded(
+                                              child: GestureDetector(
+                                                onTap: () =>
+                                                    _selectDate(context, 'st'),
+                                                child: Text(
+                                                  stDateStr,
+                                                  style: const TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.w500,
                                                   ),
                                                 ),
-                                                Container(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    horizontal: 10,
+                                              ),
+                                            ),
+                                            Container(
+                                              alignment: Alignment.center,
+                                              width: 30,
+                                              child: const Text(
+                                                '~',
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: GestureDetector(
+                                                onTap: () =>
+                                                    _selectDate(context, 'ed'),
+                                                child: Text(
+                                                  edDateStr,
+                                                  style: const TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.w500,
                                                   ),
-                                                  child: Row(
-                                                    children: [
-                                                      const Text(
-                                                        '총 수익',
-                                                        style: TextStyle(
-                                                          color:
-                                                              Color(0xFFC4C4C4),
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 11,
-                                                      ),
-                                                      Text(
-                                                        '${data.evaluationProfit}',
-                                                        style: TextStyle(
-                                                          color: totalReturn > 0
-                                                              ? Colors.red
-                                                              : Colors.blue,
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                )
-                                              ],
+                                                ),
+                                              ),
                                             ),
                                           ],
                                         ),
                                       ),
-                                      const SizedBox(
-                                        height: 10,
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const SizedBox(
+                                          height: 8,
+                                        ),
+                                        const Text(
+                                          '상태',
+                                          style: TextStyle(
+                                            color: Color(0xffA8A8A8),
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 8,
+                                        ),
+                                        Container(
+                                          width: 80,
+                                          height: 44,
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: const Color(0xffDCDEE0),
+                                              width: 1,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(6),
+                                          ),
+                                          child: DropdownButton(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8),
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            underline: Container(),
+                                            icon: const Icon(Icons
+                                                .keyboard_arrow_down_rounded),
+                                            value: null,
+                                            items: const [
+                                              DropdownMenuItem(
+                                                value: null,
+                                                child: Text('전체'),
+                                              ),
+                                              DropdownMenuItem(
+                                                value: '0101',
+                                                child: Text('매수'),
+                                              ),
+                                              DropdownMenuItem(
+                                                value: '0102',
+                                                child: Text('매도'),
+                                              ),
+                                            ],
+                                            onChanged: (newValue) {
+                                              setState(() {});
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      width: 18,
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const SizedBox(
+                                            height: 8,
+                                          ),
+                                          const Text(
+                                            '기업명',
+                                            style: TextStyle(
+                                              color: Color(0xffA8A8A8),
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 8,
+                                          ),
+                                          Container(
+                                            height: 44,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 15,
+                                              vertical: 5,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: const Color(0xffDCDEE0),
+                                                width: 1,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(6),
+                                            ),
+                                            child: const Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Expanded(
+                                                  child: TextField(
+                                                    decoration: InputDecoration(
+                                                      border:
+                                                          UnderlineInputBorder(
+                                                        borderSide:
+                                                            BorderSide.none,
+                                                      ),
+                                                    ),
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                    ),
+                                                  ),
+                                                ),
+                                                FaIcon(
+                                                  FontAwesomeIcons
+                                                      .magnifyingGlass,
+                                                  size: 15,
+                                                  color: Color(0xff737A83),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            )
-                        : Container(),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
                   )
                 ];
               },
@@ -402,302 +683,116 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                   });
                 },
                 children: [
-                  Column(
-                    children: [
-                      Expanded(
-                        child: ListView.separated(
-                          keyboardDismissBehavior:
-                              ScrollViewKeyboardDismissBehavior.onDrag,
-                          itemCount: 20,
-                          padding: EdgeInsets.symmetric(
-                            vertical: 8,
-                            horizontal: screenW * 0.01,
-                          ),
-                          separatorBuilder: (context, index) => const SizedBox(
-                            height: 10,
-                          ),
-                          itemBuilder: (context, index) {
-                            final portCorpData = index;
-                            return Container();
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                  AssetmanageListPage(screenW: screenW),
                   Container(
-                    padding: EdgeInsets.only(
-                      left: screenW * 0.015,
-                      right: screenW * 0.015,
-                      bottom: 8,
-                    ),
                     child: Column(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {},
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                  ),
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                        width: 1,
-                                      ),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: const Row(
-                                    children: [
-                                      Expanded(
-                                        child: TextField(
-                                          enabled: false,
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                      ),
-                                      FaIcon(
-                                        FontAwesomeIcons.calendar,
-                                        size: 15,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              width: 30,
-                              child: const Text(
-                                'ㅡ',
-                              ),
-                            ),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {},
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                  ),
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                        width: 1,
-                                      ),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: const Row(
-                                    children: [
-                                      Expanded(
-                                        child: TextField(
-                                          enabled: false,
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                      ),
-                                      FaIcon(
-                                        FontAwesomeIcons.calendar,
-                                        size: 15,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                              width: screenW * 0.25,
-                              alignment: Alignment.center,
-                              child: DropdownButton(
-                                isExpanded: true,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                                borderRadius: BorderRadius.circular(15),
-                                value: null,
-                                items: const [
-                                  DropdownMenuItem(
-                                    value: null,
-                                    child: Text('전체'),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: '0101',
-                                    child: Text('매수'),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: '0102',
-                                    child: Text('매도'),
-                                  ),
-                                ],
-                                onChanged: (newValue) {
-                                  setState(() {});
-                                },
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 5,
-                                  vertical: 5,
-                                ),
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        width: 1, color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: const Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        '삼성전자(우)',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ),
-                                    FaIcon(
-                                      FontAwesomeIcons.magnifyingGlass,
-                                      size: 15,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
+                        const Divider(
+                          color: Color(0xffEFEFEF),
+                          thickness: 1,
                         ),
                         Expanded(
-                          child: ListView.separated(
+                          child: ListView.builder(
                             itemCount: test.length,
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(
-                              height: 10,
-                            ),
                             itemBuilder: (context, index) {
                               final data = test[index];
-
-                              return Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: screenW * 0.03,
-                                  vertical: 8,
-                                ),
-                                decoration: BoxDecoration(
-                                  border: Border.all(width: 1),
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              Text(
-                                                data == '0101' ? '매수' : '매도',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 20,
-                                                    color: data == '0101'
-                                                        ? Colors.red
-                                                        : Colors.blue),
-                                              ),
-                                              const Text(
-                                                '종목이름',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 20,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(
-                                            height: 5,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              SizedBox(
-                                                width: screenW * 0.90,
-                                                child: const Flex(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  direction: Axis.horizontal,
-                                                  children: [
-                                                    Flexible(
-                                                      flex: 1,
-                                                      fit: FlexFit.tight,
-                                                      child: Text('거래일자'),
-                                                    ),
-                                                    Flexible(
-                                                      flex: 1,
-                                                      fit: FlexFit.tight,
-                                                      child: Text('23/08/07'),
-                                                    ),
-                                                    Flexible(
-                                                      flex: 1,
-                                                      fit: FlexFit.tight,
-                                                      child: Text('거래금액'),
-                                                    ),
-                                                    Flexible(
-                                                      flex: 1,
-                                                      fit: FlexFit.tight,
-                                                      child: Text('1000000'),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                              return Column(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 20,
+                                      horizontal: 27,
+                                    ),
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          color: Color(0xffEFEFEF),
+                                          width: 1,
+                                        ),
                                       ),
                                     ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                    child: Column(
                                       children: [
-                                        SizedBox(
-                                          width: screenW * 0.90,
-                                          child: const Flex(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            direction: Axis.horizontal,
-                                            children: [
-                                              Flexible(
-                                                flex: 1,
-                                                fit: FlexFit.tight,
-                                                child: Text('거래수량'),
+                                        Row(
+                                          children: [
+                                            CircleAvatar(
+                                              radius: 25,
+                                              backgroundColor:
+                                                  data['gubn'] == '0101'
+                                                      ? const Color(0xffFFDADE)
+                                                      : const Color.fromARGB(
+                                                          255, 213, 227, 255),
+                                              child: Text(
+                                                data['gubn'] == '0101'
+                                                    ? '매수'
+                                                    : '매도',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 18,
+                                                    color:
+                                                        data['gubn'] == '0101'
+                                                            ? Colors.red
+                                                            : Colors.blue),
                                               ),
-                                              Flexible(
-                                                flex: 1,
-                                                fit: FlexFit.tight,
-                                                child: Text('100'),
+                                            ),
+                                            const SizedBox(
+                                              width: 20,
+                                            ),
+                                            const Expanded(
+                                              child: Flex(
+                                                direction: Axis.horizontal,
+                                                children: [
+                                                  Flexible(
+                                                    fit: FlexFit.tight,
+                                                    flex: 2,
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          '삼성전자',
+                                                          style: TextStyle(
+                                                            color: Color(
+                                                                0xff333333),
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '76,000원 · 2주',
+                                                          style: TextStyle(
+                                                            color: Color(
+                                                                0xffC4C4C4),
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Flexible(
+                                                    flex: 1,
+                                                    child: Text(
+                                                      '+152,000원',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                              Flexible(
-                                                flex: 1,
-                                                fit: FlexFit.tight,
-                                                child: Text('거래단가'),
-                                              ),
-                                              Flexible(
-                                                flex: 1,
-                                                fit: FlexFit.tight,
-                                                child: Text('1,000,000'),
-                                              ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               );
                             },
                           ),
