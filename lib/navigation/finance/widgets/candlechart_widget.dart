@@ -23,6 +23,7 @@ class CandlechartWidget extends StatefulWidget {
 
 class CandlechartWidgetState extends State<CandlechartWidget> {
   late TrackballBehavior _trackballBehavior;
+  late TooltipBehavior _tooltipBehavior;
 
   @override
   void initState() {
@@ -31,6 +32,7 @@ class CandlechartWidgetState extends State<CandlechartWidget> {
       enable: true,
       activationMode: ActivationMode.singleTap,
     );
+    _tooltipBehavior = TooltipBehavior(enable: true);
   }
 
   @override
@@ -40,10 +42,15 @@ class CandlechartWidgetState extends State<CandlechartWidget> {
         child: SizedBox(
           height: 300,
           child: SfCartesianChart(
+            loadMoreIndicatorBuilder: (context, direction) {
+              print('direction : $direction');
+              return Container(
+                child: const Text('테스트입니다?'),
+              );
+            },
+            tooltipBehavior: _tooltipBehavior,
             zoomPanBehavior: ZoomPanBehavior(
-              enablePanning: true, // 스크롤 활성화
-              enablePinching: true, // 줌 활성화
-              enableDoubleTapZooming: true, // 더블 탭으로 확대
+              enablePanning: true, // 스크롤 활성화 더블 탭으로 확대
             ),
             trackballBehavior: _trackballBehavior,
             // Candle 차트를 사용하도록 설정합니다.
@@ -61,8 +68,10 @@ class CandlechartWidgetState extends State<CandlechartWidget> {
                 yAxisName: '주가',
               ),
             ],
-            primaryXAxis: DateTimeAxis(
-              dateFormat: DateFormat.d(),
+            primaryXAxis: DateTimeCategoryAxis(
+              isInversed: true,
+              dateFormat: DateFormat.yMd(),
+              majorGridLines: const MajorGridLines(width: 0),
             ),
             primaryYAxis: NumericAxis(
               minimum: widget.minPrice,

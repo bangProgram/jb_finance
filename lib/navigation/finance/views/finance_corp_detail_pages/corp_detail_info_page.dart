@@ -184,9 +184,9 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                             print('chartData : $candleModels');
                             return CandlechartWidget(
                               candleModels: candleModels,
-                              minPrice: 62000,
-                              maxPrice: 67000,
-                              interval: 800,
+                              minPrice: minPrice - interval,
+                              maxPrice: maxPrice + interval,
+                              interval: interval,
                             );
                           } else {
                             return Container(
