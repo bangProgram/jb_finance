@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jb_finance/navigation/finance/models/page_models/candel_model.dart';
 import 'package:jb_finance/navigation/finance/widgets/candlechart_widget.dart';
 import 'package:jb_finance/navigation/finance/widgets/naver_finance_crolling_app.dart';
 import 'package:http/http.dart' as http;
@@ -19,20 +20,20 @@ class CorpDetailInfoPage extends ConsumerStatefulWidget {
 }
 
 class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
-  Future<void> getCorpStockPrice() async {
+  Future<List<dynamic>> getCorpStockPrice() async {
     final response = await http.get(
       Uri.parse("${Keys.forwardURL}/appApi/report/getCorpStockPrice"),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
-    print('reponse : ${response.request}');
+
     if (response.statusCode == 200) {
-      Map<String, dynamic> memberData = json.decode(response.body);
-      print('memberData : $memberData');
+      Map<String, dynamic> cnadleData = json.decode(response.body);
+      print('cnadleData : $cnadleData');
+      return cnadleData['value'];
     } else {
-      Map<String, dynamic> resultData = {};
-      print('정보 전달 실패');
+      throw Exception();
     }
   }
 
@@ -126,12 +127,76 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                 thickness: 8,
                 color: Color(0xFFF4F4F4),
               ),
-              const Row(
+              Row(
                 children: [
                   Expanded(
                     child: SizedBox(
                       height: 228,
-                      child: CandlechartWidget(),
+                      child: FutureBuilder(
+                        future: getCorpStockPrice(),
+                        builder: (context, snapshot) {
+                          final chartDataList = snapshot.data;
+                          print('chartDataList :$chartDataList');
+
+                          if (chartDataList != null) {
+                            List<CandleModel> candleModels = [];
+                            double minPrice = 99999999;
+                            double maxPrice = 0;
+                            double interval = 0;
+
+                            for (var item in chartDataList) {
+                              double stckLwpr = double.parse(item['stck_lwpr']);
+                              double stckHgpr = double.parse(item['stck_hgpr']);
+
+                              candleModels.add(
+                                CandleModel(
+                                  date: DateTime.parse(item['stck_bsop_date']),
+                                  low: stckLwpr,
+                                  high: stckHgpr,
+                                  open: double.parse(item['stck_oprc']),
+                                  close: double.parse(item['stck_clpr']),
+                                ),
+                              );
+
+                              if (minPrice > stckLwpr) {
+                                minPrice = stckLwpr;
+                              }
+                              if (maxPrice < stckHgpr) {
+                                maxPrice = stckHgpr;
+                              }
+                            }
+                            // -stck_bsop_date	주식 영업 일자	String	Y	8	주식 영업 일자
+                            // -stck_clpr	주식 종가	String	Y	10	주식 종가
+                            // -stck_oprc	주식 시가	String	Y	10	주식 시가
+                            // -stck_hgpr	주식 최고가	String	Y	10	주식 최고가
+                            // -stck_lwpr	주식 최저가	String	Y	10	주식 최저가
+                            // -flng_cls_code	락 구분 코드	String	Y	2	00:해당사항없음(락이 발생안한 경우)
+                            // 01:권리락
+                            // 02:배당락
+                            // 03:분배락
+                            // 04:권배락
+                            // 05:중간(분기)배당락
+                            // 06:권리중간배당락
+                            // 07:권리분기배당락
+                            interval = (maxPrice - minPrice) / 5;
+                            print('$minPrice / $maxPrice / $interval');
+
+                            print('chartData : $candleModels');
+                            return CandlechartWidget(
+                              candleModels: candleModels,
+                              minPrice: 62000,
+                              maxPrice: 67000,
+                              interval: 800,
+                            );
+                          } else {
+                            return Container(
+                              child: const Center(
+                                child: Text('주가정보 없음'),
+                              ),
+                            );
+                          }
+                        },
+                      ),
                     ),
                   ),
                 ],

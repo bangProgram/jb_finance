@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:jb_finance/navigation/finance/models/page_models/candel_model.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class CandlechartWidget extends StatefulWidget {
-  const CandlechartWidget({Key? key}) : super(key: key);
+  final List<CandleModel> candleModels;
+  final double minPrice;
+  final double maxPrice;
+  final double interval;
+
+  const CandlechartWidget(
+      {Key? key,
+      required this.candleModels,
+      required this.minPrice,
+      required this.maxPrice,
+      required this.interval})
+      : super(key: key);
 
   @override
   CandlechartWidgetState createState() => CandlechartWidgetState();
@@ -11,26 +23,6 @@ class CandlechartWidget extends StatefulWidget {
 
 class CandlechartWidgetState extends State<CandlechartWidget> {
   late TrackballBehavior _trackballBehavior;
-
-  List<CandleData> getCandleData() {
-    return <CandleData>[
-      CandleData(DateTime(2023, 11, 1), 4500, 10000, 4500, 4500),
-      CandleData(DateTime(2023, 11, 2), 4500, 10000, 4000, 4500),
-      CandleData(DateTime(2023, 11, 3), 4500, 10000, 5500, 6000),
-      CandleData(DateTime(2023, 11, 4), 4500, 10000, 9000, 3000),
-      CandleData(DateTime(2023, 11, 5), 4500, 10000, 3500, 6000),
-      CandleData(DateTime(2023, 11, 6), 4500, 10000, 6000, 5500),
-      CandleData(DateTime(2023, 11, 7), 4500, 10000, 5500, 4500),
-      CandleData(DateTime(2023, 11, 8), 4500, 10000, 4500, 3500),
-      CandleData(DateTime(2023, 11, 9), 4500, 10000, 3500, 7500),
-      CandleData(DateTime(2023, 11, 10), 4500, 10000, 7500, 8005),
-      CandleData(DateTime(2023, 11, 11), 4500, 10000, 6500, 8005),
-      CandleData(DateTime(2023, 11, 12), 4500, 10000, 5500, 7005),
-      CandleData(DateTime(2023, 11, 13), 4500, 10000, 6000, 8000),
-      CandleData(DateTime(2023, 11, 14), 4500, 10000, 6500, 8005),
-      // 추가적인 데이터도 필요하다면 이어서 추가할 수 있습니다.
-    ];
-  }
 
   @override
   void initState() {
@@ -56,13 +48,13 @@ class CandlechartWidgetState extends State<CandlechartWidget> {
             trackballBehavior: _trackballBehavior,
             // Candle 차트를 사용하도록 설정합니다.
             series: <ChartSeries>[
-              CandleSeries<CandleData, DateTime>(
-                dataSource: getCandleData(),
-                xValueMapper: (CandleData data, _) => data.date,
-                lowValueMapper: (CandleData data, _) => data.low,
-                highValueMapper: (CandleData data, _) => data.high,
-                openValueMapper: (CandleData data, _) => data.open,
-                closeValueMapper: (CandleData data, _) => data.close,
+              CandleSeries<CandleModel, DateTime>(
+                dataSource: widget.candleModels,
+                xValueMapper: (CandleModel data, _) => data.date,
+                lowValueMapper: (CandleModel data, _) => data.low,
+                highValueMapper: (CandleModel data, _) => data.high,
+                openValueMapper: (CandleModel data, _) => data.open,
+                closeValueMapper: (CandleModel data, _) => data.close,
                 bullColor: Colors.red,
                 bearColor: Colors.blue,
                 xAxisName: '일자',
@@ -70,15 +62,12 @@ class CandlechartWidgetState extends State<CandlechartWidget> {
               ),
             ],
             primaryXAxis: DateTimeAxis(
-              dateFormat: DateFormat.yMd(),
-              majorGridLines: const MajorGridLines(
-                width: 0,
-              ),
+              dateFormat: DateFormat.d(),
             ),
             primaryYAxis: NumericAxis(
-              minimum: 1000,
-              maximum: 12000,
-              interval: 2 * 1000,
+              minimum: widget.minPrice,
+              maximum: widget.maxPrice,
+              interval: widget.interval,
               numberFormat: NumberFormat(),
             ),
           ),
@@ -86,14 +75,4 @@ class CandlechartWidgetState extends State<CandlechartWidget> {
       ),
     );
   }
-}
-
-class CandleData {
-  CandleData(this.date, this.low, this.high, this.open, this.close);
-
-  final DateTime date;
-  final double open;
-  final double close;
-  final double high;
-  final double low;
 }
