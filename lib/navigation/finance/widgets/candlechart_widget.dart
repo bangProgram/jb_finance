@@ -23,7 +23,21 @@ class CandlechartWidget extends StatefulWidget {
 
 class CandlechartWidgetState extends State<CandlechartWidget> {
   late TrackballBehavior _trackballBehavior;
-  late TooltipBehavior _tooltipBehavior;
+  late ChartSeriesController _seriesController;
+  late ZoomPanBehavior _zoomPanBehavior;
+
+  double _befDx = 0;
+  int lcnt = 0;
+  int rcnt = 0;
+  int stindex = 0;
+  int edindex = 29;
+
+  late List<CandleModel> initCandelModels =
+      widget.candleModels.take(30).toList();
+  late List<CandleModel> totalcandleModels = widget.candleModels;
+  late double minPrice = widget.minPrice;
+  late double maxPrice = widget.maxPrice;
+  late double interval = widget.interval;
 
   @override
   void initState() {
@@ -31,8 +45,17 @@ class CandlechartWidgetState extends State<CandlechartWidget> {
     _trackballBehavior = TrackballBehavior(
       enable: true,
       activationMode: ActivationMode.singleTap,
+      hideDelay: 2000,
     );
-    _tooltipBehavior = TooltipBehavior(enable: true);
+    _zoomPanBehavior = ZoomPanBehavior(
+      enablePanning: true,
+    );
+  }
+
+  @override
+  void dispose() {
+    _seriesController.seriesRenderer.dispose();
+    super.dispose();
   }
 
   @override
@@ -42,26 +65,74 @@ class CandlechartWidgetState extends State<CandlechartWidget> {
         child: SizedBox(
           height: 300,
           child: SfCartesianChart(
-            loadMoreIndicatorBuilder: (context, direction) {
-              print('direction : $direction');
-              return Container(
-                child: const Text('테스트입니다?'),
-              );
-            },
-            tooltipBehavior: _tooltipBehavior,
-            zoomPanBehavior: ZoomPanBehavior(
-              enablePanning: true, // 스크롤 활성화 더블 탭으로 확대
-            ),
+            zoomPanBehavior: _zoomPanBehavior,
             trackballBehavior: _trackballBehavior,
             // Candle 차트를 사용하도록 설정합니다.
+
+            onChartTouchInteractionMove: (tapArgs) {
+              double curDx = tapArgs.position.dx;
+
+              print('tapArgs. : ${tapArgs.position.dx}');
+
+              if (_befDx > curDx) {
+                lcnt++;
+                rcnt = 0;
+              } else {
+                rcnt++;
+                lcnt = 0;
+              }
+
+              if (lcnt == 5) {
+                lcnt = 0;
+                print('최근데이터1 update : ${initCandelModels.length}');
+
+                if (stindex - 1 >= 0) {
+                  stindex--;
+                  edindex--;
+
+                  print('$stindex - $edindex = ${edindex - stindex}');
+                  List<CandleModel> extracted =
+                      totalcandleModels.sublist(stindex, edindex);
+                  initCandelModels = extracted;
+
+                  setState(() {});
+                } else {
+                  return;
+                }
+              } else if (rcnt == 5) {
+                rcnt = 0;
+                print('과거데이터1 update ${initCandelModels.length}');
+
+                if (edindex + 1 < totalcandleModels.length) {
+                  stindex++;
+                  edindex++;
+                  print('$stindex - $edindex = ${edindex - stindex}');
+                  List<CandleModel> extracted =
+                      totalcandleModels.sublist(stindex, edindex);
+                  initCandelModels = extracted;
+                  setState(() {});
+                } else {
+                  return;
+                }
+              }
+
+              //left : dx 내려감
+              //right : dx 올라감
+              // print('$_befDx ?? ${tapArgs.position.dx}');
+              _befDx = tapArgs.position.dx;
+            },
             series: <ChartSeries>[
               CandleSeries<CandleModel, DateTime>(
-                dataSource: widget.candleModels,
+                onRendererCreated: (controller) {
+                  _seriesController = controller;
+                },
+                dataSource: initCandelModels,
                 xValueMapper: (CandleModel data, _) => data.date,
                 lowValueMapper: (CandleModel data, _) => data.low,
                 highValueMapper: (CandleModel data, _) => data.high,
                 openValueMapper: (CandleModel data, _) => data.open,
                 closeValueMapper: (CandleModel data, _) => data.close,
+                enableSolidCandles: true,
                 bullColor: Colors.red,
                 bearColor: Colors.blue,
                 xAxisName: '일자',
@@ -71,13 +142,14 @@ class CandlechartWidgetState extends State<CandlechartWidget> {
             primaryXAxis: DateTimeCategoryAxis(
               isInversed: true,
               dateFormat: DateFormat.yMd(),
-              majorGridLines: const MajorGridLines(width: 0),
+              majorGridLines: const MajorGridLines(width: 1),
             ),
             primaryYAxis: NumericAxis(
               minimum: widget.minPrice,
               maximum: widget.maxPrice,
               interval: widget.interval,
               numberFormat: NumberFormat(),
+              opposedPosition: true,
             ),
           ),
         ),
