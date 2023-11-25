@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jb_finance/commons/repos/util_repo.dart';
 import 'package:jb_finance/navigation/finance/views/finance_corp_detail_screen.dart';
+import 'package:jb_finance/navigation/finance/widgets/customPicker.dart';
 import 'package:jb_finance/navigation/finance/widgets/select_account_widget.dart';
 import 'package:jb_finance/navigation/finance/widgets/select_date_widget.dart';
 import 'package:jb_finance/utils.dart';
 
-class FinanceInterestScreen extends StatefulWidget {
+class FinanceInterestScreen extends ConsumerStatefulWidget {
   const FinanceInterestScreen({super.key});
 
   @override
-  State<FinanceInterestScreen> createState() => _FinanceInterestScreenState();
+  ConsumerState<FinanceInterestScreen> createState() =>
+      _FinanceInterestScreenState();
 }
 
-class _FinanceInterestScreenState extends State<FinanceInterestScreen>
+class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
     with SingleTickerProviderStateMixin {
   final List<GlobalKey> _containerKeys = List.generate(10, (_) => GlobalKey());
-
   final ScrollController _scrollController = ScrollController();
   late final AnimationController _animationController = AnimationController(
     vsync: this,
@@ -32,8 +35,16 @@ class _FinanceInterestScreenState extends State<FinanceInterestScreen>
   late final Animation<double> _sizeAnimation =
       Tween(begin: 1.0, end: 0.0).animate(_animationController);
 
-  int diffCnt = 0;
-  String selType = "";
+  //세팅 데이터 db기준 년도, 반기
+  List<String> yearList = [];
+  List<int> halfCntList = [];
+
+  Map<String, dynamic> periodData = {
+    'stYear': '',
+    'stHalf': null,
+    'edYear': '',
+    'edHalf': null
+  };
 
   bool isToggle = false;
   bool isMove = false;
@@ -44,18 +55,7 @@ class _FinanceInterestScreenState extends State<FinanceInterestScreen>
   void initState() {
     super.initState();
     _scrollController.addListener(_filterHide);
-  }
-
-  void _selectDate(int diff, String type) async {
-    setState(() {
-      if (diffCnt == diff && selType == type) {
-        diffCnt = 0;
-        selType = "";
-      } else {
-        diffCnt = diff;
-        selType = type;
-      }
-    });
+    getYearList();
   }
 
   void _selectAccount(String account) {
@@ -109,9 +109,45 @@ class _FinanceInterestScreenState extends State<FinanceInterestScreen>
     );
   }
 
+  void getYearList() async {
+    final response = await ref.read(utilRepo).getYearList();
+    final List<dynamic> data = response['yearList'];
+
+    data.map((e) {
+      String bsnsYear = e['BSNS_YEAR'];
+      int reprtCnt = e['REPRT_CNT'];
+
+      yearList.add(bsnsYear);
+      halfCntList.add(reprtCnt);
+      print('test1');
+      if (periodData['stYear'] == '' && periodData['edYear'] == '') {
+        print('test2');
+        if (reprtCnt == 3) {
+          print('test3');
+          periodData = {
+            'stYear': '${int.parse(bsnsYear) - 1}',
+            'stHalf': null,
+            'edYear': bsnsYear,
+            'edHalf': null,
+          };
+          setState(() {});
+        }
+      }
+    }).toList();
+  }
+
+  void setPeriodData(String type, String period, String? value) {
+    print('$type, $period, $value');
+    if (period == 'st') {
+      periodData['$period$type'] = value;
+    } else {
+      periodData['$period$type'] = value;
+    }
+  }
+
   @override
   void dispose() {
-    print('finance interest Screen dispose !!!!');
+    print('finance Corporation Screen dispose !!!!');
     _scrollController.dispose();
     _animationController.dispose();
     super.dispose();
@@ -145,7 +181,7 @@ class _FinanceInterestScreenState extends State<FinanceInterestScreen>
                             width: 50,
                             alignment: Alignment.centerLeft,
                             child: const Text(
-                              '년도',
+                              '기간',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
@@ -157,136 +193,34 @@ class _FinanceInterestScreenState extends State<FinanceInterestScreen>
                               scrollDirection: Axis.horizontal,
                               child: Row(
                                 children: [
-                                  GestureDetector(
-                                    onTap: () => _selectDate(2, "년"),
-                                    child: SelectDateWidget(
-                                        type: '년',
-                                        thisCnt: 2,
-                                        diffCnt: diffCnt,
-                                        selType: selType),
+                                  Row(
+                                    children: [
+                                      CustomPicker(
+                                        period: 'st',
+                                        curData: periodData,
+                                        yearList: yearList,
+                                        halfCntList: halfCntList,
+                                        setPeriodData: setPeriodData,
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(
-                                    width: 7,
+                                  Container(
+                                    alignment: Alignment.center,
+                                    width: 30,
+                                    child: const Text(
+                                      '~',
+                                    ),
                                   ),
-                                  GestureDetector(
-                                    onTap: () => _selectDate(3, "년"),
-                                    child: SelectDateWidget(
-                                        type: '년',
-                                        thisCnt: 3,
-                                        diffCnt: diffCnt,
-                                        selType: selType),
-                                  ),
-                                  const SizedBox(
-                                    width: 7,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => _selectDate(4, "년"),
-                                    child: SelectDateWidget(
-                                        type: '년',
-                                        thisCnt: 4,
-                                        diffCnt: diffCnt,
-                                        selType: selType),
-                                  ),
-                                  const SizedBox(
-                                    width: 7,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => _selectDate(5, "년"),
-                                    child: SelectDateWidget(
-                                        type: '년',
-                                        thisCnt: 5,
-                                        diffCnt: diffCnt,
-                                        selType: selType),
-                                  ),
-                                  const SizedBox(
-                                    width: 7,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => _selectDate(6, "년"),
-                                    child: SelectDateWidget(
-                                        type: '년',
-                                        thisCnt: 6,
-                                        diffCnt: diffCnt,
-                                        selType: selType),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 13,
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            width: 50,
-                            alignment: Alignment.centerLeft,
-                            child: const Text(
-                              '반기',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () => _selectDate(3, "반기"),
-                                    child: SelectDateWidget(
-                                        type: '반기',
-                                        thisCnt: 3,
-                                        diffCnt: diffCnt,
-                                        selType: selType),
-                                  ),
-                                  const SizedBox(
-                                    width: 7,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => _selectDate(4, "반기"),
-                                    child: SelectDateWidget(
-                                        type: '반기',
-                                        thisCnt: 4,
-                                        diffCnt: diffCnt,
-                                        selType: selType),
-                                  ),
-                                  const SizedBox(
-                                    width: 7,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => _selectDate(5, "반기"),
-                                    child: SelectDateWidget(
-                                        type: '반기',
-                                        thisCnt: 5,
-                                        diffCnt: diffCnt,
-                                        selType: selType),
-                                  ),
-                                  const SizedBox(
-                                    width: 7,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => _selectDate(6, "반기"),
-                                    child: SelectDateWidget(
-                                        type: '반기',
-                                        thisCnt: 6,
-                                        diffCnt: diffCnt,
-                                        selType: selType),
-                                  ),
-                                  const SizedBox(
-                                    width: 7,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => _selectDate(7, "반기"),
-                                    child: SelectDateWidget(
-                                        type: '반기',
-                                        thisCnt: 7,
-                                        diffCnt: diffCnt,
-                                        selType: selType),
+                                  Row(
+                                    children: [
+                                      CustomPicker(
+                                        period: 'ed',
+                                        curData: periodData,
+                                        yearList: yearList,
+                                        halfCntList: halfCntList,
+                                        setPeriodData: setPeriodData,
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -426,16 +360,20 @@ class _FinanceInterestScreenState extends State<FinanceInterestScreen>
                                 shape: MaterialStateProperty.all<
                                     RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(4),
+                                    borderRadius: BorderRadius.circular(6),
                                     side: const BorderSide(
-                                      color: Color(0xffDCDEE0),
+                                      color: Color(0xffE9E9EC),
                                     ),
                                   ),
                                 ),
                               ),
                               child: const Text(
                                 '조회하기',
-                                style: TextStyle(color: Colors.black),
+                                style: TextStyle(
+                                  color: Color(0xff444447),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ),
@@ -455,6 +393,9 @@ class _FinanceInterestScreenState extends State<FinanceInterestScreen>
                             ),
                           ),
                         ],
+                      ),
+                      const SizedBox(
+                        height: 5,
                       ),
                     ],
                   ),

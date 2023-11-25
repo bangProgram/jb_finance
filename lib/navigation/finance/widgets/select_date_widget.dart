@@ -29,7 +29,7 @@ class SelectDateWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
-        '최근 $thisCnt$type',
+        '',
         style: TextStyle(
           color: diffCnt == thisCnt && selType == type
               ? Colors.white
