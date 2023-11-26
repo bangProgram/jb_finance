@@ -213,7 +213,7 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      '매출액 / 영업이익 / 순이익',
+                      '실적',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,

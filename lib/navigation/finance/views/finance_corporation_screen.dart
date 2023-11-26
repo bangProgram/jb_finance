@@ -118,11 +118,8 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
 
       yearList.add(bsnsYear);
       halfCntList.add(reprtCnt);
-      print('test1');
       if (periodData['stYear'] == '' && periodData['edYear'] == '') {
-        print('test2');
         if (reprtCnt == 3) {
-          print('test3');
           periodData = {
             'stYear': '${int.parse(bsnsYear) - 1}',
             'stHalf': null,
@@ -136,12 +133,12 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
   }
 
   void setPeriodData(String type, String period, String? value) {
-    print('$type, $period, $value');
     if (period == 'st') {
       periodData['$period$type'] = value;
     } else {
       periodData['$period$type'] = value;
     }
+    print('periodData : $periodData');
   }
 
   @override
