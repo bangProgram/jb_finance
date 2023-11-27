@@ -1,12 +1,13 @@
 import 'dart:convert';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:jb_finance/keys.dart';
 
 class CorporationRepo {
-  Future<Map<String, dynamic>> getCorpList(Map<String, dynamic> param) async {
+  Future<Map<String, dynamic>> getCorpList(Map<String, dynamic>? param) async {
     final response = await http.post(
-      Uri.parse("${Keys.forwardURL}/appApi/member/getMember"),
+      Uri.parse("${Keys.forwardURL}/appApi/corp/select"),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -21,3 +22,5 @@ class CorporationRepo {
     }
   }
 }
+
+final corporationRepo = Provider((ref) => CorporationRepo());

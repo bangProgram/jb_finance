@@ -21,7 +21,11 @@ class AssetmanageVM extends AsyncNotifier<AssetmanageModel> {
       final responseData = await _assetmanageRepo.getPortAmount(userId);
       print('AssetmanageVM : ${responseData['message']}');
       final portfolioData = responseData['portAmountData'];
-      return AssetmanageModel.fromJson(portfolioData);
+      if (portfolioData != null) {
+        return AssetmanageModel.fromJson(portfolioData);
+      } else {
+        return AssetmanageModel.empty();
+      }
     } else {
       return AssetmanageModel.empty();
     }
@@ -31,7 +35,12 @@ class AssetmanageVM extends AsyncNotifier<AssetmanageModel> {
     final userId = _auth.getUserId;
     final responseData = await _assetmanageRepo.getPortAmount(userId);
     final portfolioData = responseData['portAmountData'];
-    state = AsyncValue.data(AssetmanageModel.fromJson(portfolioData));
+    if (portfolioData != null) {
+      state = AsyncValue.data(AssetmanageModel.fromJson(portfolioData));
+    }
+    {
+      state = AsyncValue.data(AssetmanageModel.empty());
+    }
   }
 
   Future<void> updatePortfolio(

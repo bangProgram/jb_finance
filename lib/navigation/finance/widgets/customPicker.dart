@@ -27,8 +27,8 @@ class _CustomPickerState extends State<CustomPicker> {
 
   int halfCnt = 3;
 
-  late String curYear = widget.curData['${widget.period}Year'];
-  late String? curHalf = widget.curData['${widget.period}Half'];
+  late String curYear = widget.curData['p${widget.period}Year'];
+  late String? curHalf = widget.curData['p${widget.period}Half'];
   late Map<String, dynamic> curData = widget.curData;
 
   void onChange(String year) {
@@ -59,17 +59,12 @@ class _CustomPickerState extends State<CustomPicker> {
             borderRadius: BorderRadius.circular(15),
             underline: Container(),
             icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            value: curYear == ''
-                ? widget.curData['${widget.period}Year']
-                : curYear,
+            value: curYear == '' ? '2016' : curYear,
             onChanged: (newValue) {
               if (newValue != null) {
-                int edYear = int.parse(curData['edYear']);
-                print('$newValue / $edYear / ${widget.period}');
-                if (widget.period == 'st') {
-                  print('sttest1');
+                int edYear = int.parse(curData['pEdYear']);
+                if (widget.period == 'St') {
                   if (int.parse(newValue) <= edYear) {
-                    print('sttest2');
                     widget.setPeriodData('Year', widget.period, newValue);
                     widget.setPeriodData('Half', widget.period, null);
                     onChange(newValue);

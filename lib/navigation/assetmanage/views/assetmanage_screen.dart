@@ -141,29 +141,35 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                                 direction: Axis.horizontal,
                                                 children: [
                                                   Flexible(
-                                                    flex: ((data.investAmount /
-                                                                totalAmount) *
-                                                            100)
-                                                        .round(),
+                                                    flex: data.investAmount > 0
+                                                        ? ((data.investAmount /
+                                                                    totalAmount) *
+                                                                100)
+                                                            .round()
+                                                        : 1,
                                                     child: Container(
                                                       color: Colors.red,
                                                     ),
                                                   ),
                                                   Flexible(
-                                                    flex: ((data.depositAmount /
-                                                                totalAmount) *
-                                                            100)
-                                                        .round(),
+                                                    flex: data.depositAmount > 0
+                                                        ? ((data.depositAmount /
+                                                                    totalAmount) *
+                                                                100)
+                                                            .round()
+                                                        : 1,
                                                     child: Container(
                                                       color: const Color(
                                                           0xffFFC84D),
                                                     ),
                                                   ),
                                                   Flexible(
-                                                    flex: ((data.reserveAmount /
-                                                                totalAmount) *
-                                                            100)
-                                                        .round(),
+                                                    flex: data.reserveAmount > 0
+                                                        ? ((data.reserveAmount /
+                                                                    totalAmount) *
+                                                                100)
+                                                            .round()
+                                                        : 1,
                                                     child: Container(
                                                       color: const Color(
                                                           0xFF2DB400),
@@ -364,10 +370,12 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                 child: Text('error $error'),
                               ),
                               data: (data) {
-                                final totalReturn = (data.evaluationAmount /
-                                            data.investAmount) *
-                                        100 -
-                                    100;
+                                final totalReturn = data.investAmount > 0
+                                    ? (data.evaluationAmount /
+                                                data.investAmount) *
+                                            100 -
+                                        100
+                                    : 0;
                                 return Column(
                                   children: [
                                     Container(
@@ -401,11 +409,15 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                                       width: 11,
                                                     ),
                                                     Text(
-                                                      '${NumberFormat("#,###.##").format(totalReturn)}%',
+                                                      totalReturn != 0
+                                                          ? '${NumberFormat("#,###.##").format(totalReturn)}%'
+                                                          : '-- %',
                                                       style: TextStyle(
-                                                        color: totalReturn > 0
-                                                            ? Colors.red
-                                                            : Colors.blue,
+                                                        color: totalReturn == 0
+                                                            ? Colors.black
+                                                            : totalReturn > 0
+                                                                ? Colors.red
+                                                                : Colors.blue,
                                                         fontSize: 18,
                                                         fontWeight:
                                                             FontWeight.w500,
@@ -439,9 +451,13 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                                           .format(data
                                                               .evaluationProfit),
                                                       style: TextStyle(
-                                                        color: totalReturn > 0
-                                                            ? Colors.red
-                                                            : Colors.blue,
+                                                        color: data.evaluationProfit ==
+                                                                0
+                                                            ? Colors.black
+                                                            : data.evaluationProfit >
+                                                                    0
+                                                                ? Colors.red
+                                                                : Colors.blue,
                                                         fontSize: 18,
                                                         fontWeight:
                                                             FontWeight.w500,

@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jb_finance/commons/repos/util_repo.dart';
+import 'package:jb_finance/navigation/finance/view_models/corporation_vm.dart';
 import 'package:jb_finance/navigation/finance/views/finance_corp_detail_screen.dart';
 import 'package:jb_finance/navigation/finance/widgets/customPicker.dart';
 import 'package:jb_finance/navigation/finance/widgets/select_account_widget.dart';
@@ -39,10 +40,10 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
   List<int> halfCntList = [];
 
   Map<String, dynamic> periodData = {
-    'stYear': '',
-    'stHalf': null,
-    'edYear': '',
-    'edHalf': null
+    'pStYear': '',
+    'pStHalf': null,
+    'pEdYear': '',
+    'pEdHalf': null
   };
 
   bool isToggle = false;
@@ -54,7 +55,6 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
   void initState() {
     super.initState();
     _scrollController.addListener(_filterHide);
-    getYearList();
   }
 
   void _selectAccount(String account) {
@@ -108,38 +108,45 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
     );
   }
 
-  void getYearList() async {
+  Future<Map<String, dynamic>> getYearList() async {
     final response = await ref.read(utilRepo).getYearList();
     final List<dynamic> data = response['yearList'];
+    print('periodData ??');
 
     data.map((e) {
       String bsnsYear = e['BSNS_YEAR'];
       int reprtCnt = e['REPRT_CNT'];
+      print('bsnsYear : $bsnsYear / reprtCnt : $reprtCnt');
 
       yearList.add(bsnsYear);
       halfCntList.add(reprtCnt);
-      if (periodData['stYear'] == '' && periodData['edYear'] == '') {
+      print('${periodData['pStYear']} / reprtCnt : $reprtCnt');
+      if (periodData['pStYear'] == '' && periodData['pEdYear'] == '') {
         if (reprtCnt == 3) {
           periodData = {
-            'stYear': '${int.parse(bsnsYear) - 1}',
-            'stHalf': null,
-            'edYear': bsnsYear,
-            'edHalf': null,
+            'pStYear': '${int.parse(bsnsYear) - 1}',
+            'pStHalf': null,
+            'pEdYear': bsnsYear,
+            'pEdHalf': null,
           };
-          setState(() {});
+          print('periodData : $periodData');
         }
       }
     }).toList();
+
+    return periodData;
   }
 
   void setPeriodData(String type, String period, String? value) {
-    if (period == 'st') {
-      periodData['$period$type'] = value;
+    if (period == 'St') {
+      periodData['p$period$type'] = value;
     } else {
-      periodData['$period$type'] = value;
+      periodData['p$period$type'] = value;
     }
     print('periodData : $periodData');
   }
+
+  void selectCorpList() {}
 
   @override
   void dispose() {
@@ -191,12 +198,28 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                 children: [
                                   Row(
                                     children: [
-                                      CustomPicker(
-                                        period: 'st',
-                                        curData: periodData,
-                                        yearList: yearList,
-                                        halfCntList: halfCntList,
-                                        setPeriodData: setPeriodData,
+                                      FutureBuilder(
+                                        future: getYearList(),
+                                        builder: (context, snapshot) {
+                                          final period = snapshot.data;
+                                          if (period != null) {
+                                            return CustomPicker(
+                                              period: 'St',
+                                              curData: period,
+                                              yearList: yearList,
+                                              halfCntList: halfCntList,
+                                              setPeriodData: setPeriodData,
+                                            );
+                                          } else {
+                                            return CustomPicker(
+                                              period: 'St',
+                                              curData: periodData,
+                                              yearList: yearList,
+                                              halfCntList: halfCntList,
+                                              setPeriodData: setPeriodData,
+                                            );
+                                          }
+                                        },
                                       ),
                                     ],
                                   ),
@@ -209,12 +232,28 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                   ),
                                   Row(
                                     children: [
-                                      CustomPicker(
-                                        period: 'ed',
-                                        curData: periodData,
-                                        yearList: yearList,
-                                        halfCntList: halfCntList,
-                                        setPeriodData: setPeriodData,
+                                      FutureBuilder(
+                                        future: getYearList(),
+                                        builder: (context, snapshot) {
+                                          final period = snapshot.data;
+                                          if (period != null) {
+                                            return CustomPicker(
+                                              period: 'Ed',
+                                              curData: period,
+                                              yearList: yearList,
+                                              halfCntList: halfCntList,
+                                              setPeriodData: setPeriodData,
+                                            );
+                                          } else {
+                                            return CustomPicker(
+                                              period: 'Ed',
+                                              curData: periodData,
+                                              yearList: yearList,
+                                              halfCntList: halfCntList,
+                                              setPeriodData: setPeriodData,
+                                            );
+                                          }
+                                        },
                                       ),
                                     ],
                                   ),
@@ -263,12 +302,22 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                     ),
                                   ),
                                   const SizedBox(
-                                    width: 8,
+                                    width: 7,
                                   ),
                                   GestureDetector(
                                     onTap: () => _selectAccount('순이익'),
                                     child: SelectAccountWidget(
                                       thisAccount: '순이익',
+                                      accountList: accountList,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 7,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () => _selectAccount('EPS'),
+                                    child: SelectAccountWidget(
+                                      thisAccount: 'EPS',
                                       accountList: accountList,
                                     ),
                                   ),
@@ -340,7 +389,7 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                         children: [
                           Expanded(
                             child: TextButton(
-                              onPressed: () {},
+                              onPressed: selectCorpList,
                               style: ButtonStyle(
                                 padding: MaterialStateProperty.all<EdgeInsets>(
                                   const EdgeInsets.symmetric(
@@ -408,142 +457,166 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
             Column(
               children: [
                 Expanded(
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    scrollDirection: Axis.vertical,
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      final corpNm = '삼성전자_$index';
-                      const corpCd = '005930';
+                    child: ref.watch(corpProvider).when(
+                          error: (error, stackTrace) {
+                            return Center(
+                              child: Text('$error'),
+                            );
+                          },
+                          loading: () => const Center(
+                            child: CircularProgressIndicator.adaptive(),
+                          ),
+                          data: (data) {
+                            final corpList = data;
+                            return ListView.builder(
+                              controller: _scrollController,
+                              scrollDirection: Axis.vertical,
+                              itemCount: corpList.length,
+                              itemBuilder: (context, index) {
+                                final corpData = corpList[index];
 
-                      return GestureDetector(
-                        onTap: () => _goCorpDetailScreen(corpNm, corpCd),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 20,
-                            horizontal: 15,
-                          ),
-                          decoration: const BoxDecoration(
-                            border: Border(
-                              top: BorderSide(
-                                color: Color(0xFFEFEFEF),
-                                width: 1,
-                              ),
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              const CircleAvatar(
-                                backgroundColor: Colors.blue,
-                                radius: 35,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
+                                return GestureDetector(
+                                  onTap: () => _goCorpDetailScreen(
+                                      corpData.corpName, corpData.corpCode),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 20,
+                                      horizontal: 15,
+                                    ),
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                        top: BorderSide(
+                                          color: Color(0xFFEFEFEF),
+                                          width: 1,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Row(
                                       children: [
+                                        const CircleAvatar(
+                                          backgroundColor: Colors.blue,
+                                          radius: 35,
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
                                         Expanded(
-                                          child: Text(
-                                            corpNm,
-                                            style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w600,
-                                            ),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      corpData.corpName,
+                                                      style: const TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  IconButton(
+                                                    onPressed: () {},
+                                                    icon: const FaIcon(
+                                                      FontAwesomeIcons.heart,
+                                                      size: 24,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const FractionallySizedBox(
+                                                widthFactor: 0.9,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          '매출액',
+                                                          style: TextStyle(
+                                                            color: Color(
+                                                                0xFFC4C4C4),
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '3조 9천억',
+                                                          style: TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          '영업이익',
+                                                          style: TextStyle(
+                                                            color: Color(
+                                                                0xFFC4C4C4),
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '1조 3천억',
+                                                          style: TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          '순이익',
+                                                          style: TextStyle(
+                                                            color: Color(
+                                                                0xFFC4C4C4),
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '3천 3백만',
+                                                          style: TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            ],
                                           ),
-                                        ),
-                                        IconButton(
-                                          onPressed: () {},
-                                          icon: const FaIcon(
-                                            FontAwesomeIcons.heart,
-                                            size: 24,
-                                          ),
-                                        ),
+                                        )
                                       ],
                                     ),
-                                    const FractionallySizedBox(
-                                      widthFactor: 0.9,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                '매출액',
-                                                style: TextStyle(
-                                                  color: Color(0xFFC4C4C4),
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                              Text(
-                                                '3조 9천억',
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                '영업이익',
-                                                style: TextStyle(
-                                                  color: Color(0xFFC4C4C4),
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                              Text(
-                                                '1조 3천억',
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                '순이익',
-                                                style: TextStyle(
-                                                  color: Color(0xFFC4C4C4),
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                              Text(
-                                                '3천 3백만',
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        )),
               ],
             ),
             if (isToggle)
