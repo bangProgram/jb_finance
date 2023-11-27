@@ -59,7 +59,7 @@ class _CustomPickerState extends State<CustomPicker> {
             borderRadius: BorderRadius.circular(15),
             underline: Container(),
             icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            value: curYear == '' ? '2016' : curYear,
+            value: curYear == '' ? '2023' : curYear,
             onChanged: (newValue) {
               if (newValue != null) {
                 int edYear = int.parse(curData['pEdYear']);

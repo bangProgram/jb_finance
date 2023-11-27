@@ -35,17 +35,6 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
   late final Animation<double> _sizeAnimation =
       Tween(begin: 1.0, end: 0.0).animate(_animationController);
 
-  //세팅 데이터 db기준 년도, 반기
-  List<String> yearList = [];
-  List<int> halfCntList = [];
-
-  Map<String, dynamic> periodData = {
-    'pStYear': '',
-    'pStHalf': null,
-    'pEdYear': '',
-    'pEdHalf': null
-  };
-
   bool isToggle = false;
   bool isMove = false;
 
@@ -111,39 +100,42 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
   Future<Map<String, dynamic>> getYearList() async {
     final response = await ref.read(utilRepo).getYearList();
     final List<dynamic> data = response['yearList'];
-    print('periodData ??');
 
-    data.map((e) {
-      String bsnsYear = e['BSNS_YEAR'];
-      int reprtCnt = e['REPRT_CNT'];
-      print('bsnsYear : $bsnsYear / reprtCnt : $reprtCnt');
+    Map<String, dynamic> result = {};
+    //세팅 데이터 db기준 년도, 반기
+    List<String> yearList = [];
+    List<int> halfCntList = [];
+    Map<String, dynamic> periodData = {};
+
+    await Future.forEach(data, (element) {
+      String bsnsYear = element['BSNS_YEAR'];
+      int reprtCnt = element['REPRT_CNT'];
 
       yearList.add(bsnsYear);
       halfCntList.add(reprtCnt);
-      print('${periodData['pStYear']} / reprtCnt : $reprtCnt');
-      if (periodData['pStYear'] == '' && periodData['pEdYear'] == '') {
+      if (periodData['pStYear'] == null && periodData['pEdYear'] == null) {
         if (reprtCnt == 3) {
-          periodData = {
-            'pStYear': '${int.parse(bsnsYear) - 1}',
-            'pStHalf': null,
-            'pEdYear': bsnsYear,
-            'pEdHalf': null,
-          };
-          print('periodData : $periodData');
+          periodData['pStYear'] = '${int.parse(bsnsYear) - 1}';
+          periodData['pStHalf'] = null;
+          periodData['pEdYear'] = bsnsYear;
+          periodData['pEdHalf'] = null;
         }
       }
-    }).toList();
+    });
 
-    return periodData;
+    result['yearList'] = yearList;
+    result['halfCntList'] = halfCntList;
+    result['periodData'] = periodData;
+
+    return result;
   }
 
   void setPeriodData(String type, String period, String? value) {
     if (period == 'St') {
-      periodData['p$period$type'] = value;
+      print('$period $type $value');
     } else {
-      periodData['p$period$type'] = value;
+      print('$period $type $value');
     }
-    print('periodData : $periodData');
   }
 
   void selectCorpList() {}
@@ -201,16 +193,14 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                       FutureBuilder(
                                         future: getYearList(),
                                         builder: (context, snapshot) {
-                                          final period = snapshot.data;
-                                          if (period != null) {
-                                            return CustomPicker(
-                                              period: 'St',
-                                              curData: period,
-                                              yearList: yearList,
-                                              halfCntList: halfCntList,
-                                              setPeriodData: setPeriodData,
-                                            );
-                                          } else {
+                                          final result = snapshot.data;
+                                          if (result != null) {
+                                            final yearList = result['yearList'];
+                                            final halfCntList =
+                                                result['halfCntList'];
+                                            final periodData =
+                                                result['periodData'];
+
                                             return CustomPicker(
                                               period: 'St',
                                               curData: periodData,
@@ -218,6 +208,8 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                               halfCntList: halfCntList,
                                               setPeriodData: setPeriodData,
                                             );
+                                          } else {
+                                            return Container();
                                           }
                                         },
                                       ),
@@ -235,16 +227,14 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                       FutureBuilder(
                                         future: getYearList(),
                                         builder: (context, snapshot) {
-                                          final period = snapshot.data;
-                                          if (period != null) {
-                                            return CustomPicker(
-                                              period: 'Ed',
-                                              curData: period,
-                                              yearList: yearList,
-                                              halfCntList: halfCntList,
-                                              setPeriodData: setPeriodData,
-                                            );
-                                          } else {
+                                          final result = snapshot.data;
+                                          if (result != null) {
+                                            final yearList = result['yearList'];
+                                            final halfCntList =
+                                                result['halfCntList'];
+                                            final periodData =
+                                                result['periodData'];
+
                                             return CustomPicker(
                                               period: 'Ed',
                                               curData: periodData,
@@ -252,6 +242,8 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                               halfCntList: halfCntList,
                                               setPeriodData: setPeriodData,
                                             );
+                                          } else {
+                                            return Container();
                                           }
                                         },
                                       ),
