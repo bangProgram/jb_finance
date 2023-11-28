@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:jb_finance/member/login/view_models/login_vm.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -104,7 +105,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               const SizedBox(
                                 height: 5,
                               ),
-                              Image.asset(_imageList[2]),
+                              SvgPicture.asset(
+                                'assets/svgs/logos/Logo_jutopia_main.svg',
+                              ),
                             ],
                           ),
                         )
@@ -118,7 +121,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     onTap: _signinWithKAKAO,
                     child: const SocialLoginBtnWidget(
                       btnColor: Color(0xFFFFED4B),
-                      btnImage: 'assets/images/buttons/kakaoIcon.png',
+                      btnImage: 'assets/svgs/icons/Icon_kakao.svg',
                       btnText: '카카오톡으로 시작하기',
                       textColor: Colors.black,
                     ),
@@ -130,7 +133,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     onTap: _signinWithGoogle,
                     child: const SocialLoginBtnWidget(
                       btnColor: Colors.white,
-                      btnImage: 'assets/images/buttons/googleIcon.png',
+                      btnImage: 'assets/svgs/icons/Icon_google.svg',
                       btnText: '구글로 시작하기',
                       textColor: Colors.black,
                     ),
@@ -142,7 +145,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     onTap: _signinWithNaver,
                     child: const SocialLoginBtnWidget(
                       btnColor: Color(0xFF03CF5D),
-                      btnImage: 'assets/images/buttons/naverIcon.png',
+                      btnImage: 'assets/svgs/icons/Icon_naver.svg',
                       btnText: '네이버 계정으로 시작하기',
                       textColor: Colors.white,
                     ),
@@ -184,7 +187,7 @@ class SocialLoginBtnWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(
+          SvgPicture.asset(
             btnImage,
           ),
           const SizedBox(

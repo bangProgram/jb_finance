@@ -109,12 +109,10 @@ class _CustomPickerState extends State<CustomPicker> {
             icon: const Icon(Icons.keyboard_arrow_down_rounded),
             value: curHalf,
             onChanged: (newValue) {
-              if (newValue != null) {
-                widget.setPeriodData('Half', widget.period, newValue);
-                setState(() {
-                  curHalf = newValue;
-                });
-              }
+              widget.setPeriodData('Half', widget.period, newValue);
+              setState(() {
+                curHalf = newValue;
+              });
             },
             items: List.generate(
               halfCnt,

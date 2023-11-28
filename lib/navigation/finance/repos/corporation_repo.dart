@@ -13,7 +13,8 @@ class CorporationRepo {
       },
       body: jsonEncode(param),
     );
-    print('reponse : ${response.request}');
+    print('reponse1 : ${response.request}');
+    print('reponse2 : ${response.statusCode}');
     if (response.statusCode == 200) {
       Map<String, dynamic> rsData = json.decode(response.body);
       return rsData;

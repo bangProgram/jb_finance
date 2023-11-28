@@ -27,17 +27,23 @@ class CorporationVM extends AsyncNotifier<List<CorporationModel>> {
   Future<void> getCorpList({Map<String, dynamic>? param}) async {
     state = const AsyncValue.loading();
 
+    print('param : $param');
+
     state = await AsyncValue.guard(() async {
       final resData = await _corporationRepo.getCorpList(param);
-      final List<dynamic> fetchData = resData['corpList'];
+      if (resData['corpCnt'] > 0) {
+        final List<dynamic> fetchData = resData['corpList'];
 
-      print('test : ${fetchData.first.toString()}');
+        print('test : ${fetchData.first.toString()}');
 
-      final corpList = fetchData.map((corpData) {
-        return CorporationModel.fromJson(corpData);
-      });
+        final corpList = fetchData.map((corpData) {
+          return CorporationModel.fromJson(corpData);
+        });
 
-      return corpList.toList();
+        return corpList.toList();
+      } else {
+        return [CorporationModel.empty()];
+      }
     });
   }
 }

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class SelectAccountWidget extends StatelessWidget {
+  final String text;
   final String thisAccount;
   final List<String> accountList;
 
   const SelectAccountWidget({
     super.key,
+    required this.text,
     required this.thisAccount,
     required this.accountList,
   });
@@ -25,7 +27,7 @@ class SelectAccountWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
-        thisAccount,
+        text,
         style: TextStyle(
           color: accountList.contains(thisAccount)
               ? Colors.white

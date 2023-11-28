@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jb_finance/commons/repos/util_repo.dart';
 import 'package:jb_finance/navigation/finance/view_models/corporation_vm.dart';
@@ -40,6 +41,13 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
 
   List<String> accountList = [];
 
+  String stYear = '';
+  String stHalf = '';
+  String edYear = '';
+  String edHalf = '';
+
+  final Map<String, dynamic> _searchModel = {};
+
   @override
   void initState() {
     super.initState();
@@ -50,8 +58,10 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
     setState(() {
       if (!accountList.contains(account)) {
         accountList.add(account);
+        _searchModel[account] = true;
       } else {
         accountList.remove(account);
+        _searchModel[account] = null;
       }
     });
   }
@@ -105,7 +115,6 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
     //세팅 데이터 db기준 년도, 반기
     List<String> yearList = [];
     List<int> halfCntList = [];
-    Map<String, dynamic> periodData = {};
 
     await Future.forEach(data, (element) {
       String bsnsYear = element['BSNS_YEAR'];
@@ -113,32 +122,59 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
 
       yearList.add(bsnsYear);
       halfCntList.add(reprtCnt);
-      if (periodData['pStYear'] == null && periodData['pEdYear'] == null) {
+      if (_searchModel['pStYear'] == null && _searchModel['pEdYear'] == null) {
         if (reprtCnt == 3) {
-          periodData['pStYear'] = '${int.parse(bsnsYear) - 1}';
-          periodData['pStHalf'] = null;
-          periodData['pEdYear'] = bsnsYear;
-          periodData['pEdHalf'] = null;
+          _searchModel['pStYear'] = '${int.parse(bsnsYear) - 1}';
+          _searchModel['pStHalf'] = null;
+          _searchModel['pEdYear'] = bsnsYear;
+          _searchModel['pEdHalf'] = null;
         }
       }
     });
 
     result['yearList'] = yearList;
     result['halfCntList'] = halfCntList;
-    result['periodData'] = periodData;
+    result['periodData'] = _searchModel;
 
     return result;
   }
 
   void setPeriodData(String type, String period, String? value) {
     if (period == 'St') {
-      print('$period $type $value');
+      if (type == 'Year') {
+        _searchModel['pStYear'] = value;
+      } else {
+        _searchModel['pStHalf'] = value;
+      }
     } else {
-      print('$period $type $value');
+      if (type == 'Year') {
+        _searchModel['pEdYear'] = value;
+      } else {
+        _searchModel['pEdHalf'] = value;
+      }
     }
   }
 
-  void selectCorpList() {}
+  void selectCorpList() async {
+    _searchModel['searchType'] = 'year';
+    if (_searchModel['pStHalf'] != null) {
+      if (_searchModel['pEdHalf'] == null) {
+        serverMessage(context, '종료 반기 조회기간을 확인해주세요.');
+        return;
+      }
+      _searchModel['searchType'] = 'half';
+    } else if (_searchModel['pEdHalf'] != null) {
+      if (_searchModel['pStHalf'] == null) {
+        serverMessage(context, '시작 반기 조회기간을 확인해주세요.');
+        return;
+      }
+      _searchModel['searchType'] = 'half';
+    }
+
+    print('_searchModel : $_searchModel');
+    await ref.read(corpProvider.notifier).getCorpList(param: _searchModel);
+    focusOut(context);
+  }
 
   @override
   void dispose() {
@@ -277,9 +313,10 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                               child: Row(
                                 children: [
                                   GestureDetector(
-                                    onTap: () => _selectAccount('매출액'),
+                                    onTap: () => _selectAccount('pAvgType1'),
                                     child: SelectAccountWidget(
-                                      thisAccount: '매출액',
+                                      text: '매출액',
+                                      thisAccount: 'pAvgType1',
                                       accountList: accountList,
                                     ),
                                   ),
@@ -287,9 +324,10 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                     width: 7,
                                   ),
                                   GestureDetector(
-                                    onTap: () => _selectAccount('영업이익'),
+                                    onTap: () => _selectAccount('pAvgType2'),
                                     child: SelectAccountWidget(
-                                      thisAccount: '영업이익',
+                                      text: '영업이익',
+                                      thisAccount: 'pAvgType2',
                                       accountList: accountList,
                                     ),
                                   ),
@@ -297,9 +335,10 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                     width: 7,
                                   ),
                                   GestureDetector(
-                                    onTap: () => _selectAccount('순이익'),
+                                    onTap: () => _selectAccount('pAvgType3'),
                                     child: SelectAccountWidget(
-                                      thisAccount: '순이익',
+                                      text: '순이익',
+                                      thisAccount: 'pAvgType3',
                                       accountList: accountList,
                                     ),
                                   ),
@@ -307,9 +346,10 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                     width: 7,
                                   ),
                                   GestureDetector(
-                                    onTap: () => _selectAccount('EPS'),
+                                    onTap: () => _selectAccount('pAvgType4'),
                                     child: SelectAccountWidget(
-                                      thisAccount: 'EPS',
+                                      text: 'EPS',
+                                      thisAccount: 'pAvgType4',
                                       accountList: accountList,
                                     ),
                                   ),
@@ -351,16 +391,20 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                               ),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: const TextField(
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                              ),
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
+                            child: TextField(
+                                keyboardType: TextInputType.number,
+                                maxLength: 3,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  counterText: '',
+                                ),
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                onChanged: (value) {
+                                  _searchModel['pAvgValue'] = value;
+                                }),
                           ),
                           const SizedBox(
                             width: 10,
@@ -371,6 +415,59 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                               fontSize: 16,
                               fontWeight: FontWeight.w400,
                             ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 13,
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            width: 50,
+                            alignment: Alignment.centerLeft,
+                            child: const Text(
+                              '기업명',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              height: 38,
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: const Color(0xFFEFEFEF),
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: TextField(
+                                maxLength: 15,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  counterText: '',
+                                ),
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                onChanged: (value) {
+                                  _searchModel['pCorpName'] = value;
+                                },
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
                           ),
                         ],
                       ),
@@ -423,7 +520,7 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Text(
-                            '* 최근 1년 기준',
+                            '*조회기간 : $stYear $stHalf ~ $edYear $edHalf',
                             style: TextStyle(
                               color: Colors.black.withOpacity(0.3),
                               fontSize: 14,
@@ -446,21 +543,28 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
         width: screenW,
         child: Stack(
           children: [
-            Column(
-              children: [
-                Expanded(
-                    child: ref.watch(corpProvider).when(
-                          error: (error, stackTrace) {
-                            return Center(
-                              child: Text('$error'),
-                            );
-                          },
-                          loading: () => const Center(
-                            child: CircularProgressIndicator.adaptive(),
-                          ),
-                          data: (data) {
-                            final corpList = data;
-                            return ListView.builder(
+            Positioned.fill(
+              child: ref.watch(corpProvider).when(
+                    error: (error, stackTrace) {
+                      return Center(
+                        child: Text('에러? $error'),
+                      );
+                    },
+                    loading: () => const Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    ),
+                    data: (data) {
+                      final corpList = data;
+                      stYear = data.first.stYear!;
+                      edYear = data.first.edYear!;
+                      stHalf = data.first.stHalf ?? '';
+                      edHalf = data.first.edHalf ?? '';
+
+                      return corpList.first.corpName == ""
+                          ? const Center(
+                              child: Text('만족하는 사업장이 없습니다'),
+                            )
+                          : ListView.builder(
                               controller: _scrollController,
                               scrollDirection: Axis.vertical,
                               itemCount: corpList.length,
@@ -472,10 +576,11 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                       corpData.corpName, corpData.corpCode),
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 20,
+                                      vertical: 10,
                                       horizontal: 15,
                                     ),
                                     decoration: const BoxDecoration(
+                                      color: Color(0xFFFFFFFF),
                                       border: Border(
                                         top: BorderSide(
                                           color: Color(0xFFEFEFEF),
@@ -485,21 +590,21 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                     ),
                                     child: Row(
                                       children: [
-                                        const CircleAvatar(
-                                          backgroundColor: Colors.blue,
-                                          radius: 35,
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
                                         Expanded(
                                           child: Column(
-                                            mainAxisSize: MainAxisSize.min,
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Row(
                                                 children: [
+                                                  const CircleAvatar(
+                                                    backgroundColor:
+                                                        Colors.blue,
+                                                    radius: 20,
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
                                                   Expanded(
                                                     child: Text(
                                                       corpData.corpName,
@@ -512,27 +617,74 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                                   ),
                                                   IconButton(
                                                     onPressed: () {},
-                                                    icon: const FaIcon(
-                                                      FontAwesomeIcons.heart,
-                                                      size: 24,
+                                                    icon: SvgPicture.asset(
+                                                      'assets/svgs/icons/Icon_money_inact.svg',
+                                                    ),
+                                                  ),
+                                                  IconButton(
+                                                    onPressed: () {},
+                                                    icon: SvgPicture.asset(
+                                                      'assets/svgs/icons/Icon_heart_inact.svg',
                                                     ),
                                                   ),
                                                 ],
                                               ),
-                                              const FractionallySizedBox(
-                                                widthFactor: 0.9,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Column(
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
+                                                children: [
+                                                  Column(
+                                                    children: [
+                                                      Container(
+                                                        color:
+                                                            Colors.transparent,
+                                                      ),
+                                                      Text(
+                                                        corpData.edYear!,
+                                                        style: const TextStyle(
+                                                          color:
+                                                              Color(0xFFC4C4C4),
+                                                          fontSize: 14,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 2,
+                                                      ),
+                                                      Text(
+                                                        corpData.stYear!,
+                                                        style: const TextStyle(
+                                                          color:
+                                                              Color(0xFFC4C4C4),
+                                                          fontSize: 14,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 2,
+                                                      ),
+                                                      const Text(
+                                                        '성장률',
+                                                        style: TextStyle(
+                                                          color:
+                                                              Color(0xFFC4C4C4),
+                                                          fontSize: 14,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Expanded(
+                                                    child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
-                                                              .start,
+                                                              .center,
                                                       children: [
-                                                        Text(
-                                                          '매출액',
+                                                        const Text(
+                                                          '매출',
                                                           style: TextStyle(
                                                             color: Color(
                                                                 0xFFC4C4C4),
@@ -540,21 +692,61 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                                           ),
                                                         ),
                                                         Text(
-                                                          '3조 9천억',
-                                                          style: TextStyle(
+                                                          corpData.curAmount1 ==
+                                                                  null
+                                                              ? '적자'
+                                                              : amountTrans(corpData
+                                                                  .curAmount1!),
+                                                          style:
+                                                              const TextStyle(
                                                             fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          corpData.befAmount1 ==
+                                                                  null
+                                                              ? '적자'
+                                                              : amountTrans(corpData
+                                                                  .befAmount1!),
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          corpData.avgAmount1 ==
+                                                                  null
+                                                              ? '적자'
+                                                              : '${corpData.avgAmount1} %',
+                                                          style: TextStyle(
+                                                            color: corpData
+                                                                        .avgAmount1 ==
+                                                                    null
+                                                                ? Colors.black
+                                                                : corpData.avgAmount1 >
+                                                                        0
+                                                                    ? Colors.red
+                                                                    : Colors
+                                                                        .blue,
+                                                            fontSize: 15,
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                           ),
                                                         ),
                                                       ],
                                                     ),
-                                                    Column(
+                                                  ),
+                                                  Expanded(
+                                                    child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
-                                                              .start,
+                                                              .center,
                                                       children: [
-                                                        Text(
+                                                        const Text(
                                                           '영업이익',
                                                           style: TextStyle(
                                                             color: Color(
@@ -563,21 +755,61 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                                           ),
                                                         ),
                                                         Text(
-                                                          '1조 3천억',
-                                                          style: TextStyle(
+                                                          corpData.curAmount2 ==
+                                                                  null
+                                                              ? '적자'
+                                                              : amountTrans(corpData
+                                                                  .curAmount2!),
+                                                          style:
+                                                              const TextStyle(
                                                             fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          corpData.befAmount2 ==
+                                                                  null
+                                                              ? '적자'
+                                                              : amountTrans(corpData
+                                                                  .befAmount2!),
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          corpData.avgAmount2 ==
+                                                                  null
+                                                              ? '적자'
+                                                              : '${corpData.avgAmount2} %',
+                                                          style: TextStyle(
+                                                            color: corpData
+                                                                        .avgAmount2 ==
+                                                                    null
+                                                                ? Colors.black
+                                                                : corpData.avgAmount2 >
+                                                                        0
+                                                                    ? Colors.red
+                                                                    : Colors
+                                                                        .blue,
+                                                            fontSize: 15,
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                           ),
                                                         ),
                                                       ],
                                                     ),
-                                                    Column(
+                                                  ),
+                                                  Expanded(
+                                                    child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
-                                                              .start,
+                                                              .center,
                                                       children: [
-                                                        Text(
+                                                        const Text(
                                                           '순이익',
                                                           style: TextStyle(
                                                             color: Color(
@@ -586,18 +818,119 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                                           ),
                                                         ),
                                                         Text(
-                                                          '3천 3백만',
-                                                          style: TextStyle(
+                                                          corpData.curAmount3 ==
+                                                                  null
+                                                              ? '적자'
+                                                              : amountTrans(corpData
+                                                                  .curAmount3!),
+                                                          style:
+                                                              const TextStyle(
                                                             fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          corpData.befAmount3 ==
+                                                                  null
+                                                              ? '적자'
+                                                              : amountTrans(corpData
+                                                                  .befAmount3!),
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          corpData.avgAmount3 ==
+                                                                  null
+                                                              ? '적자'
+                                                              : '${corpData.avgAmount3} %',
+                                                          style: TextStyle(
+                                                            color: corpData
+                                                                        .avgAmount3 ==
+                                                                    null
+                                                                ? Colors.black
+                                                                : corpData.avgAmount3 >
+                                                                        0
+                                                                    ? Colors.red
+                                                                    : Colors
+                                                                        .blue,
+                                                            fontSize: 15,
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                           ),
                                                         ),
                                                       ],
                                                     ),
-                                                  ],
-                                                ),
-                                              )
+                                                  ),
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        const Text(
+                                                          'EPS',
+                                                          style: TextStyle(
+                                                            color: Color(
+                                                                0xFFC4C4C4),
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          corpData.curAmount4 ==
+                                                                  null
+                                                              ? '적자'
+                                                              : amountTrans(corpData
+                                                                  .curAmount4!),
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          corpData.befAmount4 ==
+                                                                  null
+                                                              ? '적자'
+                                                              : amountTrans(corpData
+                                                                  .befAmount4!),
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          corpData.avgAmount4 ==
+                                                                  null
+                                                              ? '적자'
+                                                              : '${corpData.avgAmount4} %',
+                                                          style: TextStyle(
+                                                            color: corpData
+                                                                        .avgAmount4 ==
+                                                                    null
+                                                                ? Colors.black
+                                                                : corpData.avgAmount4 >
+                                                                        0
+                                                                    ? Colors.red
+                                                                    : Colors
+                                                                        .blue,
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ],
                                           ),
                                         )
@@ -607,9 +940,8 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                 );
                               },
                             );
-                          },
-                        )),
-              ],
+                    },
+                  ),
             ),
             if (isToggle)
               Positioned(

@@ -15,6 +15,10 @@ class CorporationModel {
   final dynamic avgAmount4;
   final String? isInterest;
   final String? isPortfolio;
+  final String? stYear;
+  final String? edYear;
+  final String? stHalf;
+  final String? edHalf;
 
   CorporationModel({
     required this.corpCode,
@@ -33,6 +37,10 @@ class CorporationModel {
     this.avgAmount4,
     this.isInterest,
     this.isPortfolio,
+    this.stYear,
+    this.edYear,
+    this.stHalf,
+    this.edHalf,
   });
 
   CorporationModel.fromJson(Map<String, dynamic> json)
@@ -51,7 +59,11 @@ class CorporationModel {
         befAmount4 = json['befAmount4'],
         avgAmount4 = json['avgAmount4'],
         isInterest = json['isInterest'],
-        isPortfolio = json['isPortfolio'];
+        isPortfolio = json['isPortfolio'],
+        stYear = json['stYear'],
+        edYear = json['edYear'],
+        stHalf = json['stHalf'],
+        edHalf = json['edHalf'];
 
   CorporationModel.empty()
       : corpCode = "",
@@ -69,7 +81,11 @@ class CorporationModel {
         befAmount4 = 0,
         avgAmount4 = 0,
         isInterest = "",
-        isPortfolio = "";
+        isPortfolio = "",
+        stYear = "",
+        edYear = "",
+        stHalf = "",
+        edHalf = "";
 
   Map<String, dynamic> toJson() {
     return {
@@ -89,6 +105,10 @@ class CorporationModel {
       'avgAmount4': avgAmount4,
       'isInterest': isInterest,
       'isPortfolio': isPortfolio,
+      'stYear': stYear,
+      'edYear': edYear,
+      'stHalf': stHalf,
+      'edHalf': edHalf,
     };
   }
 }

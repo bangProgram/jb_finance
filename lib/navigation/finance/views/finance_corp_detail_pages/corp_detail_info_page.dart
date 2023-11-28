@@ -21,16 +21,16 @@ class CorpDetailInfoPage extends ConsumerStatefulWidget {
 
 class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
   Future<List<dynamic>> getCorpStockPrice() async {
-    final response = await http.get(
-      Uri.parse("${Keys.forwardURL}/appApi/report/getCorpStockPrice"),
+    final response = await http.post(
+      Uri.parse("${Keys.forwardURL}/appApi/report/getStockPrice"),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },
+      body: jsonEncode({'corpCode': widget.corpCd}),
     );
 
     if (response.statusCode == 200) {
       Map<String, dynamic> cnadleData = json.decode(response.body);
-      print('cnadleData : $cnadleData');
       return cnadleData['value'];
     } else {
       throw Exception();

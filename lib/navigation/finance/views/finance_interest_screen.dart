@@ -278,9 +278,10 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
                               child: Row(
                                 children: [
                                   GestureDetector(
-                                    onTap: () => _selectAccount('매출액'),
+                                    onTap: () => _selectAccount('pAvgType1'),
                                     child: SelectAccountWidget(
-                                      thisAccount: '매출액',
+                                      text: '매출액',
+                                      thisAccount: 'pAvgType1',
                                       accountList: accountList,
                                     ),
                                   ),
@@ -288,9 +289,10 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
                                     width: 7,
                                   ),
                                   GestureDetector(
-                                    onTap: () => _selectAccount('영업이익'),
+                                    onTap: () => _selectAccount('pAvgType2'),
                                     child: SelectAccountWidget(
-                                      thisAccount: '영업이익',
+                                      text: '영업이익',
+                                      thisAccount: 'pAvgType2',
                                       accountList: accountList,
                                     ),
                                   ),
@@ -298,9 +300,10 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
                                     width: 7,
                                   ),
                                   GestureDetector(
-                                    onTap: () => _selectAccount('순이익'),
+                                    onTap: () => _selectAccount('pAvgType3'),
                                     child: SelectAccountWidget(
-                                      thisAccount: '순이익',
+                                      text: '순이익',
+                                      thisAccount: 'pAvgType3',
                                       accountList: accountList,
                                     ),
                                   ),
@@ -308,9 +311,10 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
                                     width: 7,
                                   ),
                                   GestureDetector(
-                                    onTap: () => _selectAccount('EPS'),
+                                    onTap: () => _selectAccount('pAvgType4'),
                                     child: SelectAccountWidget(
-                                      thisAccount: 'EPS',
+                                      text: 'EPS',
+                                      thisAccount: 'pAvgType4',
                                       accountList: accountList,
                                     ),
                                   ),
