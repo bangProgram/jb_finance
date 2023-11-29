@@ -37,6 +37,25 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
     }
   }
 
+  Future<Map<String, dynamic>> getCorpPerform() async {
+    final response = await http.post(
+      Uri.parse("${Keys.forwardURL}/appApi/corp/perform"),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({'pCorpCode': widget.corpCd}),
+    );
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> resData = json.decode(response.body);
+      print('resData1 : ${resData['performList']}');
+      print('resData2 : ${resData['performYear']}');
+      return resData;
+    } else {
+      throw Exception('못가져옴');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenW = MediaQuery.of(context).size.width;
@@ -137,6 +156,7 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                         builder: (context, snapshot) {
                           final chartDataList = snapshot.data;
                           print('chartDataList :$chartDataList');
+                          print('============================================');
 
                           if (chartDataList != null) {
                             List<CandleModel> candleModels = [];
@@ -181,7 +201,7 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                             interval = (maxPrice - minPrice) / 5;
                             print('$minPrice / $maxPrice / $interval');
 
-                            print('chartData : $candleModels');
+                            print('chartData : ${candleModels.length}');
                             return CandlechartWidget(
                               candleModels: candleModels,
                               minPrice: minPrice - interval,
@@ -220,6 +240,7 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                       ),
                     ),
                     Container(
+                      height: 190,
                       padding: const EdgeInsets.symmetric(
                         vertical: 10,
                       ),
@@ -228,9 +249,6 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 14,
-                            ),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
@@ -246,7 +264,7 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                                   ),
                                 ),
                                 const SizedBox(
-                                  height: 24,
+                                  height: 15,
                                 ),
                                 const Text(
                                   '영업이익',
@@ -257,10 +275,21 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                                   ),
                                 ),
                                 const SizedBox(
-                                  height: 24,
+                                  height: 15,
                                 ),
                                 const Text(
                                   '순이익',
+                                  style: TextStyle(
+                                    color: Color(0xFF949494),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                const Text(
+                                  'EPS',
                                   style: TextStyle(
                                     color: Color(0xFF949494),
                                     fontSize: 14,
@@ -271,809 +300,421 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                             ),
                           ),
                           Expanded(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        width: 140,
-                                        padding: const EdgeInsets.symmetric(),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              '2023년',
-                                              style: TextStyle(
+                            child: FutureBuilder(
+                              future: getCorpPerform(),
+                              builder: (context, snapshot) {
+                                final resData = snapshot.data;
+                                if (resData != null) {
+                                  List<dynamic> yearList =
+                                      resData['performYear'];
+                                  List<dynamic> performList =
+                                      resData['performList'];
+                                  return Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15),
+                                    child: ListView.separated(
+                                      scrollDirection: Axis.horizontal,
+                                      separatorBuilder: (context, index) =>
+                                          const SizedBox(width: 15),
+                                      itemCount: yearList.length,
+                                      itemBuilder: (context, index) {
+                                        String curentYear =
+                                            '${yearList[index]['BSNS_YEAR']}';
+
+                                        return SizedBox(
+                                          width: 150,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '$curentYear년',
+                                                style: const TextStyle(
+                                                  color: Color(0xffA8A8A8),
                                                   fontSize: 16,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                            const SizedBox(
-                                              height: 7,
-                                            ),
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                vertical: 14,
-                                              ),
-                                              decoration: const BoxDecoration(
-                                                border: Border(
-                                                  top: BorderSide(
-                                                    color: Color(0xFFD9D9D9),
-                                                    width: 2.0,
-                                                  ),
+                                                  fontWeight: FontWeight.w500,
                                                 ),
                                               ),
-                                              child: const Column(
+                                              const Divider(
+                                                color: Color(0xffD9D9D9),
+                                                thickness: 1,
+                                              ),
+                                              const Row(
                                                 children: [
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          '하반기',
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFA8A8A8),
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      '종합',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        color:
+                                                            Color(0xffA8A8A8),
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500,
                                                       ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '상반기',
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFA8A8A8),
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '총합',
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFA8A8A8),
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
+                                                    ),
                                                   ),
-                                                  SizedBox(
-                                                    height: 24,
+                                                  Expanded(
+                                                    child: Text(
+                                                      '상반기',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        color:
+                                                            Color(0xffA8A8A8),
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
                                                   ),
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      '하반기',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        color:
+                                                            Color(0xffA8A8A8),
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500,
                                                       ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 24,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 24,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
+                                                    ),
                                                   ),
                                                 ],
                                               ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 20,
-                                      ),
-                                      Container(
-                                        width: 130,
-                                        padding: const EdgeInsets.symmetric(),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              '2022년',
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                            const SizedBox(
-                                              height: 7,
-                                            ),
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                vertical: 14,
+                                              const SizedBox(
+                                                height: 15,
                                               ),
-                                              decoration: const BoxDecoration(
-                                                border: Border(
-                                                  top: BorderSide(
-                                                    color: Color(0xFFD9D9D9),
-                                                    width: 2.0,
-                                                  ),
-                                                ),
+                                              for (int i = 0;
+                                                  i < performList.length;
+                                                  i++)
+                                                if (performList[i]
+                                                        ['bsnsYear'] ==
+                                                    curentYear)
+                                                  if (performList[i]
+                                                          ['accoutId'] ==
+                                                      'ifrs-full_Revenue')
+                                                    Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: Text(
+                                                            performList[i][
+                                                                        'amountTotal'] !=
+                                                                    null
+                                                                ? amountTrans(
+                                                                    performList[
+                                                                            i][
+                                                                        'amountTotal'])
+                                                                : '미공시',
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Text(
+                                                            performList[i][
+                                                                        'amountHalf'] !=
+                                                                    null
+                                                                ? amountTrans(
+                                                                    performList[
+                                                                            i][
+                                                                        'amountHalf'])
+                                                                : '미공시',
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Text(
+                                                            performList[i][
+                                                                        'amountYear'] !=
+                                                                    null
+                                                                ? amountTrans(
+                                                                    performList[
+                                                                            i][
+                                                                        'amountYear'])
+                                                                : '미공시',
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                              const SizedBox(
+                                                height: 15,
                                               ),
-                                              child: const Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          '하반기',
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFA8A8A8),
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
+                                              for (int i = 0;
+                                                  i < performList.length;
+                                                  i++)
+                                                if (performList[i]
+                                                        ['bsnsYear'] ==
+                                                    curentYear)
+                                                  if (performList[i]
+                                                          ['accoutId'] ==
+                                                      'dart_OperatingIncomeLoss')
+                                                    Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: Text(
+                                                            performList[i][
+                                                                        'amountTotal'] !=
+                                                                    null
+                                                                ? amountTrans(
+                                                                    performList[
+                                                                            i][
+                                                                        'amountTotal'])
+                                                                : '미공시',
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '상반기',
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFA8A8A8),
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
+                                                        Expanded(
+                                                          child: Text(
+                                                            performList[i][
+                                                                        'amountHalf'] !=
+                                                                    null
+                                                                ? amountTrans(
+                                                                    performList[
+                                                                            i][
+                                                                        'amountHalf'])
+                                                                : '미공시',
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '총합',
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFA8A8A8),
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
+                                                        Expanded(
+                                                          child: Text(
+                                                            performList[i][
+                                                                        'amountYear'] !=
+                                                                    null
+                                                                ? amountTrans(
+                                                                    performList[
+                                                                            i][
+                                                                        'amountYear'])
+                                                                : '미공시',
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 24,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 24,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 24,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
+                                                      ],
+                                                    ),
+                                              const SizedBox(
+                                                height: 15,
                                               ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 20,
-                                      ),
-                                      Container(
-                                        width: 135,
-                                        padding: const EdgeInsets.symmetric(),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              '2021년',
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                            const SizedBox(
-                                              height: 7,
-                                            ),
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                vertical: 14,
+                                              for (int i = 0;
+                                                  i < performList.length;
+                                                  i++)
+                                                if (performList[i]
+                                                        ['bsnsYear'] ==
+                                                    curentYear)
+                                                  if (performList[i]
+                                                          ['accoutId'] ==
+                                                      'ifrs-full_ProfitLoss')
+                                                    Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: Text(
+                                                            performList[i][
+                                                                        'amountTotal'] !=
+                                                                    null
+                                                                ? amountTrans(
+                                                                    performList[
+                                                                            i][
+                                                                        'amountTotal'])
+                                                                : '미공시',
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Text(
+                                                            performList[i][
+                                                                        'amountHalf'] !=
+                                                                    null
+                                                                ? amountTrans(
+                                                                    performList[
+                                                                            i][
+                                                                        'amountHalf'])
+                                                                : '미공시',
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Text(
+                                                            performList[i][
+                                                                        'amountYear'] !=
+                                                                    null
+                                                                ? amountTrans(
+                                                                    performList[
+                                                                            i][
+                                                                        'amountYear'])
+                                                                : '미공시',
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                              const SizedBox(
+                                                height: 15,
                                               ),
-                                              decoration: const BoxDecoration(
-                                                border: Border(
-                                                  top: BorderSide(
-                                                    color: Color(0xFFD9D9D9),
-                                                    width: 2.0,
-                                                  ),
-                                                ),
-                                              ),
-                                              child: const Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          '하반기',
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFA8A8A8),
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
+                                              for (int i = 0;
+                                                  i < performList.length;
+                                                  i++)
+                                                if (performList[i]
+                                                        ['bsnsYear'] ==
+                                                    curentYear)
+                                                  if (performList[i]
+                                                          ['accoutId'] ==
+                                                      'ifrs-full_BasicEarningsLossPerShare')
+                                                    Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: Text(
+                                                            performList[i][
+                                                                        'amountTotal'] !=
+                                                                    null
+                                                                ? amountTrans(
+                                                                    performList[
+                                                                            i][
+                                                                        'amountTotal'])
+                                                                : '미공시',
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '상반기',
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFA8A8A8),
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
+                                                        Expanded(
+                                                          child: Text(
+                                                            performList[i][
+                                                                        'amountHalf'] !=
+                                                                    null
+                                                                ? amountTrans(
+                                                                    performList[
+                                                                            i][
+                                                                        'amountHalf'])
+                                                                : '미공시',
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '총합',
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFA8A8A8),
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
+                                                        Expanded(
+                                                          child: Text(
+                                                            performList[i][
+                                                                        'amountYear'] !=
+                                                                    null
+                                                                ? amountTrans(
+                                                                    performList[
+                                                                            i][
+                                                                        'amountYear'])
+                                                                : '미공시',
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 24,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 24,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 24,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 20,
-                                      ),
-                                      Container(
-                                        width: 135,
-                                        padding: const EdgeInsets.symmetric(),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              '2021년',
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                            const SizedBox(
-                                              height: 7,
-                                            ),
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                vertical: 14,
-                                              ),
-                                              decoration: const BoxDecoration(
-                                                border: Border(
-                                                  top: BorderSide(
-                                                    color: Color(0xFFD9D9D9),
-                                                    width: 2.0,
-                                                  ),
-                                                ),
-                                              ),
-                                              child: const Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          '하반기',
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFA8A8A8),
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '상반기',
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFA8A8A8),
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '총합',
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFA8A8A8),
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 24,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 24,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 24,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '3.9조',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
+                                                      ],
+                                                    ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                } else {
+                                  return const Center(
+                                    child: Text('조회중입니다'),
+                                  );
+                                }
+                              },
                             ),
                           ),
                         ],
@@ -1197,7 +838,7 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                 ),
               ),
               TextButton(
-                onPressed: getCorpStockPrice,
+                onPressed: getCorpPerform,
                 child: const Text('기간별 주가정보 가져오기'),
               ),
             ],

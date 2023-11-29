@@ -26,7 +26,8 @@ class CandlechartWidgetState extends State<CandlechartWidget> {
   late ChartSeriesController _seriesController;
   late ZoomPanBehavior _zoomPanBehavior;
 
-  double _befDx = 0;
+  final double _befDx = 0;
+  bool isZoom = false;
   int lcnt = 0;
   int rcnt = 0;
   int stindex = 0;
@@ -44,11 +45,13 @@ class CandlechartWidgetState extends State<CandlechartWidget> {
     super.initState();
     _trackballBehavior = TrackballBehavior(
       enable: true,
-      activationMode: ActivationMode.singleTap,
-      hideDelay: 2000,
+      activationMode: ActivationMode.longPress,
+      hideDelay: 2500,
+      tooltipDisplayMode: TrackballDisplayMode.groupAllPoints,
     );
     _zoomPanBehavior = ZoomPanBehavior(
       enablePanning: true,
+      enablePinching: true,
     );
   }
 
@@ -64,93 +67,123 @@ class CandlechartWidgetState extends State<CandlechartWidget> {
       body: Center(
         child: SizedBox(
           height: 300,
-          child: SfCartesianChart(
-            zoomPanBehavior: _zoomPanBehavior,
-            trackballBehavior: _trackballBehavior,
-            // Candle 차트를 사용하도록 설정합니다.
-
-            onChartTouchInteractionMove: (tapArgs) {
-              double curDx = tapArgs.position.dx;
-
-              print('tapArgs. : ${tapArgs.position.dx}');
-
-              if (_befDx > curDx) {
-                lcnt++;
-                rcnt = 0;
-              } else {
-                rcnt++;
-                lcnt = 0;
-              }
-
-              if (lcnt == 5) {
-                lcnt = 0;
-                print('최근데이터1 update : ${initCandelModels.length}');
-
-                if (stindex - 1 >= 0) {
-                  stindex--;
-                  edindex--;
-
-                  print('$stindex - $edindex = ${edindex - stindex}');
-                  List<CandleModel> extracted =
-                      totalcandleModels.sublist(stindex, edindex);
-                  initCandelModels = extracted;
-
-                  setState(() {});
-                } else {
-                  return;
-                }
-              } else if (rcnt == 5) {
-                rcnt = 0;
-                print('과거데이터1 update ${initCandelModels.length}');
-
-                if (edindex + 1 < totalcandleModels.length) {
-                  stindex++;
-                  edindex++;
-                  print('$stindex - $edindex = ${edindex - stindex}');
-                  List<CandleModel> extracted =
-                      totalcandleModels.sublist(stindex, edindex);
-                  initCandelModels = extracted;
-                  setState(() {});
-                } else {
-                  return;
-                }
-              }
-
-              //left : dx 내려감
-              //right : dx 올라감
-              // print('$_befDx ?? ${tapArgs.position.dx}');
-              _befDx = tapArgs.position.dx;
-            },
-            series: <ChartSeries>[
-              CandleSeries<CandleModel, DateTime>(
-                onRendererCreated: (controller) {
-                  _seriesController = controller;
+          child: Stack(
+            children: [
+              SfCartesianChart(
+                zoomPanBehavior: _zoomPanBehavior,
+                trackballBehavior: _trackballBehavior,
+                // Candle 차트를 사용하도록 설정합니다.
+                onZooming: (zoomingArgs) {
+                  setState(() {
+                    isZoom = true;
+                  });
+                  print('test $isZoom');
                 },
-                dataSource: initCandelModels,
-                xValueMapper: (CandleModel data, _) => data.date,
-                lowValueMapper: (CandleModel data, _) => data.low,
-                highValueMapper: (CandleModel data, _) => data.high,
-                openValueMapper: (CandleModel data, _) => data.open,
-                closeValueMapper: (CandleModel data, _) => data.close,
-                enableSolidCandles: true,
-                bullColor: Colors.red,
-                bearColor: Colors.blue,
-                xAxisName: '일자',
-                yAxisName: '주가',
+                /* 
+                onChartTouchInteractionMove: (tapArgs) {
+                  double curDx = tapArgs.position.dx;
+                      
+                  if (_befDx > curDx) {
+                    lcnt++;
+                    rcnt = 0;
+                  } else {
+                    rcnt++;
+                    lcnt = 0;
+                  }
+                      
+                  if (lcnt == 5) {
+                    lcnt = 0;
+                      
+                    if (stindex - 1 >= 0) {
+                      stindex--;
+                      edindex--;
+                      
+                      List<CandleModel> extracted =
+                          totalcandleModels.sublist(stindex, edindex);
+                      initCandelModels = extracted;
+                      
+                      setState(() {});
+                    } else {
+                      return;
+                    }
+                  } else if (rcnt == 5) {
+                    rcnt = 0;
+                      
+                    if (edindex + 1 < totalcandleModels.length) {
+                      stindex++;
+                      edindex++;
+                      List<CandleModel> extracted =
+                          totalcandleModels.sublist(stindex, edindex);
+                      initCandelModels = extracted;
+                      setState(() {});
+                    } else {
+                      return;
+                    }
+                  }
+                      
+                  //left : dx 내려감
+                  //right : dx 올라감
+                  // print('$_befDx ?? ${tapArgs.position.dx}');
+                  _befDx = tapArgs.position.dx;
+                },
+                       */
+                series: <ChartSeries>[
+                  CandleSeries<CandleModel, DateTime>(
+                    onRendererCreated: (controller) {
+                      _seriesController = controller;
+                    },
+                    dataSource: totalcandleModels,
+                    xValueMapper: (CandleModel data, _) => data.date,
+                    lowValueMapper: (CandleModel data, _) => data.low,
+                    highValueMapper: (CandleModel data, _) => data.high,
+                    openValueMapper: (CandleModel data, _) => data.open,
+                    closeValueMapper: (CandleModel data, _) => data.close,
+                    enableSolidCandles: true,
+                    bullColor: Colors.red,
+                    bearColor: Colors.blue,
+                    xAxisName: '일자',
+                    yAxisName: '주가',
+                  ),
+                ],
+                primaryXAxis: DateTimeCategoryAxis(
+                  isInversed: true,
+                  tickPosition: TickPosition.inside,
+                  dateFormat: DateFormat.yMd(),
+                  autoScrollingMode: AutoScrollingMode.start,
+                  autoScrollingDeltaType: DateTimeIntervalType.months,
+                  majorGridLines: const MajorGridLines(width: 1),
+                ),
+                primaryYAxis: NumericAxis(
+                  minimum: widget.minPrice,
+                  maximum: widget.maxPrice,
+                  interval: widget.interval,
+                  numberFormat: NumberFormat('#,###', 'ko'),
+                  opposedPosition: true,
+                ),
               ),
+              if (isZoom)
+                Positioned(
+                  right: MediaQuery.of(context).size.width * 0.25,
+                  top: 30,
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _zoomPanBehavior.reset();
+                        isZoom = false;
+                      });
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        border: Border.all(color: Colors.grey, width: 2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Text('reset'),
+                    ),
+                  ),
+                )
             ],
-            primaryXAxis: DateTimeCategoryAxis(
-              isInversed: true,
-              dateFormat: DateFormat.yMd(),
-              majorGridLines: const MajorGridLines(width: 1),
-            ),
-            primaryYAxis: NumericAxis(
-              minimum: widget.minPrice,
-              maximum: widget.maxPrice,
-              interval: widget.interval,
-              numberFormat: NumberFormat(),
-              opposedPosition: true,
-            ),
           ),
         ),
       ),
