@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jb_finance/navigation/finance/view_models/corporation_vm.dart';
+import 'package:jb_finance/navigation/finance/view_models/interest_vm.dart';
 import 'package:jb_finance/navigation/finance/views/finance_corporation_screen.dart';
 import 'package:jb_finance/navigation/finance/views/finance_interest_screen.dart';
 import 'package:jb_finance/utils.dart';
 
-class FinanceScreen extends StatefulWidget {
+class FinanceScreen extends ConsumerStatefulWidget {
   static const String routeName = "finance";
   static const String routeURL = "/finance";
 
   const FinanceScreen({super.key});
 
   @override
-  State<FinanceScreen> createState() => _FinanceScreenState();
+  ConsumerState<FinanceScreen> createState() => _FinanceScreenState();
 }
 
-class _FinanceScreenState extends State<FinanceScreen> {
+class _FinanceScreenState extends ConsumerState<FinanceScreen> {
   @override
   Widget build(BuildContext context) {
     final screenW = MediaQuery.of(context).size.width;
@@ -33,6 +36,13 @@ class _FinanceScreenState extends State<FinanceScreen> {
               labelColor: Colors.black,
               indicatorColor: Colors.black,
               unselectedLabelColor: Colors.black.withOpacity(0.3),
+              onTap: (value) {
+                if (value == 0) {
+                  ref.read(corpProvider.notifier).getCorpList(param: {});
+                } else {
+                  ref.read(interProvider.notifier).getCorpList(param: {});
+                }
+              },
               tabs: const [
                 Tab(
                   child: Text(

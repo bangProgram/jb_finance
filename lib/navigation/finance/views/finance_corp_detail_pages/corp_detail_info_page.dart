@@ -95,7 +95,7 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                         Row(
                           children: [
                             const Text(
-                              '주당 배당금',
+                              '1주당 배당금',
                               style: TextStyle(
                                 color: Color(0xFFA8A8A8),
                                 fontSize: 16,
@@ -106,7 +106,9 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                               width: 15,
                             ),
                             Text(
-                              '${widget.corpDetail['allocationAmount']}',
+                              widget.corpDetail['allocationAmount'] == '-'
+                                  ? widget.corpDetail['allocationAmount']
+                                  : '${NumberFormat('#,###').format(double.parse(widget.corpDetail['allocationAmount']))}원',
                               textAlign: TextAlign.left,
                               style: const TextStyle(
                                 color: Color(0xFF333333),
@@ -233,6 +235,7 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                   vertical: 24,
                 ),
                 child: Column(
+                  mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
@@ -243,7 +246,7 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                       ),
                     ),
                     Container(
-                      height: 190,
+                      height: 220,
                       padding: const EdgeInsets.symmetric(
                         vertical: 10,
                       ),
@@ -325,7 +328,7 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                                             '${yearList[index]['BSNS_YEAR']}';
 
                                         return SizedBox(
-                                          width: 150,
+                                          width: 200,
                                           child: Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.end,

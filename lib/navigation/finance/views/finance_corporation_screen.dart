@@ -4,12 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jb_finance/commons/repos/util_repo.dart';
+import 'package:jb_finance/navigation/finance/repos/interest_repo.dart';
 import 'package:jb_finance/navigation/finance/view_models/corporation_vm.dart';
+import 'package:jb_finance/navigation/finance/view_models/interest_vm.dart';
 import 'package:jb_finance/navigation/finance/views/finance_corp_detail_screen.dart';
 import 'package:jb_finance/navigation/finance/widgets/customPicker.dart';
 import 'package:jb_finance/navigation/finance/widgets/select_account_widget.dart';
 import 'package:jb_finance/navigation/finance/widgets/select_date_widget.dart';
 import 'package:jb_finance/utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FinanceCorpScreen extends ConsumerStatefulWidget {
   const FinanceCorpScreen({super.key});
@@ -28,6 +31,8 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
       milliseconds: 400,
     ),
   );
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  late SharedPreferences prefs;
 
   late final Animation<Offset> _slideAnimation =
       Tween(begin: const Offset(0, 0), end: const Offset(0, -1))
@@ -54,6 +59,11 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
   void initState() {
     super.initState();
     _scrollController.addListener(_filterHide);
+    initPreference();
+  }
+
+  void initPreference() async {
+    prefs = await _prefs;
   }
 
   void _selectAccount(String account) {
@@ -178,14 +188,17 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
     focusOut(context);
   }
 
-  void addInterest(String corpCode) async {
-    setState(() {
-      if (interList.contains(corpCode)) {
-        interList.remove(corpCode);
-      } else {
-        interList.add(corpCode);
-      }
-    });
+  void toggleInterest(String flag, String corpCode) async {
+    print('flag : $flag');
+    if (flag == 'del') {
+      interList.remove(corpCode);
+      ref.read(interProvider.notifier).delInterest({'STOCK_CODE': corpCode});
+    } else {
+      interList.add(corpCode);
+      ref.read(interProvider.notifier).addInterest({'STOCK_CODE': corpCode});
+    }
+    print('interList : $interList');
+    setState(() {});
   }
 
   @override
@@ -354,6 +367,7 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                       accountList: accountList,
                                     ),
                                   ),
+                                  /* 
                                   const SizedBox(
                                     width: 7,
                                   ),
@@ -365,6 +379,7 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                       accountList: accountList,
                                     ),
                                   ),
+                                   */
                                 ],
                               ),
                             ),
@@ -602,6 +617,13 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                     ),
                                     child: Row(
                                       children: [
+                                        const CircleAvatar(
+                                          backgroundColor: Colors.blue,
+                                          radius: 30,
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
                                         Expanded(
                                           child: Column(
                                             crossAxisAlignment:
@@ -609,14 +631,6 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                             children: [
                                               Row(
                                                 children: [
-                                                  const CircleAvatar(
-                                                    backgroundColor:
-                                                        Colors.blue,
-                                                    radius: 20,
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 10,
-                                                  ),
                                                   Expanded(
                                                     child: Text(
                                                       corpData.corpName,
@@ -635,7 +649,12 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                                   ),
                                                   IconButton(
                                                     onPressed: () =>
-                                                        addInterest(
+                                                        toggleInterest(
+                                                            interList.contains(
+                                                                    corpData
+                                                                        .corpCode)
+                                                                ? 'del'
+                                                                : 'add',
                                                             corpData.corpCode),
                                                     icon: SvgPicture.asset(
                                                       interList.contains(
@@ -653,55 +672,14 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.end,
                                                 children: [
-                                                  Column(
-                                                    children: [
-                                                      Container(
-                                                        color:
-                                                            Colors.transparent,
-                                                      ),
-                                                      Text(
-                                                        corpData.edYear!,
-                                                        style: const TextStyle(
-                                                          color:
-                                                              Color(0xFFC4C4C4),
-                                                          fontSize: 14,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 2,
-                                                      ),
-                                                      Text(
-                                                        corpData.stYear!,
-                                                        style: const TextStyle(
-                                                          color:
-                                                              Color(0xFFC4C4C4),
-                                                          fontSize: 14,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 2,
-                                                      ),
-                                                      const Text(
-                                                        '성장률',
-                                                        style: TextStyle(
-                                                          color:
-                                                              Color(0xFFC4C4C4),
-                                                          fontSize: 14,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 10,
-                                                  ),
                                                   Expanded(
                                                     child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
-                                                              .center,
+                                                              .start,
                                                       children: [
                                                         const Text(
-                                                          '매출',
+                                                          '매출액',
                                                           style: TextStyle(
                                                             color: Color(
                                                                 0xFFC4C4C4),
@@ -714,19 +692,6 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                                               ? '적자'
                                                               : amountTrans(corpData
                                                                   .curAmount1!),
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          corpData.befAmount1 ==
-                                                                  null
-                                                              ? '적자'
-                                                              : amountTrans(corpData
-                                                                  .befAmount1!),
                                                           style:
                                                               const TextStyle(
                                                             fontSize: 16,
@@ -749,7 +714,7 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                                                     ? Colors.red
                                                                     : Colors
                                                                         .blue,
-                                                            fontSize: 15,
+                                                            fontSize: 12,
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                           ),
@@ -761,7 +726,7 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                                     child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
-                                                              .center,
+                                                              .start,
                                                       children: [
                                                         const Text(
                                                           '영업이익',
@@ -785,19 +750,6 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                                           ),
                                                         ),
                                                         Text(
-                                                          corpData.befAmount2 ==
-                                                                  null
-                                                              ? '적자'
-                                                              : amountTrans(corpData
-                                                                  .befAmount2!),
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                        Text(
                                                           corpData.avgAmount2 ==
                                                                   null
                                                               ? '적자'
@@ -812,7 +764,7 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                                                     ? Colors.red
                                                                     : Colors
                                                                         .blue,
-                                                            fontSize: 15,
+                                                            fontSize: 12,
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                           ),
@@ -824,7 +776,7 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                                     child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
-                                                              .center,
+                                                              .start,
                                                       children: [
                                                         const Text(
                                                           '순이익',
@@ -848,23 +800,12 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                                           ),
                                                         ),
                                                         Text(
-                                                          corpData.befAmount3 ==
-                                                                  null
-                                                              ? '적자'
-                                                              : amountTrans(corpData
-                                                                  .befAmount3!),
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                        Text(
                                                           corpData.avgAmount3 ==
                                                                   null
                                                               ? '적자'
                                                               : '${corpData.avgAmount3} %',
+                                                          textAlign:
+                                                              TextAlign.end,
                                                           style: TextStyle(
                                                             color: corpData
                                                                         .avgAmount3 ==
@@ -875,70 +816,7 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                                                     ? Colors.red
                                                                     : Colors
                                                                         .blue,
-                                                            fontSize: 15,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        const Text(
-                                                          'EPS',
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFC4C4C4),
-                                                            fontSize: 14,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          corpData.curAmount4 ==
-                                                                  null
-                                                              ? '적자'
-                                                              : amountTrans(corpData
-                                                                  .curAmount4!),
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          corpData.befAmount4 ==
-                                                                  null
-                                                              ? '적자'
-                                                              : amountTrans(corpData
-                                                                  .befAmount4!),
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          corpData.avgAmount4 ==
-                                                                  null
-                                                              ? '적자'
-                                                              : '${corpData.avgAmount4} %',
-                                                          style: TextStyle(
-                                                            color: corpData
-                                                                        .avgAmount4 ==
-                                                                    null
-                                                                ? Colors.black
-                                                                : corpData.avgAmount4 >
-                                                                        0
-                                                                    ? Colors.red
-                                                                    : Colors
-                                                                        .blue,
-                                                            fontSize: 15,
+                                                            fontSize: 12,
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                           ),

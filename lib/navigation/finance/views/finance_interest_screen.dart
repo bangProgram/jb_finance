@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jb_finance/commons/repos/util_repo.dart';
+import 'package:jb_finance/navigation/finance/repos/interest_repo.dart';
 import 'package:jb_finance/navigation/finance/view_models/corporation_vm.dart';
 import 'package:jb_finance/navigation/finance/view_models/interest_vm.dart';
 import 'package:jb_finance/navigation/finance/views/finance_corp_detail_screen.dart';
 import 'package:jb_finance/navigation/finance/widgets/customPicker.dart';
 import 'package:jb_finance/navigation/finance/widgets/select_account_widget.dart';
+import 'package:jb_finance/navigation/finance/widgets/select_date_widget.dart';
 import 'package:jb_finance/utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FinanceInterestScreen extends ConsumerStatefulWidget {
   const FinanceInterestScreen({super.key});
@@ -28,6 +32,8 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
       milliseconds: 400,
     ),
   );
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  late SharedPreferences prefs;
 
   late final Animation<Offset> _slideAnimation =
       Tween(begin: const Offset(0, 0), end: const Offset(0, -1))
@@ -41,18 +47,40 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
 
   List<String> accountList = [];
 
+  List<String> interList = [];
+
+  String stYear = '';
+  String stHalf = '';
+  String edYear = '';
+  String edHalf = '';
+
+  final Map<String, dynamic> _searchModel = {};
+
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_filterHide);
+    initPreference();
+  }
+
+  void initPreference() async {
+    prefs = await _prefs;
+    final prefsData = prefs.getStringList('interList');
+    if (prefsData != null) {
+      setState(() {
+        interList.addAll(prefsData);
+      });
+    }
   }
 
   void _selectAccount(String account) {
     setState(() {
       if (!accountList.contains(account)) {
         accountList.add(account);
+        _searchModel[account] = true;
       } else {
         accountList.remove(account);
+        _searchModel[account] = null;
       }
     });
   }
@@ -106,7 +134,6 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
     //세팅 데이터 db기준 년도, 반기
     List<String> yearList = [];
     List<int> halfCntList = [];
-    Map<String, dynamic> periodData = {};
 
     await Future.forEach(data, (element) {
       String bsnsYear = element['BSNS_YEAR'];
@@ -114,32 +141,71 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
 
       yearList.add(bsnsYear);
       halfCntList.add(reprtCnt);
-      if (periodData['pStYear'] == null && periodData['pEdYear'] == null) {
+      if (_searchModel['pStYear'] == null && _searchModel['pEdYear'] == null) {
         if (reprtCnt == 3) {
-          periodData['pStYear'] = '${int.parse(bsnsYear) - 1}';
-          periodData['pStHalf'] = null;
-          periodData['pEdYear'] = bsnsYear;
-          periodData['pEdHalf'] = null;
+          _searchModel['pStYear'] = '${int.parse(bsnsYear) - 1}';
+          _searchModel['pStHalf'] = null;
+          _searchModel['pEdYear'] = bsnsYear;
+          _searchModel['pEdHalf'] = null;
         }
       }
     });
 
     result['yearList'] = yearList;
     result['halfCntList'] = halfCntList;
-    result['periodData'] = periodData;
+    result['periodData'] = _searchModel;
 
     return result;
   }
 
   void setPeriodData(String type, String period, String? value) {
     if (period == 'St') {
-      print('$period $type $value');
+      if (type == 'Year') {
+        _searchModel['pStYear'] = value;
+      } else {
+        _searchModel['pStHalf'] = value;
+      }
     } else {
-      print('$period $type $value');
+      if (type == 'Year') {
+        _searchModel['pEdYear'] = value;
+      } else {
+        _searchModel['pEdHalf'] = value;
+      }
     }
   }
 
-  void selectCorpList() {}
+  void selectCorpList() async {
+    _searchModel['searchType'] = 'year';
+    if (_searchModel['pStHalf'] != null) {
+      if (_searchModel['pEdHalf'] == null) {
+        serverMessage(context, '종료 반기 조회기간을 확인해주세요.');
+        return;
+      }
+      _searchModel['searchType'] = 'half';
+    } else if (_searchModel['pEdHalf'] != null) {
+      if (_searchModel['pStHalf'] == null) {
+        serverMessage(context, '시작 반기 조회기간을 확인해주세요.');
+        return;
+      }
+      _searchModel['searchType'] = 'half';
+    }
+
+    print('_searchModel : $_searchModel');
+    await ref.read(interProvider.notifier).getCorpList(param: _searchModel);
+    focusOut(context);
+  }
+
+  void toggleInterest(String flag, String corpCode) async {
+    if (flag == 'del') {
+      interList.remove(corpCode);
+      ref.read(interProvider.notifier).delInterest({'STOCK_CODE': corpCode});
+    } else {
+      interList.add(corpCode);
+      ref.read(interProvider.notifier).addInterest({'STOCK_CODE': corpCode});
+    }
+
+    setState(() {});
+  }
 
   @override
   void dispose() {
@@ -307,6 +373,7 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
                                       accountList: accountList,
                                     ),
                                   ),
+                                  /* 
                                   const SizedBox(
                                     width: 7,
                                   ),
@@ -318,6 +385,7 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
                                       accountList: accountList,
                                     ),
                                   ),
+                                   */
                                 ],
                               ),
                             ),
@@ -356,16 +424,20 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
                               ),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: const TextField(
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                              ),
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
+                            child: TextField(
+                                keyboardType: TextInputType.number,
+                                maxLength: 3,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  counterText: '',
+                                ),
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                onChanged: (value) {
+                                  _searchModel['pAvgValue'] = value;
+                                }),
                           ),
                           const SizedBox(
                             width: 10,
@@ -376,6 +448,59 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
                               fontSize: 16,
                               fontWeight: FontWeight.w400,
                             ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 13,
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            width: 50,
+                            alignment: Alignment.centerLeft,
+                            child: const Text(
+                              '기업명',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              height: 38,
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: const Color(0xFFEFEFEF),
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: TextField(
+                                maxLength: 15,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  counterText: '',
+                                ),
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                onChanged: (value) {
+                                  _searchModel['pCorpName'] = value;
+                                },
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
                           ),
                         ],
                       ),
@@ -428,7 +553,7 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Text(
-                            '* 최근 1년 기준',
+                            '*조회기간 : $stYear $stHalf ~ $edYear $edHalf',
                             style: TextStyle(
                               color: Colors.black.withOpacity(0.3),
                               fontSize: 14,
@@ -451,36 +576,48 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
         width: screenW,
         child: Stack(
           children: [
-            Column(
-              children: [
-                Expanded(
-                    child: ref.watch(interProvider).when(
-                          error: (error, stackTrace) {
-                            return Center(
-                              child: Text('$error'),
-                            );
-                          },
-                          loading: () => const Center(
-                            child: CircularProgressIndicator.adaptive(),
-                          ),
-                          data: (data) {
-                            final corpList = data;
-                            return ListView.builder(
+            Positioned.fill(
+              child: ref.watch(interProvider).when(
+                    error: (error, stackTrace) {
+                      return Center(
+                        child: Text('에러? $error'),
+                      );
+                    },
+                    loading: () => const Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    ),
+                    data: (data) {
+                      final corpList = data;
+                      stYear = data.first.stYear!;
+                      edYear = data.first.edYear!;
+                      stHalf = data.first.stHalf ?? '';
+                      edHalf = data.first.edHalf ?? '';
+
+                      return corpList.first.corpName == ""
+                          ? const Center(
+                              child: Text('만족하는 사업장이 없습니다'),
+                            )
+                          : ListView.builder(
                               controller: _scrollController,
                               scrollDirection: Axis.vertical,
                               itemCount: corpList.length,
                               itemBuilder: (context, index) {
                                 final corpData = corpList[index];
+                                final interCorpCode = corpData.isInterest;
+                                if (interCorpCode != null) {
+                                  interList.add(interCorpCode);
+                                }
 
                                 return GestureDetector(
                                   onTap: () => _goCorpDetailScreen(
                                       corpData.corpName, corpData.corpCode),
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 20,
+                                      vertical: 10,
                                       horizontal: 15,
                                     ),
                                     decoration: const BoxDecoration(
+                                      color: Color(0xFFFFFFFF),
                                       border: Border(
                                         top: BorderSide(
                                           color: Color(0xFFEFEFEF),
@@ -492,14 +629,13 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
                                       children: [
                                         const CircleAvatar(
                                           backgroundColor: Colors.blue,
-                                          radius: 35,
+                                          radius: 30,
                                         ),
                                         const SizedBox(
                                           width: 10,
                                         ),
                                         Expanded(
                                           child: Column(
-                                            mainAxisSize: MainAxisSize.min,
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
@@ -517,26 +653,42 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
                                                   ),
                                                   IconButton(
                                                     onPressed: () {},
-                                                    icon: const FaIcon(
-                                                      FontAwesomeIcons.heart,
-                                                      size: 24,
+                                                    icon: SvgPicture.asset(
+                                                      'assets/svgs/icons/Icon_money_inact.svg',
+                                                    ),
+                                                  ),
+                                                  IconButton(
+                                                    onPressed: () =>
+                                                        toggleInterest(
+                                                            interList.contains(
+                                                                    corpData
+                                                                        .corpCode)
+                                                                ? 'del'
+                                                                : 'add',
+                                                            corpData.corpCode),
+                                                    icon: SvgPicture.asset(
+                                                      interList.contains(
+                                                              corpData.corpCode)
+                                                          ? 'assets/svgs/icons/Icon_heart_act.svg'
+                                                          : 'assets/svgs/icons/Icon_heart_inact.svg',
                                                     ),
                                                   ),
                                                 ],
                                               ),
-                                              const FractionallySizedBox(
-                                                widthFactor: 0.9,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Column(
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
+                                                children: [
+                                                  Expanded(
+                                                    child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
                                                               .start,
                                                       children: [
-                                                        Text(
+                                                        const Text(
                                                           '매출액',
                                                           style: TextStyle(
                                                             color: Color(
@@ -545,21 +697,48 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
                                                           ),
                                                         ),
                                                         Text(
-                                                          '3조 9천억',
-                                                          style: TextStyle(
+                                                          corpData.curAmount1 ==
+                                                                  null
+                                                              ? '적자'
+                                                              : amountTrans(corpData
+                                                                  .curAmount1!),
+                                                          style:
+                                                              const TextStyle(
                                                             fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          corpData.avgAmount1 ==
+                                                                  null
+                                                              ? '적자'
+                                                              : '${corpData.avgAmount1} %',
+                                                          style: TextStyle(
+                                                            color: corpData
+                                                                        .avgAmount1 ==
+                                                                    null
+                                                                ? Colors.black
+                                                                : corpData.avgAmount1 >
+                                                                        0
+                                                                    ? Colors.red
+                                                                    : Colors
+                                                                        .blue,
+                                                            fontSize: 12,
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                           ),
                                                         ),
                                                       ],
                                                     ),
-                                                    Column(
+                                                  ),
+                                                  Expanded(
+                                                    child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
                                                               .start,
                                                       children: [
-                                                        Text(
+                                                        const Text(
                                                           '영업이익',
                                                           style: TextStyle(
                                                             color: Color(
@@ -568,21 +747,48 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
                                                           ),
                                                         ),
                                                         Text(
-                                                          '1조 3천억',
-                                                          style: TextStyle(
+                                                          corpData.curAmount2 ==
+                                                                  null
+                                                              ? '적자'
+                                                              : amountTrans(corpData
+                                                                  .curAmount2!),
+                                                          style:
+                                                              const TextStyle(
                                                             fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          corpData.avgAmount2 ==
+                                                                  null
+                                                              ? '적자'
+                                                              : '${corpData.avgAmount2} %',
+                                                          style: TextStyle(
+                                                            color: corpData
+                                                                        .avgAmount2 ==
+                                                                    null
+                                                                ? Colors.black
+                                                                : corpData.avgAmount2 >
+                                                                        0
+                                                                    ? Colors.red
+                                                                    : Colors
+                                                                        .blue,
+                                                            fontSize: 12,
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                           ),
                                                         ),
                                                       ],
                                                     ),
-                                                    Column(
+                                                  ),
+                                                  Expanded(
+                                                    child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
                                                               .start,
                                                       children: [
-                                                        Text(
+                                                        const Text(
                                                           '순이익',
                                                           style: TextStyle(
                                                             color: Color(
@@ -591,18 +797,45 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
                                                           ),
                                                         ),
                                                         Text(
-                                                          '3천 3백만',
-                                                          style: TextStyle(
+                                                          corpData.curAmount3 ==
+                                                                  null
+                                                              ? '적자'
+                                                              : amountTrans(corpData
+                                                                  .curAmount3!),
+                                                          style:
+                                                              const TextStyle(
                                                             fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          corpData.avgAmount3 ==
+                                                                  null
+                                                              ? '적자'
+                                                              : '${corpData.avgAmount3} %',
+                                                          textAlign:
+                                                              TextAlign.end,
+                                                          style: TextStyle(
+                                                            color: corpData
+                                                                        .avgAmount3 ==
+                                                                    null
+                                                                ? Colors.black
+                                                                : corpData.avgAmount3 >
+                                                                        0
+                                                                    ? Colors.red
+                                                                    : Colors
+                                                                        .blue,
+                                                            fontSize: 12,
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                           ),
                                                         ),
                                                       ],
                                                     ),
-                                                  ],
-                                                ),
-                                              )
+                                                  ),
+                                                ],
+                                              ),
                                             ],
                                           ),
                                         )
@@ -612,9 +845,8 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
                                 );
                               },
                             );
-                          },
-                        )),
-              ],
+                    },
+                  ),
             ),
             if (isToggle)
               Positioned(

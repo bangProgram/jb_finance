@@ -103,7 +103,9 @@ class _FinanceCorpDetailScreenState extends State<FinanceCorpDetailScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              '${clsPrice['BEF_CLS_PRICE']}',
+                              clsPrice == null
+                                  ? '73,000'
+                                  : '${clsPrice['BEF_CLS_PRICE']}',
                               style: const TextStyle(
                                 color: Colors.red,
                                 fontSize: 18,
