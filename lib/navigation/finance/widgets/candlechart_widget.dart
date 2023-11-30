@@ -46,12 +46,13 @@ class CandlechartWidgetState extends State<CandlechartWidget> {
     _trackballBehavior = TrackballBehavior(
       enable: true,
       activationMode: ActivationMode.longPress,
-      hideDelay: 2500,
+      hideDelay: 2000,
       tooltipDisplayMode: TrackballDisplayMode.groupAllPoints,
     );
     _zoomPanBehavior = ZoomPanBehavior(
       enablePanning: true,
       enablePinching: true,
+      maximumZoomLevel: 0.15,
     );
   }
 
@@ -77,7 +78,7 @@ class CandlechartWidgetState extends State<CandlechartWidget> {
                   setState(() {
                     isZoom = true;
                   });
-                  print('test $isZoom');
+                  // print('test $isZoom');
                 },
                 /* 
                 onChartTouchInteractionMove: (tapArgs) {
@@ -149,8 +150,6 @@ class CandlechartWidgetState extends State<CandlechartWidget> {
                   isInversed: true,
                   tickPosition: TickPosition.inside,
                   dateFormat: DateFormat.yMd(),
-                  autoScrollingMode: AutoScrollingMode.start,
-                  autoScrollingDeltaType: DateTimeIntervalType.months,
                   majorGridLines: const MajorGridLines(width: 1),
                 ),
                 primaryYAxis: NumericAxis(

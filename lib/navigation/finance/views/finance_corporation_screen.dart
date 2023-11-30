@@ -41,6 +41,8 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
 
   List<String> accountList = [];
 
+  List<String> interList = [];
+
   String stYear = '';
   String stHalf = '';
   String edYear = '';
@@ -98,11 +100,11 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
     setState(() {});
   }
 
-  void _goCorpDetailScreen(String corpNm, String corpCd) {
+  void _goCorpDetailScreen(String corpNm, String corpCode) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) =>
-            FinanceCorpDetailScreen(corpNm: corpNm, corpCd: corpCd),
+            FinanceCorpDetailScreen(corpNm: corpNm, corpCode: corpCode),
       ),
     );
   }
@@ -174,6 +176,16 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
     print('_searchModel : $_searchModel');
     await ref.read(corpProvider.notifier).getCorpList(param: _searchModel);
     focusOut(context);
+  }
+
+  void addInterest(String corpCode) async {
+    setState(() {
+      if (interList.contains(corpCode)) {
+        interList.remove(corpCode);
+      } else {
+        interList.add(corpCode);
+      }
+    });
   }
 
   @override
@@ -622,9 +634,14 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                                     ),
                                                   ),
                                                   IconButton(
-                                                    onPressed: () {},
+                                                    onPressed: () =>
+                                                        addInterest(
+                                                            corpData.corpCode),
                                                     icon: SvgPicture.asset(
-                                                      'assets/svgs/icons/Icon_heart_inact.svg',
+                                                      interList.contains(
+                                                              corpData.corpCode)
+                                                          ? 'assets/svgs/icons/Icon_heart_act.svg'
+                                                          : 'assets/svgs/icons/Icon_heart_inact.svg',
                                                     ),
                                                   ),
                                                 ],

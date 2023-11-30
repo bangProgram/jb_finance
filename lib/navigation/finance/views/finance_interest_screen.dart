@@ -89,11 +89,11 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
     setState(() {});
   }
 
-  void _goCorpDetailScreen(String corpNm, String corpCd) {
+  void _goCorpDetailScreen(String corpNm, String corpCode) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) =>
-            FinanceCorpDetailScreen(corpNm: corpNm, corpCd: corpCd),
+            FinanceCorpDetailScreen(corpNm: corpNm, corpCode: corpCode),
       ),
     );
   }

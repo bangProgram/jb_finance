@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:jb_finance/navigation/finance/models/page_models/candel_model.dart';
 import 'package:jb_finance/navigation/finance/widgets/candlechart_widget.dart';
 import 'package:jb_finance/navigation/finance/widgets/naver_finance_crolling_app.dart';
@@ -13,7 +14,9 @@ import 'package:jb_finance/utils.dart';
 
 class CorpDetailInfoPage extends ConsumerStatefulWidget {
   final String corpCd;
-  const CorpDetailInfoPage({super.key, required this.corpCd});
+  final Map<String, dynamic> corpDetail;
+  const CorpDetailInfoPage(
+      {super.key, required this.corpCd, required this.corpDetail});
 
   @override
   ConsumerState<CorpDetailInfoPage> createState() => _CorpDetailInfoPageState();
@@ -73,17 +76,17 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                 padding: const EdgeInsets.symmetric(
                   vertical: 20,
                 ),
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       '배당수익률',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 22,
                     ),
                     Row(
@@ -91,7 +94,7 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                       children: [
                         Row(
                           children: [
-                            Text(
+                            const Text(
                               '주당 배당금',
                               style: TextStyle(
                                 color: Color(0xFFA8A8A8),
@@ -99,13 +102,13 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 15,
                             ),
                             Text(
-                              '1,416원',
+                              '${widget.corpDetail['allocationAmount']}',
                               textAlign: TextAlign.left,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Color(0xFF333333),
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
@@ -115,7 +118,7 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                         ),
                         Row(
                           children: [
-                            Text(
+                            const Text(
                               '배당 수익률',
                               style: TextStyle(
                                 color: Color(0xFFA8A8A8),
@@ -123,13 +126,13 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 15,
                             ),
                             Text(
-                              '3.70%',
+                              '${widget.corpDetail['allocationAvg']}%',
                               textAlign: TextAlign.left,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Color(0xFF333333),
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,

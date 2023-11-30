@@ -23,7 +23,7 @@ class CustomPicker extends StatefulWidget {
 class _CustomPickerState extends State<CustomPicker> {
   List halfNm = ['전체', '상반기', '하반기'];
 
-  List halfCd = [null, '0302', '0301'];
+  List halfCd = [null, '0302', '0304'];
 
   int halfCnt = 3;
 
