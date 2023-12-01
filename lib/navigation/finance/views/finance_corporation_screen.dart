@@ -49,6 +49,9 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
   bool isMove = false;
 
   List<String> accountList = [];
+  List<String> yearList = [];
+  List<int> halfCntList = [];
+  Map<String, dynamic> periodData = {};
 
   String stYear = '';
   String stHalf = '';
@@ -61,6 +64,7 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
   void initState() {
     super.initState();
     _scrollController.addListener(_filterHide);
+    getYearList();
   }
 
   void _selectAccount(String account) {
@@ -116,18 +120,15 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
     );
   }
 
-  Future<Map<String, dynamic>> getYearList() async {
+  void getYearList() async {
     final response = await ref.read(utilRepo).getYearList();
-    final List<dynamic> data = response['yearList'];
+    final List<dynamic> resData = response['yearList'];
 
-    Map<String, dynamic> result = {};
     //세팅 데이터 db기준 년도, 반기
-    List<String> yearList = [];
-    List<int> halfCntList = [];
 
-    await Future.forEach(data, (element) {
-      String bsnsYear = element['BSNS_YEAR'];
-      int reprtCnt = element['REPRT_CNT'];
+    resData.map((data) {
+      String bsnsYear = data['BSNS_YEAR'];
+      int reprtCnt = data['REPRT_CNT'];
 
       yearList.add(bsnsYear);
       halfCntList.add(reprtCnt);
@@ -139,13 +140,10 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
           _searchModel['pEdHalf'] = null;
         }
       }
-    });
 
-    result['yearList'] = yearList;
-    result['halfCntList'] = halfCntList;
-    result['periodData'] = _searchModel;
-
-    return result;
+      periodData = _searchModel;
+    }).toList();
+    setState(() {});
   }
 
   void setPeriodData(String type, String period, String? value) {
@@ -235,28 +233,12 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                 children: [
                                   Row(
                                     children: [
-                                      FutureBuilder(
-                                        future: getYearList(),
-                                        builder: (context, snapshot) {
-                                          final result = snapshot.data;
-                                          if (result != null) {
-                                            final yearList = result['yearList'];
-                                            final halfCntList =
-                                                result['halfCntList'];
-                                            final periodData =
-                                                result['periodData'];
-
-                                            return CustomPicker(
-                                              period: 'St',
-                                              curData: periodData,
-                                              yearList: yearList,
-                                              halfCntList: halfCntList,
-                                              setPeriodData: setPeriodData,
-                                            );
-                                          } else {
-                                            return Container();
-                                          }
-                                        },
+                                      CustomPicker(
+                                        period: 'St',
+                                        curData: periodData,
+                                        yearList: yearList,
+                                        halfCntList: halfCntList,
+                                        setPeriodData: setPeriodData,
                                       ),
                                     ],
                                   ),
@@ -269,28 +251,12 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                   ),
                                   Row(
                                     children: [
-                                      FutureBuilder(
-                                        future: getYearList(),
-                                        builder: (context, snapshot) {
-                                          final result = snapshot.data;
-                                          if (result != null) {
-                                            final yearList = result['yearList'];
-                                            final halfCntList =
-                                                result['halfCntList'];
-                                            final periodData =
-                                                result['periodData'];
-
-                                            return CustomPicker(
-                                              period: 'Ed',
-                                              curData: periodData,
-                                              yearList: yearList,
-                                              halfCntList: halfCntList,
-                                              setPeriodData: setPeriodData,
-                                            );
-                                          } else {
-                                            return Container();
-                                          }
-                                        },
+                                      CustomPicker(
+                                        period: 'Ed',
+                                        curData: periodData,
+                                        yearList: yearList,
+                                        halfCntList: halfCntList,
+                                        setPeriodData: setPeriodData,
                                       ),
                                     ],
                                   ),

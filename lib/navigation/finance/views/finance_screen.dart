@@ -34,9 +34,14 @@ class _FinanceScreenState extends ConsumerState<FinanceScreen> {
 
   void initPreference() async {
     prefs = await _prefs;
-    final interData = prefs.getStringList('interList');
-    if (interData != null) {
-      interList.addAll(interData);
+    final initInterData =
+        await ref.read(interProvider.notifier).initinterList();
+    int initInterCnt = initInterData['initCnt'];
+    if (initInterCnt > 0) {
+      final List<dynamic> initInterList = initInterData['initList'];
+      initInterList.map((data) {
+        interList.add('${data['STOCK_CODE']}');
+      }).toList();
     }
   }
 
@@ -51,11 +56,9 @@ class _FinanceScreenState extends ConsumerState<FinanceScreen> {
 
     if (flag == 'del') {
       interList.remove(corpCode);
-      prefs.setStringList('interList', interList);
       ref.read(interProvider.notifier).delInterest({'STOCK_CODE': corpCode});
     } else {
       interList.add(corpCode);
-      prefs.setStringList('interList', interList);
       ref.read(interProvider.notifier).addInterest({'STOCK_CODE': corpCode});
     }
     setState(() {});

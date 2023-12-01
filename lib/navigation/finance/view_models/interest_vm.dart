@@ -70,6 +70,11 @@ class InterestVM extends AsyncNotifier<List<CorporationModel>> {
 
     await getCorpList(param: {});
   }
+
+  Future<Map<String, dynamic>> initinterList() async {
+    final initData = await _interestRepo.initinterList();
+    return initData;
+  }
 }
 
 final interProvider = AsyncNotifierProvider<InterestVM, List<CorporationModel>>(

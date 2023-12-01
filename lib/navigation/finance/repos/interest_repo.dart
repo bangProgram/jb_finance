@@ -51,6 +51,22 @@ class InterestRepo {
       throw Exception('관심종목 삭제 실패');
     }
   }
+
+  Future<Map<String, dynamic>> initinterList() async {
+    final response = await http.get(
+      Uri.parse("${Keys.forwardURL}/appApi/inter/init"),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    print('reponse : ${response.request}');
+    if (response.statusCode == 200) {
+      Map<String, dynamic> rsData = json.decode(response.body);
+      return rsData;
+    } else {
+      throw Exception('관심종목 삭제 실패');
+    }
+  }
 }
 
 final interestRepo = Provider((ref) => InterestRepo());

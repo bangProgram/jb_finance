@@ -49,6 +49,7 @@ class _AssetmanageListPageState extends ConsumerState<AssetmanageListPage> {
                           vertical: 15,
                         ),
                         child: Column(
+                          mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
@@ -59,245 +60,102 @@ class _AssetmanageListPageState extends ConsumerState<AssetmanageListPage> {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      child: Flex(
-                                        direction: Axis.horizontal,
-                                        children: [
-                                          const Flexible(
-                                            fit: FlexFit.tight,
-                                            flex: 1,
-                                            child: Spacer(),
-                                          ),
-                                          Flexible(
-                                            fit: FlexFit.tight,
-                                            flex: 2,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                Text(
-                                                  '${NumberFormat('#,###').format(assetData.valPrice)} 원',
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                                const Text(
-                                                  '평가손익',
-                                                  style: TextStyle(
-                                                    color: Color(0xffC4C4C4),
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  assetData.holdQuantity == 0
-                                                      ? '-- %'
-                                                      : '${NumberFormat('#,###.##').format(((assetData.befClsPrice / assetData.avgPrice) - 1) * 100)} %',
-                                                  style: TextStyle(
-                                                    color: assetData
-                                                                .holdQuantity ==
-                                                            0
-                                                        ? Colors.black
-                                                        : ((assetData.befClsPrice /
-                                                                            assetData.avgPrice) -
-                                                                        1) *
-                                                                    100 >
-                                                                0
-                                                            ? Colors.red
-                                                            : Colors.blue,
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                                const Text(
-                                                  '손익률',
-                                                  style: TextStyle(
-                                                    color: Color(0xffC4C4C4),
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Flexible(
-                                            fit: FlexFit.tight,
-                                            flex: 2,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                Text(
-                                                  '${assetData.holdQuantity} 주',
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                                const Text(
-                                                  '보유주수',
-                                                  style: TextStyle(
-                                                    color: Color(0xffC4C4C4),
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  '${NumberFormat('#,###').format(assetData.avgPrice)} 원',
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                                const Text(
-                                                  '평균단가',
-                                                  style: TextStyle(
-                                                    color: Color(0xffC4C4C4),
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-/* 
-                                  Row(
+                            Row(
+                              children: [
+                                Flexible(
+                                  fit: FlexFit.tight,
+                                  flex: 1,
+                                  child: Container(),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      const Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '평가손익',
-                                            style: TextStyle(
-                                              color: Color(0xffC4C4C4),
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            '손익률',
-                                            style: TextStyle(
-                                              color: Color(0xffC4C4C4),
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ],
+                                      Text(
+                                        '${NumberFormat('#,###').format(assetData.valPrice)} 원',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
-                                      const SizedBox(
-                                        width: 10,
+                                      const Text(
+                                        '평가손익',
+                                        style: TextStyle(
+                                          color: Color(0xffC4C4C4),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            NumberFormat('#,###')
-                                                .format(assetData.valPrice),
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            NumberFormat('#,###.##').format(
-                                                ((assetData.befClsPrice /
-                                                            assetData
-                                                                .avgPrice) -
-                                                        1) *
-                                                    100),
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ],
+                                      Text(
+                                        assetData.holdQuantity == 0
+                                            ? '-- %'
+                                            : '${NumberFormat('#,###.##').format(((assetData.befClsPrice / assetData.avgPrice) - 1) * 100)} %',
+                                        style: TextStyle(
+                                          color: assetData.holdQuantity == 0
+                                              ? Colors.black
+                                              : ((assetData.befClsPrice /
+                                                                  assetData
+                                                                      .avgPrice) -
+                                                              1) *
+                                                          100 >
+                                                      0
+                                                  ? Colors.red
+                                                  : Colors.blue,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      const Text(
+                                        '손익률',
+                                        style: TextStyle(
+                                          color: Color(0xffC4C4C4),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(
-                                    width: 35,
-                                  ),
-                                  Row(
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      const Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '보유주수',
-                                            style: TextStyle(
-                                              color: Color(0xffC4C4C4),
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            '평균단가',
-                                            style: TextStyle(
-                                              color: Color(0xffC4C4C4),
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ],
+                                      Text(
+                                        '${assetData.holdQuantity} 주',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
-                                      const SizedBox(
-                                        width: 10,
+                                      const Text(
+                                        '보유주수',
+                                        style: TextStyle(
+                                          color: Color(0xffC4C4C4),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '${assetData.holdQuantity}',
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            NumberFormat('#,###')
-                                                .format(assetData.avgPrice),
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ],
+                                      Text(
+                                        '${NumberFormat('#,###').format(assetData.avgPrice)} 원',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      const Text(
+                                        '평균단가',
+                                        style: TextStyle(
+                                          color: Color(0xffC4C4C4),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
                                     ],
-                                  )
-                                   */
-                                ],
-                              ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
