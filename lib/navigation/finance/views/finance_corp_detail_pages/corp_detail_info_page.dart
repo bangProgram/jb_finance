@@ -108,7 +108,7 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                             Text(
                               widget.corpDetail['allocationAmount'] == '-'
                                   ? widget.corpDetail['allocationAmount']
-                                  : '${NumberFormat('#,###').format(double.parse(widget.corpDetail['allocationAmount']))}원',
+                                  : '연 ${NumberFormat('#,###').format(double.parse(widget.corpDetail['allocationAmount']))}원',
                               textAlign: TextAlign.left,
                               style: const TextStyle(
                                 color: Color(0xFF333333),
@@ -132,7 +132,7 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                               width: 15,
                             ),
                             Text(
-                              '${widget.corpDetail['allocationAvg']}%',
+                              '연 ${widget.corpDetail['allocationAvg']}%',
                               textAlign: TextAlign.left,
                               style: const TextStyle(
                                 color: Color(0xFF333333),
@@ -160,8 +160,6 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                         future: getCorpStockPrice(),
                         builder: (context, snapshot) {
                           final chartDataList = snapshot.data;
-                          print('chartDataList :$chartDataList');
-                          print('============================================');
 
                           if (chartDataList != null) {
                             List<CandleModel> candleModels = [];

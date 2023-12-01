@@ -15,7 +15,13 @@ import 'package:jb_finance/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FinanceCorpScreen extends ConsumerStatefulWidget {
-  const FinanceCorpScreen({super.key});
+  final List<String> interList;
+  final Function(String, String) toggleFunc;
+  const FinanceCorpScreen({
+    super.key,
+    required this.interList,
+    required this.toggleFunc,
+  });
 
   @override
   ConsumerState<FinanceCorpScreen> createState() => _FinanceCorpScreenState();
@@ -31,8 +37,6 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
       milliseconds: 400,
     ),
   );
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  late SharedPreferences prefs;
 
   late final Animation<Offset> _slideAnimation =
       Tween(begin: const Offset(0, 0), end: const Offset(0, -1))
@@ -46,8 +50,6 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
 
   List<String> accountList = [];
 
-  List<String> interList = [];
-
   String stYear = '';
   String stHalf = '';
   String edYear = '';
@@ -59,11 +61,6 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
   void initState() {
     super.initState();
     _scrollController.addListener(_filterHide);
-    initPreference();
-  }
-
-  void initPreference() async {
-    prefs = await _prefs;
   }
 
   void _selectAccount(String account) {
@@ -186,19 +183,6 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
     print('_searchModel : $_searchModel');
     await ref.read(corpProvider.notifier).getCorpList(param: _searchModel);
     focusOut(context);
-  }
-
-  void toggleInterest(String flag, String corpCode) async {
-    print('flag : $flag');
-    if (flag == 'del') {
-      interList.remove(corpCode);
-      ref.read(interProvider.notifier).delInterest({'STOCK_CODE': corpCode});
-    } else {
-      interList.add(corpCode);
-      ref.read(interProvider.notifier).addInterest({'STOCK_CODE': corpCode});
-    }
-    print('interList : $interList');
-    setState(() {});
   }
 
   @override
@@ -649,15 +633,16 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                                                   ),
                                                   IconButton(
                                                     onPressed: () =>
-                                                        toggleInterest(
-                                                            interList.contains(
-                                                                    corpData
-                                                                        .corpCode)
+                                                        widget.toggleFunc(
+                                                            widget.interList
+                                                                    .contains(
+                                                                        corpData
+                                                                            .corpCode)
                                                                 ? 'del'
                                                                 : 'add',
                                                             corpData.corpCode),
                                                     icon: SvgPicture.asset(
-                                                      interList.contains(
+                                                      widget.interList.contains(
                                                               corpData.corpCode)
                                                           ? 'assets/svgs/icons/Icon_heart_act.svg'
                                                           : 'assets/svgs/icons/Icon_heart_inact.svg',

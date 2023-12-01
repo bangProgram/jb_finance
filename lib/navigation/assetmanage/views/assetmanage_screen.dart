@@ -130,54 +130,62 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                       Row(
                                         children: [
                                           Expanded(
-                                            child: Container(
-                                              height: 50,
-                                              clipBehavior: Clip.hardEdge,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                              child: Flex(
-                                                direction: Axis.horizontal,
-                                                children: [
-                                                  Flexible(
-                                                    flex: data.investAmount > 0
-                                                        ? ((data.investAmount /
-                                                                    totalAmount) *
-                                                                100)
-                                                            .round()
-                                                        : 1,
-                                                    child: Container(
-                                                      color: Colors.red,
-                                                    ),
-                                                  ),
-                                                  Flexible(
-                                                    flex: data.depositAmount > 0
-                                                        ? ((data.depositAmount /
-                                                                    totalAmount) *
-                                                                100)
-                                                            .round()
-                                                        : 1,
-                                                    child: Container(
+                                            child: totalAmount == 0
+                                                ? Container(
+                                                    height: 50,
+                                                    clipBehavior: Clip.hardEdge,
+                                                    decoration: BoxDecoration(
                                                       color: const Color(
-                                                          0xffFFC84D),
+                                                          0xffE7E7E7),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                    ),
+                                                  )
+                                                : Container(
+                                                    height: 50,
+                                                    clipBehavior: Clip.hardEdge,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                    ),
+                                                    child: Flex(
+                                                      direction:
+                                                          Axis.horizontal,
+                                                      children: [
+                                                        Flexible(
+                                                          flex: ((data.investAmount /
+                                                                      totalAmount) *
+                                                                  100)
+                                                              .round(),
+                                                          child: Container(
+                                                            color: Colors.red,
+                                                          ),
+                                                        ),
+                                                        Flexible(
+                                                          flex: ((data.depositAmount /
+                                                                      totalAmount) *
+                                                                  100)
+                                                              .round(),
+                                                          child: Container(
+                                                            color: const Color(
+                                                                0xffFFC84D),
+                                                          ),
+                                                        ),
+                                                        Flexible(
+                                                          flex: ((data.reserveAmount /
+                                                                      totalAmount) *
+                                                                  100)
+                                                              .round(),
+                                                          child: Container(
+                                                            color: const Color(
+                                                                0xFF2DB400),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
-                                                  Flexible(
-                                                    flex: data.reserveAmount > 0
-                                                        ? ((data.reserveAmount /
-                                                                    totalAmount) *
-                                                                100)
-                                                            .round()
-                                                        : 1,
-                                                    child: Container(
-                                                      color: const Color(
-                                                          0xFF2DB400),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
                                           ),
                                         ],
                                       ),

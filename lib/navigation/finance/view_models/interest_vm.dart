@@ -23,7 +23,19 @@ class InterestVM extends AsyncNotifier<List<CorporationModel>> {
     });
 
     print('interList : ${corpList.length}');
-    return corpList.toList();
+    if (resData['corpCnt'] > 0) {
+      final List<dynamic> fetchData = resData['corpList'];
+
+      print('test : ${fetchData.first.toString()}');
+
+      final corpList = fetchData.map((corpData) {
+        return CorporationModel.fromJson(corpData);
+      });
+
+      return corpList.toList();
+    } else {
+      return [CorporationModel.empty()];
+    }
   }
 
   Future<void> getCorpList({Map<String, dynamic>? param}) async {

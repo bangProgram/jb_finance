@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:jb_finance/keys.dart';
 import 'package:jb_finance/navigation/finance/views/finance_corp_detail_pages/corp_detail_info_page.dart';
 import 'package:jb_finance/navigation/finance/views/finance_corp_detail_pages/corp_detail_news_page.dart';
@@ -58,6 +59,7 @@ class _FinanceCorpDetailScreenState extends State<FinanceCorpDetailScreen> {
                   Column(
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           IconButton(
                             onPressed: () => Navigator.pop(context),
@@ -66,18 +68,6 @@ class _FinanceCorpDetailScreenState extends State<FinanceCorpDetailScreen> {
                               color: Colors.grey,
                             ),
                           ),
-                          Expanded(
-                            child: Container(
-                              color: Colors.transparent,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {},
-                            icon: const FaIcon(
-                              FontAwesomeIcons.heart,
-                              color: Colors.grey,
-                            ),
-                          )
                         ],
                       ),
                       ListTile(
@@ -105,14 +95,15 @@ class _FinanceCorpDetailScreenState extends State<FinanceCorpDetailScreen> {
                             Text(
                               clsPrice == null
                                   ? '73,000'
-                                  : '${clsPrice['BEF_CLS_PRICE']}',
+                                  : NumberFormat('#,###').format(
+                                      int.parse(clsPrice['BEF_CLS_PRICE'])),
                               style: const TextStyle(
                                 color: Colors.red,
                                 fontSize: 18,
                               ),
                             ),
                             const Text(
-                              '*전일종가',
+                              '*전일 종가',
                               style: TextStyle(
                                 color: Color(0xFFA8A8A8),
                                 fontSize: 14,
