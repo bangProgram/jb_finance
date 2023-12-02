@@ -13,86 +13,155 @@ class PlanbookScreen extends StatefulWidget {
 }
 
 class _PlanbookScreenState extends State<PlanbookScreen> {
-  Widget rowWidget = Container(
-    padding: const EdgeInsets.all(10),
-    height: 60,
-    color: Colors.amber,
-    child: const Row(
-      children: [
-        Text('컬럼아무거나1'),
-        Text('컬럼아무거나2'),
-        Text('컬럼아무거나3'),
-        Text('컬럼아무거나4'),
-        Text('컬럼아무거나5'),
-        Text('컬럼아무거나6'),
-      ],
-    ),
-  );
+  int curIndex = 0;
 
   String headerData = "";
+
+  void onTapPageScreen(int index) {
+    setState(() {
+      curIndex = index;
+    });
+    print('index : $index');
+  }
 
   @override
   Widget build(BuildContext context) {
     final screenH = MediaQuery.of(context).size.height;
     print('planbook rebuild?');
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        body: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return [
-                SliverAppBar(
-                  centerTitle: true,
-                  title: const Text('플랜북'),
-                  elevation: 0,
-                  foregroundColor: Colors.black,
-                  backgroundColor: Colors.transparent,
-                  actions: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: const FaIcon(
-                        FontAwesomeIcons.penToSquare,
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        elevation: 1,
+        title: const Text(
+          '목표관리',
+          style: TextStyle(
+            color: Color(0xffA8A8A8),
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        backgroundColor: Colors.white,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 25,
+          horizontal: 10,
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              flex: 1,
+              child: Container(
+                clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(
+                    color: const Color(0xffe0e0e0),
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => onTapPageScreen(0),
+                        child: PlanbookTabWidget(
+                          curIndex: curIndex,
+                          isSelect: curIndex == 0,
+                          text: '전체',
+                        ),
+                      ),
+                    ),
+                    const VerticalDivider(
+                      color: Color(0xffe0e0e0),
+                      width: 1,
+                      thickness: 1,
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => onTapPageScreen(1),
+                        child: PlanbookTabWidget(
+                          curIndex: curIndex,
+                          isSelect: curIndex == 1,
+                          text: '단기',
+                        ),
+                      ),
+                    ),
+                    const VerticalDivider(
+                      color: Color(0xffe0e0e0),
+                      width: 1,
+                      thickness: 1,
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => onTapPageScreen(2),
+                        child: PlanbookTabWidget(
+                          curIndex: curIndex,
+                          isSelect: curIndex == 2,
+                          text: '중기',
+                        ),
+                      ),
+                    ),
+                    const VerticalDivider(
+                      color: Color(0xffe0e0e0),
+                      width: 1,
+                      thickness: 1,
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => onTapPageScreen(3),
+                        child: PlanbookTabWidget(
+                          curIndex: curIndex,
+                          isSelect: curIndex == 3,
+                          text: '장기',
+                        ),
                       ),
                     ),
                   ],
                 ),
-                SliverPersistentHeader(
-                  pinned: true,
-                  delegate: PlanbookTabbarHeader(
-                    screenH: screenH,
-                    headerData: headerData,
-                  ),
-                )
-              ];
-            },
-            body: TabBarView(
-              children: [
-                SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Column(
-                      children: [
-                        for (int i = 0; i < 20; i++)
-                          GestureDetector(
-                              onTap: () {
-                                print('$i 번째 클릭');
-                                headerData = '$i 번째 데이터';
-                                setState(() {});
-                              },
-                              child: rowWidget)
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  color: Colors.red,
-                ),
-                Container(
-                  color: Colors.blue,
-                ),
-              ],
-            )),
+              ),
+            ),
+            Expanded(
+              flex: 12,
+              child: Container(
+                color: Colors.red,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class PlanbookTabWidget extends StatelessWidget {
+  final bool isSelect;
+  final int curIndex;
+  final String text;
+
+  const PlanbookTabWidget({
+    super.key,
+    required this.curIndex,
+    required this.isSelect,
+    required this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: isSelect ? const Color(0xff333333) : Colors.transparent,
+      ),
+      alignment: Alignment.center,
+      padding: const EdgeInsets.all(12.5),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: isSelect ? Colors.white : const Color(0xffA8A8A8),
+          fontSize: 17,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }

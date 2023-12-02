@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:jb_finance/navigation/assetmanage/view_models/assetmanage_vm.dart';
+import 'package:jb_finance/navigation/assetmanage/view_models/page_view_models/aseetmanage_page_vm.dart';
 import 'package:jb_finance/navigation/assetmanage/views/pages/aseetmanage_list_page.dart';
 import 'package:jb_finance/navigation/assetmanage/views/pages/assetmanage_record_page.dart';
 import 'package:jb_finance/utils.dart';
@@ -26,7 +27,7 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
   late String stDateStr = '${stDate.year}. ${stDate.month}. ${stDate.day}';
   late String edDateStr = '${edDate.year}. ${edDate.month}. ${edDate.day}';
 
-  void _changePage(int page) {
+  void onTapPageScreen(int page) {
     _pageController.animateToPage(
       page,
       duration: const Duration(
@@ -55,6 +56,16 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
         }
       });
     }
+  }
+
+  void getAssetRecord() async {
+    Map<String, dynamic> param = {
+      'pStDate': DateFormat('yyyyMMdd').format(stDate).toString(),
+      'pEdDate': DateFormat('yyyyMMdd').format(edDate).toString(),
+    };
+    print('param : $param');
+
+    await ref.read(assetRecordProvider.notifier).getAssetRecord(param);
   }
 
   @override
@@ -316,7 +327,7 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                       children: [
                         Expanded(
                           child: GestureDetector(
-                            onTap: () => _changePage(0),
+                            onTap: () => onTapPageScreen(0),
                             child: Container(
                               alignment: Alignment.center,
                               height: 50,
@@ -344,7 +355,7 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                         ),
                         Expanded(
                           child: GestureDetector(
-                            onTap: () => _changePage(1),
+                            onTap: () => onTapPageScreen(1),
                             child: Container(
                               alignment: Alignment.center,
                               height: 50,
@@ -651,11 +662,11 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                               borderRadius:
                                                   BorderRadius.circular(6),
                                             ),
-                                            child: const Row(
+                                            child: Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.spaceAround,
                                               children: [
-                                                Expanded(
+                                                const Expanded(
                                                   child: TextField(
                                                     decoration: InputDecoration(
                                                       border:
@@ -669,11 +680,14 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                                     ),
                                                   ),
                                                 ),
-                                                FaIcon(
-                                                  FontAwesomeIcons
-                                                      .magnifyingGlass,
-                                                  size: 15,
-                                                  color: Color(0xff737A83),
+                                                GestureDetector(
+                                                  onTap: getAssetRecord,
+                                                  child: const FaIcon(
+                                                    FontAwesomeIcons
+                                                        .magnifyingGlass,
+                                                    size: 15,
+                                                    color: Color(0xff737A83),
+                                                  ),
                                                 )
                                               ],
                                             ),

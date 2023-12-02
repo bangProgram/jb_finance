@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:jb_finance/navigation/assetmanage/view_models/assetmanage_vm.dart';
+import 'package:jb_finance/navigation/assetmanage/view_models/page_view_models/aseetmanage_page_vm.dart';
 
 class AssetmanageListPage extends ConsumerStatefulWidget {
   const AssetmanageListPage({
