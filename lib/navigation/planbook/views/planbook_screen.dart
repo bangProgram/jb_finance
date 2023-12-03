@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jb_finance/navigation/planbook/views/pages/planbook_list_page.dart';
 import 'package:jb_finance/navigation/planbook/widgets/planbook_tabbar_header.dart';
 
 class PlanbookScreen extends StatefulWidget {
@@ -13,6 +14,8 @@ class PlanbookScreen extends StatefulWidget {
 }
 
 class _PlanbookScreenState extends State<PlanbookScreen> {
+  final PageController _pageController = PageController(initialPage: 0);
+
   int curIndex = 0;
 
   String headerData = "";
@@ -20,8 +23,20 @@ class _PlanbookScreenState extends State<PlanbookScreen> {
   void onTapPageScreen(int index) {
     setState(() {
       curIndex = index;
+      _pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.linear,
+      );
     });
     print('index : $index');
+  }
+
+  @override
+  void dispose() {
+    print('planbook Dispose !!!!!!!!!');
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -49,83 +64,96 @@ class _PlanbookScreenState extends State<PlanbookScreen> {
         ),
         child: Column(
           children: [
-            Expanded(
-              flex: 1,
-              child: Container(
-                clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(
-                    color: const Color(0xffe0e0e0),
-                    width: 1,
+            Container(
+              height: 55,
+              clipBehavior: Clip.hardEdge,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(
+                  color: const Color(0xffe0e0e0),
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => onTapPageScreen(0),
+                      child: PlanbookTabWidget(
+                        curIndex: curIndex,
+                        isSelect: curIndex == 0,
+                        text: '미정',
+                      ),
+                    ),
                   ),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => onTapPageScreen(0),
-                        child: PlanbookTabWidget(
-                          curIndex: curIndex,
-                          isSelect: curIndex == 0,
-                          text: '전체',
-                        ),
+                  const VerticalDivider(
+                    color: Color(0xffe0e0e0),
+                    width: 1,
+                    thickness: 1,
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => onTapPageScreen(1),
+                      child: PlanbookTabWidget(
+                        curIndex: curIndex,
+                        isSelect: curIndex == 1,
+                        text: '단기',
                       ),
                     ),
-                    const VerticalDivider(
-                      color: Color(0xffe0e0e0),
-                      width: 1,
-                      thickness: 1,
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => onTapPageScreen(1),
-                        child: PlanbookTabWidget(
-                          curIndex: curIndex,
-                          isSelect: curIndex == 1,
-                          text: '단기',
-                        ),
+                  ),
+                  const VerticalDivider(
+                    color: Color(0xffe0e0e0),
+                    width: 1,
+                    thickness: 1,
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => onTapPageScreen(2),
+                      child: PlanbookTabWidget(
+                        curIndex: curIndex,
+                        isSelect: curIndex == 2,
+                        text: '중기',
                       ),
                     ),
-                    const VerticalDivider(
-                      color: Color(0xffe0e0e0),
-                      width: 1,
-                      thickness: 1,
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => onTapPageScreen(2),
-                        child: PlanbookTabWidget(
-                          curIndex: curIndex,
-                          isSelect: curIndex == 2,
-                          text: '중기',
-                        ),
+                  ),
+                  const VerticalDivider(
+                    color: Color(0xffe0e0e0),
+                    width: 1,
+                    thickness: 1,
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => onTapPageScreen(3),
+                      child: PlanbookTabWidget(
+                        curIndex: curIndex,
+                        isSelect: curIndex == 3,
+                        text: '장기',
                       ),
                     ),
-                    const VerticalDivider(
-                      color: Color(0xffe0e0e0),
-                      width: 1,
-                      thickness: 1,
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => onTapPageScreen(3),
-                        child: PlanbookTabWidget(
-                          curIndex: curIndex,
-                          isSelect: curIndex == 3,
-                          text: '장기',
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
+            const SizedBox(
+              height: 25,
+            ),
             Expanded(
-              flex: 12,
               child: Container(
-                color: Colors.red,
+                child: PageView(
+                  controller: _pageController,
+                  onPageChanged: (value) {
+                    setState(() {
+                      curIndex = value;
+                    });
+                  },
+                  children: const [
+                    PlanbookListPage(index: 0),
+                    PlanbookListPage(index: 1),
+                    PlanbookListPage(index: 2),
+                    PlanbookListPage(index: 3),
+                  ],
+                ),
               ),
             ),
           ],
