@@ -23,11 +23,14 @@ class _PlanbookScreenState extends State<PlanbookScreen> {
   void onTapPageScreen(int index) {
     setState(() {
       curIndex = index;
+      _pageController.jumpToPage(index);
+/* 
       _pageController.animateToPage(
         index,
         duration: const Duration(milliseconds: 300),
         curve: Curves.linear,
       );
+  */
     });
     print('index : $index');
   }
