@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jb_finance/navigation/planbook/views/pages/planbook_list_page.dart';
 import 'package:jb_finance/navigation/planbook/widgets/planbook_tabbar_header.dart';
 
-class PlanbookScreen extends StatefulWidget {
+class PlanbookScreen extends ConsumerStatefulWidget {
   static const String routeName = "planbook";
   static const String routeURL = "/planbook";
 
   const PlanbookScreen({super.key});
 
   @override
-  State<PlanbookScreen> createState() => _PlanbookScreenState();
+  ConsumerState<PlanbookScreen> createState() => _PlanbookScreenState();
 }
 
-class _PlanbookScreenState extends State<PlanbookScreen> {
+class _PlanbookScreenState extends ConsumerState<PlanbookScreen> {
   final PageController _pageController = PageController(initialPage: 0);
 
   int curIndex = 0;
@@ -45,7 +46,6 @@ class _PlanbookScreenState extends State<PlanbookScreen> {
   @override
   Widget build(BuildContext context) {
     final screenH = MediaQuery.of(context).size.height;
-    print('planbook rebuild?');
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
