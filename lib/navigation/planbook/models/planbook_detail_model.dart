@@ -10,6 +10,13 @@ class PlanbookDetailModel {
   final int befClsPrice;
   final int sharesAmount;
   final int marketCapital;
+  final int tradeVolume;
+  final int tradeAmount;
+  final int compareAmount;
+  final String fluctuateRate;
+  final int stPrice;
+  final int hgPrice;
+  final int lwPrice;
   final String? investOpinion;
   final String? opinionAmount1;
   final String? opinionAmount2;
@@ -34,6 +41,13 @@ class PlanbookDetailModel {
     required this.befClsPrice,
     required this.sharesAmount,
     required this.marketCapital,
+    required this.tradeVolume,
+    required this.tradeAmount,
+    required this.compareAmount,
+    required this.fluctuateRate,
+    required this.stPrice,
+    required this.hgPrice,
+    required this.lwPrice,
     required this.investOpinion,
     required this.opinionAmount1,
     required this.opinionAmount2,
@@ -59,6 +73,13 @@ class PlanbookDetailModel {
         befClsPrice = json['befClsPrice'],
         sharesAmount = json['sharesAmount'],
         marketCapital = json['marketCapital'],
+        tradeVolume = json['tradeVolume'],
+        tradeAmount = json['tradeAmount'],
+        compareAmount = json['compareAmount'],
+        fluctuateRate = json['fluctuateRate'],
+        stPrice = json['stPrice'],
+        hgPrice = json['hgPrice'],
+        lwPrice = json['lwPrice'],
         investOpinion = json['investOpinion'],
         opinionAmount1 = json['opinionAmount1'],
         opinionAmount2 = json['opinionAmount2'],
@@ -83,6 +104,13 @@ class PlanbookDetailModel {
         befClsPrice = 0,
         sharesAmount = 0,
         marketCapital = 0,
+        tradeVolume = 0,
+        tradeAmount = 0,
+        compareAmount = 0,
+        fluctuateRate = "",
+        stPrice = 0,
+        hgPrice = 0,
+        lwPrice = 0,
         investOpinion = null,
         opinionAmount1 = null,
         opinionAmount2 = null,
@@ -108,6 +136,13 @@ class PlanbookDetailModel {
       'befClsPrice': befClsPrice,
       'sharesAmount': sharesAmount,
       'marketCapital': marketCapital,
+      'tradeVolume': tradeVolume,
+      'tradeAmount': tradeAmount,
+      'compareAmount': compareAmount,
+      'fluctuateRate': fluctuateRate,
+      'stPrice': stPrice,
+      'hgPrice': hgPrice,
+      'lwPrice': lwPrice,
       'investOpinion': investOpinion,
       'opinionAmount1': opinionAmount1,
       'opinionAmount2': opinionAmount2,

@@ -22,6 +22,24 @@ class PlanbookRepo {
       throw Exception('목표관리 리스트 호출 실패');
     }
   }
+
+  Future<Map<String, dynamic>> getPlanbookDetail(
+      Map<String, dynamic>? param) async {
+    final response = await http.post(
+      Uri.parse("${Keys.forwardURL}/appApi/planbook/detail"),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(param),
+    );
+    print('reponse : ${response.request}');
+    if (response.statusCode == 200) {
+      Map<String, dynamic> result = json.decode(response.body);
+      return result;
+    } else {
+      throw Exception('목표관리 리스트 호출 실패');
+    }
+  }
 }
 
 final planbookRepo = Provider(

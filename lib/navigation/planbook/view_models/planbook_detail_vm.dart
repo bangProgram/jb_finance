@@ -12,12 +12,25 @@ class PlanbookDetailVM
   FutureOr<PlanbookDetailModel> build(String arg) async {
     _planbookRepo = ref.read(planbookRepo);
 
-    final resData = await _planbookRepo.getPlanbookList({'pCorpCode': arg});
+    final resData = await _planbookRepo.getPlanbookDetail({'pCorpCode': arg});
     final planbookDetail = resData['planbookDetail'];
 
     final result = PlanbookDetailModel.fromJson(planbookDetail);
 
     return result;
+  }
+
+  Future<void> refreshState() async {
+    state = const AsyncValue.loading();
+
+    state = await AsyncValue.guard(
+      () async {
+        final resData =
+            await _planbookRepo.getPlanbookDetail({'pCorpCode': arg});
+        final planbookDetail = resData['planbookDetail'];
+        return PlanbookDetailModel.fromJson(planbookDetail);
+      },
+    );
   }
 }
 
