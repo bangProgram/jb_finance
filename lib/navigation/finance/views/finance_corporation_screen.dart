@@ -58,7 +58,7 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
   String edYear = '';
   String edHalf = '';
 
-  final Map<String, dynamic> _searchModel = {};
+  final Map<String, dynamic> _searchModel = {'pAvgValue': 0};
 
   @override
   void initState() {
