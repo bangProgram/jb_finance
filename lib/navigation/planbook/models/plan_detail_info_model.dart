@@ -1,4 +1,4 @@
-class PlanbookDetailModel {
+class PlanDetailInfoModel {
   final String corpCode;
   final String corpName;
   final String stockCode;
@@ -29,7 +29,7 @@ class PlanbookDetailModel {
   final String? estimatePer;
   final String? estimateCagr;
 
-  PlanbookDetailModel({
+  PlanDetailInfoModel({
     required this.corpCode,
     required this.corpName,
     required this.stockCode,
@@ -61,7 +61,7 @@ class PlanbookDetailModel {
     required this.estimateCagr,
   });
 
-  PlanbookDetailModel.fromJson(Map<String, dynamic> json)
+  PlanDetailInfoModel.fromJson(Map<String, dynamic> json)
       : corpCode = json['corpCode'],
         corpName = json['corpName'],
         stockCode = json['stockCode'],
@@ -92,7 +92,7 @@ class PlanbookDetailModel {
         estimatePer = json['estimatePer'],
         estimateCagr = json['estimateCagr'];
 
-  PlanbookDetailModel.empty()
+  PlanDetailInfoModel.empty()
       : corpCode = "",
         corpName = "",
         stockCode = "",

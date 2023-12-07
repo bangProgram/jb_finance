@@ -3,10 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:jb_finance/navigation/planbook/view_models/planbook_detail_vm.dart';
+import 'package:jb_finance/navigation/planbook/views/pages/plan_detail_info_page.dart';
+import 'package:jb_finance/navigation/planbook/views/pages/plan_detail_memo_page.dart';
 
 class PlanbookDetailScreen extends ConsumerStatefulWidget {
   final String corpCode;
-  const PlanbookDetailScreen({super.key, required this.corpCode});
+  final String corpName;
+  final int befClsPrice;
+  const PlanbookDetailScreen({
+    super.key,
+    required this.corpCode,
+    required this.corpName,
+    required this.befClsPrice,
+  });
 
   @override
   ConsumerState<PlanbookDetailScreen> createState() =>
@@ -14,106 +23,88 @@ class PlanbookDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _PlanbookDetailScreenState extends ConsumerState<PlanbookDetailScreen> {
-  Future<void> _refreshState() async {
-    await ref.read(planDetailProvider(widget.corpCode).notifier).refreshState();
+  final PageController _pageController = PageController(
+    initialPage: 0,
+  );
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: ref.watch(planDetailProvider(widget.corpCode)).when(
-              error: (error, stackTrace) => RefreshIndicator(
-                onRefresh: _refreshState,
-                child: Stack(
-                  children: [
-                    Center(
-                      child: Text('error : $error'),
+      body: Column(
+        children: [
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const FaIcon(
+                      Icons.arrow_back_ios_new,
+                      color: Colors.grey,
                     ),
-                    Positioned.fill(
-                      child: ListView.builder(
-                        itemCount: 1,
-                        itemBuilder: (context, index) => Container(),
+                  ),
+                ],
+              ),
+              ListTile(
+                leading: const CircleAvatar(
+                  radius: 30,
+                  backgroundColor: Colors.blue,
+                ),
+                title: Text(
+                  widget.corpName,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                subtitle: const Text(
+                  '기업 업종구분',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                trailing: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      NumberFormat('#,###').format(widget.befClsPrice),
+                      style: const TextStyle(
+                        color: Colors.red,
+                        fontSize: 18,
                       ),
                     ),
+                    const Text(
+                      '*전일 종가',
+                      style: TextStyle(
+                        color: Color(0xFFA8A8A8),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )
                   ],
                 ),
               ),
-              loading: () => const Center(
-                child: CircularProgressIndicator(),
-              ),
-              data: (data) {
-                return Column(
-                  children: [
-                    Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            IconButton(
-                              onPressed: () => Navigator.pop(context),
-                              icon: const FaIcon(
-                                Icons.arrow_back_ios_new,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ],
-                        ),
-                        ListTile(
-                          leading: const CircleAvatar(
-                            radius: 30,
-                            backgroundColor: Colors.blue,
-                          ),
-                          title: Text(
-                            data.corpName,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          subtitle: const Text(
-                            '기업 업종구분',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          trailing: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                NumberFormat('#,###').format(data.befClsPrice),
-                                style: const TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 18,
-                                ),
-                              ),
-                              const Text(
-                                '*전일 종가',
-                                style: TextStyle(
-                                  color: Color(0xFFA8A8A8),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Text(data.periodNm),
-                    Text('주식수량 : ${data.sharesAmount}'),
-                    Text('시가총액 : ${data.marketCapital}'),
-                    Text('거래량 : ${data.tradeVolume}'),
-                    Text('거래금액 : ${data.tradeAmount}'),
-                    Text('시가 : ${data.stPrice}'),
-                    Text('고가 : ${data.hgPrice}'),
-                    Text('저가 : ${data.lwPrice}'),
-                    Text('추정 eps : ${data.estimateEps}'),
-                    Text('추정 per : ${data.estimatePer}'),
-                    Text('추정 cagr : ${data.estimateCagr}'),
-                  ],
-                );
-              },
-            ));
+            ],
+          ),
+          Expanded(
+            child: PageView(
+              controller: _pageController,
+              children: [
+                PlanDetailInfoPage(corpCode: widget.corpCode),
+                PlanDetailMemoPage(corpCode: widget.corpCode)
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
