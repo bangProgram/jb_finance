@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jb_finance/navigation/planbook/view_models/planbook_detail_vm.dart';
 
@@ -24,9 +25,18 @@ class _PlanDetailMemoPageState extends ConsumerState<PlanDetailMemoPage> {
   }
 
   void addPlanMemo() async {
-    await ref
-        .read(planDetailMemoProvider(widget.corpCode).notifier)
-        .addPlanMemo({'pCorpCode': widget.corpCode, 'pMemo': memo});
+    String text = _textEditingController.text;
+    if (text != '') {
+      _textEditingController.clear();
+      await ref
+          .read(planDetailMemoProvider(widget.corpCode).notifier)
+          .addPlanMemo({'pCorpCode': widget.corpCode, 'pMemo': memo});
+      setState(() {
+        memo = '';
+      });
+    } else {
+      return;
+    }
   }
 
   @override
@@ -47,44 +57,73 @@ class _PlanDetailMemoPageState extends ConsumerState<PlanDetailMemoPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  '기록',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const Divider(
-                  color: Color(0xffEFEFEF),
-                  thickness: 1,
-                ),
                 Expanded(
-                  child:
-                      ref.watch(planDetailMemoProvider(widget.corpCode)).when(
-                            error: (error, stackTrace) => Center(
-                              child: Text('error : $error'),
-                            ),
-                            loading: () => const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                            data: (data) {
-                              final memoList = data;
-                              if (memoList != null) {
-                                return ListView.builder(
-                                  itemCount: memoList.length,
-                                  itemBuilder: (context, index) {
-                                    final memoData = memoList[index];
-                                    return Container(
-                                      child: Text(
-                                          '${memoData.memo} ${memoData.createDt}'),
-                                    );
-                                  },
-                                );
-                              } else {
-                                return Container();
-                              }
-                            },
-                          ),
+                  child: ref
+                      .watch(planDetailMemoProvider(widget.corpCode))
+                      .when(
+                        error: (error, stackTrace) => Center(
+                          child: Text('error : $error'),
+                        ),
+                        loading: () => const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        data: (data) {
+                          final memoList = data;
+                          if (memoList != null) {
+                            return Container(
+                              padding: const EdgeInsets.only(
+                                bottom: 30,
+                              ),
+                              child: ListView.builder(
+                                itemCount: memoList.length,
+                                itemBuilder: (context, index) {
+                                  final memoData = memoList[index];
+                                  List<String> memoDate =
+                                      memoData.createDt.split('-');
+                                  return Container(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                '${memoDate[0]}. ${memoDate[1]}. ${memoDate[2]}',
+                                                style: const TextStyle(
+                                                  color: Color(0xff9d9d9d),
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ),
+                                            SvgPicture.asset(
+                                              'assets/svgs/icons/Icon_more.svg',
+                                              height: 20,
+                                              width: 20,
+                                            ),
+                                          ],
+                                        ),
+                                        Text(
+                                          memoData.memo,
+                                          style: const TextStyle(
+                                            color: Color(0xff333333),
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          } else {
+                            return Container();
+                          }
+                        },
+                      ),
                 ),
               ],
             ),
@@ -94,7 +133,8 @@ class _PlanDetailMemoPageState extends ConsumerState<PlanDetailMemoPage> {
           height: 65,
           width: MediaQuery.of(context).size.width,
           bottom: 0,
-          child: Padding(
+          child: Container(
+            color: Colors.white,
             padding: const EdgeInsets.symmetric(
               horizontal: 35,
               vertical: 5,
@@ -118,7 +158,10 @@ class _PlanDetailMemoPageState extends ConsumerState<PlanDetailMemoPage> {
                         });
                       },
                       decoration: InputDecoration(
-                        contentPadding: EdgeInsets.zero,
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 0,
+                          horizontal: 15,
+                        ),
                         border: const OutlineInputBorder(
                           borderSide: BorderSide.none,
                         ),
@@ -149,13 +192,17 @@ class _PlanDetailMemoPageState extends ConsumerState<PlanDetailMemoPage> {
                       padding: const EdgeInsets.symmetric(
                         horizontal: 15,
                       ),
-                      decoration: const BoxDecoration(
-                        color: Color(0xffF5F5F5),
+                      decoration: BoxDecoration(
+                        color: memo == ''
+                            ? const Color(0xffF5F5F5)
+                            : const Color(0xff333333),
                       ),
-                      child: const Text(
+                      child: Text(
                         '등록',
                         style: TextStyle(
-                          color: Color(0xffbbbbbb),
+                          color: memo == ''
+                              ? const Color(0xffbbbbbb)
+                              : Colors.white,
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
                         ),

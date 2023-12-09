@@ -3,11 +3,11 @@ class PlanDetailMemoModel {
   final String corpName;
   final String stockCode;
   final String userId;
-  final int? seq;
+  final int seq;
   final String? gubn;
-  final String? memo;
-  final String? createDt;
-  final String? changeDt;
+  final String memo;
+  final String createDt;
+  final String changeDt;
 
   PlanDetailMemoModel({
     required this.corpCode,
@@ -37,11 +37,11 @@ class PlanDetailMemoModel {
         corpName = "",
         stockCode = "",
         userId = "",
-        seq = null,
+        seq = 0,
         gubn = null,
-        memo = null,
-        createDt = null,
-        changeDt = null;
+        memo = "",
+        createDt = "",
+        changeDt = "";
 
   Map<String, dynamic> toJson() {
     return {

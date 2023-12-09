@@ -803,15 +803,10 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
                     height: 50,
                     alignment: Alignment.center,
                     decoration: const BoxDecoration(
-                      color: Colors.amber,
                       shape: BoxShape.circle,
                     ),
-                    child: const Text(
-                      '확장',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
+                    child:
+                        SvgPicture.asset('assets/svgs/icons/Icon_filter.svg'),
                   ),
                 ),
               ),
