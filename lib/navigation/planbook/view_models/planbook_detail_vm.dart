@@ -43,10 +43,12 @@ final planDetailInfoProvider =
 class PlanDetailMemoVM
     extends FamilyAsyncNotifier<List<PlanDetailMemoModel>?, String> {
   late final PlanbookRepo _planbookRepo;
+  late final String _corpCode;
 
   @override
   FutureOr<List<PlanDetailMemoModel>?> build(String arg) async {
     _planbookRepo = ref.read(planbookRepo);
+    _corpCode = arg;
 
     final resData = await _planbookRepo.getPlanDetailMemo({'pCorpCode': arg});
     final List<dynamic> memoList = resData['planDetailMemo'];
@@ -62,11 +64,34 @@ class PlanDetailMemoVM
     }
   }
 
-  Future<void> addPlanMemo(Map<String, dynamic> param) async {
+  Future<void> addPlanMemo(String memo) async {
+    Map<String, dynamic> param = {'pCorpCode': _corpCode, 'pMemo': memo};
+
     state = const AsyncValue.loading();
 
     state = await AsyncValue.guard(() async {
       final resData = await _planbookRepo.addPlanMemo(param);
+      final List<dynamic> memoList = resData['planDetailMemo'];
+      final memoCnt = resData['planDetailMemoCnt'];
+
+      if (memoCnt > 0) {
+        final result = memoList.map((memoData) {
+          return PlanDetailMemoModel.fromJson(memoData);
+        });
+        return result.toList();
+      } else {
+        return null;
+      }
+    });
+  }
+
+  Future<void> delPlanMemo(int seq) async {
+    Map<String, dynamic> param = {'pCorpCode': _corpCode, 'pSeq': seq};
+
+    state = const AsyncValue.loading();
+
+    state = await AsyncValue.guard(() async {
+      final resData = await _planbookRepo.delPlanMemo(param);
       final List<dynamic> memoList = resData['planDetailMemo'];
       final memoCnt = resData['planDetailMemoCnt'];
 

@@ -21,11 +21,20 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
   int curPage = 0;
 
   DateTime now = DateTime.now();
+  //서버단 parameter
   late DateTime stDate = DateTime(now.year, now.month, 1);
   late DateTime edDate = now;
+  String? gubn;
 
   late String stDateStr = '${stDate.year}. ${stDate.month}. ${stDate.day}';
   late String edDateStr = '${edDate.year}. ${edDate.month}. ${edDate.day}';
+
+  late Map<String, dynamic> searchParam = {
+    'pStDate': DateFormat('yyyyMMdd').format(stDate).toString(),
+    'pEdDate': DateFormat('yyyyMMdd').format(edDate).toString(),
+    'pGubn': '',
+    'pCorpName': '',
+  };
 
   void onTapPageScreen(int page) {
     _pageController.animateToPage(
@@ -49,23 +58,29 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
       setState(() {
         if (flag == 'st') {
           stDate = picked;
+          searchParam['pStDate'] =
+              DateFormat('yyyyMMdd').format(stDate).toString();
           stDateStr = '${picked.year}. ${picked.month}. ${picked.day}';
         } else {
           edDate = picked;
+          searchParam['pEdDate'] =
+              DateFormat('yyyyMMdd').format(edDate).toString();
           edDateStr = '${picked.year}. ${picked.month}. ${picked.day}';
         }
       });
     }
   }
 
-  void getAssetRecord() async {
-    Map<String, dynamic> param = {
-      'pStDate': DateFormat('yyyyMMdd').format(stDate).toString(),
-      'pEdDate': DateFormat('yyyyMMdd').format(edDate).toString(),
-    };
-    print('param : $param');
+  void _selectGubn(String? gubn) {
+    setState(() {
+      gubn = gubn;
+    });
+  }
 
-    await ref.read(assetRecordProvider.notifier).getAssetRecord(param);
+  void getAssetRecord() async {
+    print('param : $searchParam');
+
+    await ref.read(assetRecordProvider.notifier).getAssetRecord(searchParam);
   }
 
   @override
@@ -620,7 +635,7 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                               ),
                                             ],
                                             onChanged: (newValue) {
-                                              setState(() {});
+                                              _selectGubn(newValue);
                                             },
                                           ),
                                         ),

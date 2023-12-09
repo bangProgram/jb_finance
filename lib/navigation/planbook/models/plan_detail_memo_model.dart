@@ -6,7 +6,7 @@ class PlanDetailMemoModel {
   final int seq;
   final String? gubn;
   final String memo;
-  final String createDt;
+  final int createDt;
   final String changeDt;
 
   PlanDetailMemoModel({
@@ -40,7 +40,7 @@ class PlanDetailMemoModel {
         seq = 0,
         gubn = null,
         memo = "",
-        createDt = "",
+        createDt = 0,
         changeDt = "";
 
   Map<String, dynamic> toJson() {

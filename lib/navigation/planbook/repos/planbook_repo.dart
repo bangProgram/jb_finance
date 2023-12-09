@@ -72,7 +72,24 @@ class PlanbookRepo {
       Map<String, dynamic> result = json.decode(response.body);
       return result;
     } else {
-      throw Exception('목표관리상세 메모 호출 실패');
+      throw Exception('목표관리상세 메모 등록 실패');
+    }
+  }
+
+  Future<Map<String, dynamic>> delPlanMemo(Map<String, dynamic> param) async {
+    final response = await http.post(
+      Uri.parse("${Keys.forwardURL}/appApi/planbook/memo/del"),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(param),
+    );
+    print('reponse : ${response.request}');
+    if (response.statusCode == 200) {
+      Map<String, dynamic> result = json.decode(response.body);
+      return result;
+    } else {
+      throw Exception('목표관리상세 메모 삭제 실패');
     }
   }
 }

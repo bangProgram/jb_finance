@@ -197,12 +197,12 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                     child: const Row(
                                       children: [
                                         Expanded(
-                                          flex: 2,
+                                          flex: 3,
                                           child: Text(
                                             '추정 EPS',
                                             style: TextStyle(
                                               color: Color(0xffA7A7A7),
-                                              fontSize: 14,
+                                              fontSize: 13,
                                               fontWeight: FontWeight.w400,
                                             ),
                                           ),
@@ -212,6 +212,7 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                           child: Icon(
                                             Icons.error_outline,
                                             color: Color(0xffa7a7a7),
+                                            size: 19,
                                           ),
                                         ),
                                       ],
@@ -268,12 +269,12 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                     child: const Row(
                                       children: [
                                         Expanded(
-                                          flex: 2,
+                                          flex: 3,
                                           child: Text(
                                             '추정 PER',
                                             style: TextStyle(
                                               color: Color(0xffA7A7A7),
-                                              fontSize: 14,
+                                              fontSize: 13,
                                               fontWeight: FontWeight.w400,
                                             ),
                                           ),
@@ -283,6 +284,7 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                           child: Icon(
                                             Icons.error_outline,
                                             color: Color(0xffa7a7a7),
+                                            size: 19,
                                           ),
                                         ),
                                       ],
