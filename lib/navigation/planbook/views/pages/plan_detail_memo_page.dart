@@ -126,10 +126,12 @@ class _PlanDetailMemoPageState extends ConsumerState<PlanDetailMemoPage> {
                                               ),
                                               itemBuilder: (context) {
                                                 return [
+                                                  /* 
                                                   const PopupMenuItem(
                                                     enabled: true,
                                                     child: Text('수정'),
                                                   ),
+                                                  */
                                                   PopupMenuItem(
                                                     enabled: true,
                                                     onTap: () => delPlanMemo(

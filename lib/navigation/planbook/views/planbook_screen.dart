@@ -25,13 +25,6 @@ class _PlanbookScreenState extends ConsumerState<PlanbookScreen> {
     setState(() {
       curIndex = index;
       _pageController.jumpToPage(index);
-/* 
-      _pageController.animateToPage(
-        index,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.linear,
-      );
-  */
     });
     print('index : $index');
   }

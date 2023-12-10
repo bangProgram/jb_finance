@@ -204,520 +204,506 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                 color: Color(0xFFF4F4F4),
               ),
               Container(
+                height: 280,
                 padding: const EdgeInsets.symmetric(
-                  vertical: 24,
+                  vertical: 20,
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      '실적',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
+                    const Expanded(
+                      flex: 1,
+                      child: Text(
+                        '실적',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                    Container(
-                      height: 220,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 10,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Container(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Container(
-                                  color: Colors.transparent,
-                                ),
-                                const Text(
-                                  '매출',
-                                  style: TextStyle(
-                                    color: Color(0xFF949494),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                const Text(
-                                  '영업이익',
-                                  style: TextStyle(
-                                    color: Color(0xFF949494),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                const Text(
-                                  '순이익',
-                                  style: TextStyle(
-                                    color: Color(0xFF949494),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                const Text(
-                                  'EPS',
-                                  style: TextStyle(
-                                    color: Color(0xFF949494),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: ref
-                                .watch(corpDetailPerformProvider(widget.corpCd))
-                                .when(
-                                  error: (error, stackTrace) => const Center(
-                                    child: Text('조회중입니다'),
-                                  ),
-                                  loading: () => const Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                  data: (data) {
-                                    final resData = data;
-                                    if (resData != null) {
-                                      List<dynamic> yearList =
-                                          resData['performYear'];
-                                      List<dynamic> performList =
-                                          resData['performList'];
-                                      return Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 15),
-                                        child: ListView.separated(
-                                          scrollDirection: Axis.horizontal,
-                                          separatorBuilder: (context, index) =>
-                                              const SizedBox(width: 15),
-                                          itemCount: yearList.length,
-                                          itemBuilder: (context, index) {
-                                            String curentYear =
-                                                '${yearList[index]['BSNS_YEAR']}';
+                    Expanded(
+                      flex: 8,
+                      child: Container(
+                          child:
+                              ref
+                                  .watch(
+                                      corpDetailPerformProvider(widget.corpCd))
+                                  .when(
+                                    error: (error, stackTrace) => const Center(
+                                      child: Text('조회중입니다'),
+                                    ),
+                                    loading: () => const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    data: (data) {
+                                      final resData = data;
+                                      if (resData != null) {
+                                        List<dynamic> yearList =
+                                            resData['performYear'];
+                                        List<dynamic> performList =
+                                            resData['performList'];
+                                        List<dynamic> performAccount =
+                                            resData['performAccount'];
 
-                                            return SizedBox(
-                                              width: 200,
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    '$curentYear년',
-                                                    style: const TextStyle(
-                                                      color: Color(0xffA8A8A8),
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w500,
+                                        return Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Expanded(
+                                              flex: 1,
+                                              child: Container(
+                                                child: Column(
+                                                  children: [
+                                                    Expanded(
+                                                      flex: 2,
+                                                      child: Container(),
                                                     ),
-                                                  ),
-                                                  const Divider(
-                                                    color: Color(0xffD9D9D9),
-                                                    thickness: 1,
-                                                  ),
-                                                  const Row(
-                                                    children: [
+                                                    for (int i = 0;
+                                                        i <
+                                                            performAccount
+                                                                .length;
+                                                        i++)
                                                       Expanded(
-                                                        child: Text(
-                                                          '종합',
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xffA8A8A8),
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w500,
+                                                        flex: 1,
+                                                        child: Container(
+                                                          alignment:
+                                                              Alignment.center,
+                                                          child: Text(
+                                                            performAccount[i][
+                                                                        'ACCOUNT_ID'] ==
+                                                                    'ifrs-full_Revenue'
+                                                                ? '매출'
+                                                                : performAccount[i]
+                                                                            [
+                                                                            'ACCOUNT_ID'] ==
+                                                                        'dart_OperatingIncomeLoss'
+                                                                    ? '영업이익'
+                                                                    : performAccount[i]['ACCOUNT_ID'] ==
+                                                                            'ifrs-full_ProfitLoss'
+                                                                        ? '순이익'
+                                                                        : 'EPS',
+                                                            style:
+                                                                const TextStyle(
+                                                              color: Color(
+                                                                  0xFF949494),
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
                                                           ),
                                                         ),
                                                       ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '상반기',
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xffA8A8A8),
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          '하반기',
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xffA8A8A8),
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 15,
-                                                  ),
-                                                  for (int i = 0;
-                                                      i < performList.length;
-                                                      i++)
-                                                    if (performList[i]
-                                                            ['bsnsYear'] ==
-                                                        curentYear)
-                                                      if (performList[i]
-                                                              ['accoutId'] ==
-                                                          'ifrs-full_Revenue')
-                                                        Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: Text(
-                                                                performList[i][
-                                                                            'amountTotal'] !=
-                                                                        null
-                                                                    ? amountTrans(
-                                                                        performList[i]
-                                                                            [
-                                                                            'amountTotal'])
-                                                                    : '미공시',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Text(
-                                                                performList[i][
-                                                                            'amountHalf'] !=
-                                                                        null
-                                                                    ? amountTrans(
-                                                                        performList[i]
-                                                                            [
-                                                                            'amountHalf'])
-                                                                    : '미공시',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Text(
-                                                                performList[i][
-                                                                            'amountYear'] !=
-                                                                        null
-                                                                    ? amountTrans(
-                                                                        performList[i]
-                                                                            [
-                                                                            'amountYear'])
-                                                                    : '미공시',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                  const SizedBox(
-                                                    height: 15,
-                                                  ),
-                                                  for (int i = 0;
-                                                      i < performList.length;
-                                                      i++)
-                                                    if (performList[i]
-                                                            ['bsnsYear'] ==
-                                                        curentYear)
-                                                      if (performList[i]
-                                                              ['accoutId'] ==
-                                                          'dart_OperatingIncomeLoss')
-                                                        Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: Text(
-                                                                performList[i][
-                                                                            'amountTotal'] !=
-                                                                        null
-                                                                    ? amountTrans(
-                                                                        performList[i]
-                                                                            [
-                                                                            'amountTotal'])
-                                                                    : '미공시',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Text(
-                                                                performList[i][
-                                                                            'amountHalf'] !=
-                                                                        null
-                                                                    ? amountTrans(
-                                                                        performList[i]
-                                                                            [
-                                                                            'amountHalf'])
-                                                                    : '미공시',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Text(
-                                                                performList[i][
-                                                                            'amountYear'] !=
-                                                                        null
-                                                                    ? amountTrans(
-                                                                        performList[i]
-                                                                            [
-                                                                            'amountYear'])
-                                                                    : '미공시',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                  const SizedBox(
-                                                    height: 15,
-                                                  ),
-                                                  for (int i = 0;
-                                                      i < performList.length;
-                                                      i++)
-                                                    if (performList[i]
-                                                            ['bsnsYear'] ==
-                                                        curentYear)
-                                                      if (performList[i]
-                                                              ['accoutId'] ==
-                                                          'ifrs-full_ProfitLoss')
-                                                        Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: Text(
-                                                                performList[i][
-                                                                            'amountTotal'] !=
-                                                                        null
-                                                                    ? amountTrans(
-                                                                        performList[i]
-                                                                            [
-                                                                            'amountTotal'])
-                                                                    : '미공시',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Text(
-                                                                performList[i][
-                                                                            'amountHalf'] !=
-                                                                        null
-                                                                    ? amountTrans(
-                                                                        performList[i]
-                                                                            [
-                                                                            'amountHalf'])
-                                                                    : '미공시',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Text(
-                                                                performList[i][
-                                                                            'amountYear'] !=
-                                                                        null
-                                                                    ? amountTrans(
-                                                                        performList[i]
-                                                                            [
-                                                                            'amountYear'])
-                                                                    : '미공시',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                  const SizedBox(
-                                                    height: 15,
-                                                  ),
-                                                  for (int i = 0;
-                                                      i < performList.length;
-                                                      i++)
-                                                    if (performList[i]
-                                                            ['bsnsYear'] ==
-                                                        curentYear)
-                                                      if (performList[i]
-                                                              ['accoutId'] ==
-                                                          'ifrs-full_BasicEarningsLossPerShare')
-                                                        Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: Text(
-                                                                performList[i][
-                                                                            'amountTotal'] !=
-                                                                        null
-                                                                    ? amountTrans(
-                                                                        performList[i]
-                                                                            [
-                                                                            'amountTotal'])
-                                                                    : '미공시',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Text(
-                                                                performList[i][
-                                                                            'amountHalf'] !=
-                                                                        null
-                                                                    ? amountTrans(
-                                                                        performList[i]
-                                                                            [
-                                                                            'amountHalf'])
-                                                                    : '미공시',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Text(
-                                                                performList[i][
-                                                                            'amountYear'] !=
-                                                                        null
-                                                                    ? amountTrans(
-                                                                        performList[i]
-                                                                            [
-                                                                            'amountYear'])
-                                                                    : '미공시',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
-                                            );
-                                          },
-                                        ),
-                                      );
-                                    } else {
-                                      return const Center(
-                                        child: Text('조회중입니다'),
-                                      );
-                                    }
-                                  },
-                                ),
-                          ),
-                        ],
-                      ),
+                                            ),
+                                            Expanded(
+                                              flex: 5,
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 12),
+                                                child: ListView.separated(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  separatorBuilder: (context,
+                                                          index) =>
+                                                      const SizedBox(width: 15),
+                                                  itemCount: yearList.length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    String curentYear =
+                                                        '${yearList[index]['BSNS_YEAR']}';
+
+                                                    return SizedBox(
+                                                      width: 200,
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Expanded(
+                                                            flex: 1,
+                                                            child: Text(
+                                                              '$curentYear년',
+                                                              style:
+                                                                  const TextStyle(
+                                                                color: Color(
+                                                                    0xffA8A8A8),
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          const Divider(
+                                                            height: 0,
+                                                            color: Color(
+                                                                0xffD9D9D9),
+                                                            thickness: 1,
+                                                          ),
+                                                          const Expanded(
+                                                            flex: 1,
+                                                            child: Row(
+                                                              children: [
+                                                                Expanded(
+                                                                  child: Text(
+                                                                    '종합',
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Color(
+                                                                          0xffA8A8A8),
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Expanded(
+                                                                  child: Text(
+                                                                    '상반기',
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Color(
+                                                                          0xffA8A8A8),
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Expanded(
+                                                                  child: Text(
+                                                                    '하반기',
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Color(
+                                                                          0xffA8A8A8),
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          for (int i = 0;
+                                                              i <
+                                                                  performList
+                                                                      .length;
+                                                              i++)
+                                                            if (performList[i][
+                                                                    'bsnsYear'] ==
+                                                                curentYear)
+                                                              if (performList[i]
+                                                                      [
+                                                                      'accoutId'] ==
+                                                                  'ifrs-full_Revenue')
+                                                                Expanded(
+                                                                  flex: 1,
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Expanded(
+                                                                        child:
+                                                                            Text(
+                                                                          performList[i]['amountTotal'] != null
+                                                                              ? amountTrans(performList[i]['amountTotal'])
+                                                                              : '미공시',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style:
+                                                                              const TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Expanded(
+                                                                        child:
+                                                                            Text(
+                                                                          performList[i]['amountHalf'] != null
+                                                                              ? amountTrans(performList[i]['amountHalf'])
+                                                                              : '미공시',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style:
+                                                                              const TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Expanded(
+                                                                        child:
+                                                                            Text(
+                                                                          performList[i]['amountYear'] != null
+                                                                              ? amountTrans(performList[i]['amountYear'])
+                                                                              : '미공시',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style:
+                                                                              const TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                          for (int i = 0;
+                                                              i <
+                                                                  performList
+                                                                      .length;
+                                                              i++)
+                                                            if (performList[i][
+                                                                    'bsnsYear'] ==
+                                                                curentYear)
+                                                              if (performList[i]
+                                                                      [
+                                                                      'accoutId'] ==
+                                                                  'dart_OperatingIncomeLoss')
+                                                                Expanded(
+                                                                  flex: 1,
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Expanded(
+                                                                        child:
+                                                                            Text(
+                                                                          performList[i]['amountTotal'] != null
+                                                                              ? amountTrans(performList[i]['amountTotal'])
+                                                                              : '미공시',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style:
+                                                                              const TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Expanded(
+                                                                        child:
+                                                                            Text(
+                                                                          performList[i]['amountHalf'] != null
+                                                                              ? amountTrans(performList[i]['amountHalf'])
+                                                                              : '미공시',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style:
+                                                                              const TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Expanded(
+                                                                        child:
+                                                                            Text(
+                                                                          performList[i]['amountYear'] != null
+                                                                              ? amountTrans(performList[i]['amountYear'])
+                                                                              : '미공시',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style:
+                                                                              const TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                          for (int i = 0;
+                                                              i <
+                                                                  performList
+                                                                      .length;
+                                                              i++)
+                                                            if (performList[i][
+                                                                    'bsnsYear'] ==
+                                                                curentYear)
+                                                              if (performList[i]
+                                                                      [
+                                                                      'accoutId'] ==
+                                                                  'ifrs-full_ProfitLoss')
+                                                                Expanded(
+                                                                  flex: 1,
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Expanded(
+                                                                        child:
+                                                                            Text(
+                                                                          performList[i]['amountTotal'] != null
+                                                                              ? amountTrans(performList[i]['amountTotal'])
+                                                                              : '미공시',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style:
+                                                                              const TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Expanded(
+                                                                        child:
+                                                                            Text(
+                                                                          performList[i]['amountHalf'] != null
+                                                                              ? amountTrans(performList[i]['amountHalf'])
+                                                                              : '미공시',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style:
+                                                                              const TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Expanded(
+                                                                        child:
+                                                                            Text(
+                                                                          performList[i]['amountYear'] != null
+                                                                              ? amountTrans(performList[i]['amountYear'])
+                                                                              : '미공시',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style:
+                                                                              const TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                          for (int i = 0;
+                                                              i <
+                                                                  performList
+                                                                      .length;
+                                                              i++)
+                                                            if (performList[i][
+                                                                    'bsnsYear'] ==
+                                                                curentYear)
+                                                              if (performList[i]
+                                                                      [
+                                                                      'accoutId'] ==
+                                                                  'ifrs-full_BasicEarningsLossPerShare')
+                                                                Expanded(
+                                                                  flex: 1,
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Expanded(
+                                                                        child:
+                                                                            Text(
+                                                                          performList[i]['amountTotal'] != null
+                                                                              ? amountTrans(performList[i]['amountTotal'])
+                                                                              : '미공시',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style:
+                                                                              const TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Expanded(
+                                                                        child:
+                                                                            Text(
+                                                                          performList[i]['amountHalf'] != null
+                                                                              ? amountTrans(performList[i]['amountHalf'])
+                                                                              : '미공시',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style:
+                                                                              const TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Expanded(
+                                                                        child:
+                                                                            Text(
+                                                                          performList[i]['amountYear'] != null
+                                                                              ? amountTrans(performList[i]['amountYear'])
+                                                                              : '미공시',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style:
+                                                                              const TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      } else {
+                                        return const Center(
+                                          child: Text('조회중입니다'),
+                                        );
+                                      }
+                                    },
+                                  )),
                     ),
                   ],
                 ),

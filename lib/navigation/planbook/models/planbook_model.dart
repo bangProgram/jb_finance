@@ -6,7 +6,7 @@ class PlanbookModel {
   final String createId;
   final String createDt;
   final String changeId;
-  final String changeDt;
+  final int changeDt;
   final int befClsPrice;
   final String? memo;
   final String? investOpinion;
@@ -76,7 +76,7 @@ class PlanbookModel {
         createId = "",
         createDt = "",
         changeId = "",
-        changeDt = "",
+        changeDt = 0,
         befClsPrice = 0,
         memo = null,
         investOpinion = null,

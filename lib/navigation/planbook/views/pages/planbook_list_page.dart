@@ -117,7 +117,11 @@ class _PlanbookListPageState extends ConsumerState<PlanbookListPage> {
                             ),
                           ),
                           Text(
-                            planbook.changeDt,
+                            DateTime.fromMillisecondsSinceEpoch(
+                                    planbook.changeDt)
+                                .toString()
+                                .split(' ')
+                                .first,
                             style: const TextStyle(
                               color: Color(0xffa8a8a8),
                               fontSize: 12,

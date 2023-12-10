@@ -24,7 +24,7 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
   //서버단 parameter
   late DateTime stDate = DateTime(now.year, now.month, 1);
   late DateTime edDate = now;
-  String? gubn;
+  String? pGubn;
 
   late String stDateStr = '${stDate.year}. ${stDate.month}. ${stDate.day}';
   late String edDateStr = '${edDate.year}. ${edDate.month}. ${edDate.day}';
@@ -73,7 +73,7 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
 
   void _selectGubn(String? gubn) {
     setState(() {
-      gubn = gubn;
+      pGubn = gubn;
     });
   }
 
@@ -619,7 +619,7 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                             underline: Container(),
                                             icon: const Icon(Icons
                                                 .keyboard_arrow_down_rounded),
-                                            value: null,
+                                            value: pGubn,
                                             items: const [
                                               DropdownMenuItem(
                                                 value: null,

@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 class PlanDetailInfoModel {
   final String corpCode;
   final String corpName;
@@ -6,7 +8,7 @@ class PlanDetailInfoModel {
   final String createId;
   final String createDt;
   final String changeId;
-  final String changeDt;
+  final int changeDt;
   final int befClsPrice;
   final int sharesAmount;
   final int marketCapital;
@@ -28,6 +30,17 @@ class PlanDetailInfoModel {
   final String? estimateEps;
   final String? estimatePer;
   final String? estimateCagr;
+
+  final String? avgGrowthArith1;
+  final String? avgGrowthArith2;
+  final String? avgGrowthArith3;
+  final String? avgGrowthArith4;
+  final double? avgGrowthGeo1;
+  final double? avgGrowthGeo2;
+  final double? avgGrowthGeo3;
+  final double? avgGrowthGeo4;
+  final String? geoStYear;
+  final String? geoEdYear;
 
   PlanDetailInfoModel({
     required this.corpCode,
@@ -59,6 +72,16 @@ class PlanDetailInfoModel {
     required this.estimateEps,
     required this.estimatePer,
     required this.estimateCagr,
+    required this.avgGrowthArith1,
+    required this.avgGrowthArith2,
+    required this.avgGrowthArith3,
+    required this.avgGrowthArith4,
+    required this.avgGrowthGeo1,
+    required this.avgGrowthGeo2,
+    required this.avgGrowthGeo3,
+    required this.avgGrowthGeo4,
+    required this.geoStYear,
+    required this.geoEdYear,
   });
 
   PlanDetailInfoModel.fromJson(Map<String, dynamic> json)
@@ -90,7 +113,17 @@ class PlanDetailInfoModel {
         periodNm = json['periodNm'],
         estimateEps = json['estimateEps'],
         estimatePer = json['estimatePer'],
-        estimateCagr = json['estimateCagr'];
+        estimateCagr = json['estimateCagr'],
+        avgGrowthArith1 = json['avgGrowthArith1'],
+        avgGrowthArith2 = json['avgGrowthArith2'],
+        avgGrowthArith3 = json['avgGrowthArith3'],
+        avgGrowthArith4 = json['avgGrowthArith4'],
+        avgGrowthGeo1 = json['avgGrowthGeo1'],
+        avgGrowthGeo2 = json['avgGrowthGeo2'],
+        avgGrowthGeo3 = json['avgGrowthGeo3'],
+        avgGrowthGeo4 = json['avgGrowthGeo4'],
+        geoStYear = json['geoStYear'],
+        geoEdYear = json['geoEdYear'];
 
   PlanDetailInfoModel.empty()
       : corpCode = "",
@@ -100,7 +133,7 @@ class PlanDetailInfoModel {
         createId = "",
         createDt = "",
         changeId = "",
-        changeDt = "",
+        changeDt = 0,
         befClsPrice = 0,
         sharesAmount = 0,
         marketCapital = 0,
@@ -121,7 +154,17 @@ class PlanDetailInfoModel {
         periodNm = "미정",
         estimateEps = null,
         estimatePer = null,
-        estimateCagr = null;
+        estimateCagr = null,
+        avgGrowthArith1 = null,
+        avgGrowthArith2 = null,
+        avgGrowthArith3 = null,
+        avgGrowthArith4 = null,
+        avgGrowthGeo1 = null,
+        avgGrowthGeo2 = null,
+        avgGrowthGeo3 = null,
+        avgGrowthGeo4 = null,
+        geoStYear = null,
+        geoEdYear = null;
 
   Map<String, dynamic> toJson() {
     return {
@@ -154,6 +197,16 @@ class PlanDetailInfoModel {
       'estimateEps': estimateEps,
       'estimatePer': estimatePer,
       'estimateCagr': estimateCagr,
+      'avgGrowthArith1': avgGrowthArith1,
+      'avgGrowthArith2': avgGrowthArith2,
+      'avgGrowthArith3': avgGrowthArith3,
+      'avgGrowthArith4': avgGrowthArith4,
+      'avgGrowthGeo1': avgGrowthGeo1,
+      'avgGrowthGeo2': avgGrowthGeo2,
+      'avgGrowthGeo3': avgGrowthGeo3,
+      'avgGrowthGeo4': avgGrowthGeo4,
+      'geoStYear': geoStYear,
+      'geoEdYear': geoEdYear,
     };
   }
 }
