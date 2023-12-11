@@ -97,6 +97,11 @@ class PlanDetailInfoVM
             AsyncValue.data(result.toList());
       }
     }
+
+    final planDetailInfo = resData['planDetailInfo'];
+    final result = PlanDetailInfoModel.fromJson(planDetailInfo);
+
+    state = AsyncValue.data(result);
   }
 }
 

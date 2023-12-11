@@ -7,7 +7,9 @@ import 'package:jb_finance/navigation/planbook/view_models/planbook_detail_vm.da
 
 class PlanDetailInfoPage extends ConsumerStatefulWidget {
   final String corpCode;
-  const PlanDetailInfoPage({super.key, required this.corpCode});
+  final int befClsPrice;
+  const PlanDetailInfoPage(
+      {super.key, required this.corpCode, required this.befClsPrice});
 
   @override
   ConsumerState<PlanDetailInfoPage> createState() => _PlanDetailInfoPageState();
@@ -15,6 +17,7 @@ class PlanDetailInfoPage extends ConsumerStatefulWidget {
 
 class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _perEditController = TextEditingController();
   Future<void> _refreshState() async {
     await ref
         .read(planDetailInfoProvider(widget.corpCode).notifier)
@@ -50,17 +53,17 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
         .mergePlaninfo(_paramModel);
   }
 
+/* 
   @override
   void deactivate() {
-    mergePlaninfo();
+    //mergePlaninfo();
     print('PlanDetailInfo deactivate !!!!!!!!');
     super.deactivate();
   }
-
+ */
   @override
   void dispose() {
     // mergePlaninfo();
-    print('_paramModel : ${_paramModel.toJson()}');
     print('PlanDetailInfo Dispose !!!!!!!!');
     super.dispose();
   }
@@ -104,7 +107,7 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                     children: [
                       //기간구분
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Container(
                             height: 40,
@@ -170,6 +173,10 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                               ],
                             ),
                           ),
+                          Expanded(child: Container()),
+                          TextButton(
+                              onPressed: mergePlaninfo,
+                              child: const Text('저장')),
                         ],
                       ),
                       const SizedBox(
@@ -520,6 +527,7 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                     child: Container(
                                       child: TextFormField(
                                         keyboardType: TextInputType.number,
+                                        initialValue: data.estimateEps,
                                         decoration: const InputDecoration(
                                           border: OutlineInputBorder(
                                             borderSide: BorderSide.none,
@@ -537,8 +545,18 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                           _paramModel.estimateEps = newValue;
                                         },
                                         onChanged: (value) {
-                                          _paramModel.estimateEps = value;
+                                          if (value.isNotEmpty) {
+                                            _paramModel.estimateEps = value;
+                                            var per = NumberFormat('###.##')
+                                                .format(widget.befClsPrice /
+                                                    int.parse(value));
+                                            _paramModel.estimatePer = per;
+
+                                            print('per : $per');
+                                            _perEditController.text = per;
+                                          }
                                         },
+                                        onEditingComplete: () {},
                                       ),
                                     ),
                                   ),
@@ -598,7 +616,9 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                     flex: 2,
                                     child: Container(
                                       child: TextFormField(
-                                        keyboardType: TextInputType.number,
+                                        controller: _perEditController,
+                                        enabled: false,
+                                        initialValue: data.estimatePer,
                                         decoration: const InputDecoration(
                                           border: OutlineInputBorder(
                                             borderSide: BorderSide.none,
@@ -665,6 +685,7 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                       child: Container(
                                         child: TextFormField(
                                           keyboardType: TextInputType.number,
+                                          initialValue: data.opinionAmount1,
                                           decoration: const InputDecoration(
                                             border: OutlineInputBorder(
                                               borderSide: BorderSide.none,
@@ -704,6 +725,7 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                       child: Container(
                                         child: TextFormField(
                                           keyboardType: TextInputType.number,
+                                          initialValue: data.opinionAmount2,
                                           decoration: const InputDecoration(
                                             border: OutlineInputBorder(
                                               borderSide: BorderSide.none,
@@ -743,6 +765,7 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                       child: Container(
                                         child: TextFormField(
                                           keyboardType: TextInputType.number,
+                                          initialValue: data.opinionAmount3,
                                           decoration: const InputDecoration(
                                             border: OutlineInputBorder(
                                               borderSide: BorderSide.none,
@@ -782,6 +805,7 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                       child: Container(
                                         child: TextFormField(
                                           keyboardType: TextInputType.number,
+                                          initialValue: data.opinionAmount4,
                                           decoration: const InputDecoration(
                                             border: OutlineInputBorder(
                                               borderSide: BorderSide.none,
@@ -821,6 +845,7 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                       child: Container(
                                         child: TextFormField(
                                           keyboardType: TextInputType.number,
+                                          initialValue: data.opinionAmount5,
                                           decoration: const InputDecoration(
                                             border: OutlineInputBorder(
                                               borderSide: BorderSide.none,

@@ -33,7 +33,6 @@ class _PlanbookDetailScreenState extends ConsumerState<PlanbookDetailScreen> {
   void pageChange(int index) {
     setState(() {
       curPage = index;
-
       _pageController.animateToPage(
         index,
         duration: const Duration(milliseconds: 250),
@@ -198,7 +197,9 @@ class _PlanbookDetailScreenState extends ConsumerState<PlanbookDetailScreen> {
                   });
                 },
                 children: [
-                  PlanDetailInfoPage(corpCode: widget.corpCode),
+                  PlanDetailInfoPage(
+                      corpCode: widget.corpCode,
+                      befClsPrice: widget.befClsPrice),
                   PlanDetailMemoPage(corpCode: widget.corpCode)
                 ],
               ),

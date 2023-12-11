@@ -34,6 +34,7 @@ class _PlanbookListPageState extends ConsumerState<PlanbookListPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('${widget.index} 화면 리빌드');
     final provider = widget.index == 0
         ? ref.watch(planAllProvider)
         : widget.index == 1
