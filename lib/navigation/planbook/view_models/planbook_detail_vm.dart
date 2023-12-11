@@ -51,7 +51,8 @@ class PlanDetailInfoVM
     final int initPlanbookCnt = resData['initPlanbookCnt'];
 
     print('신규 period : $period');
-    if (planbookCnt > 0) {
+    if (planbookCnt >= 0) {
+      print('planbookList : $planbookList');
       final result = planbookList.map((planbook) {
         return PlanbookModel.fromJson(planbook);
       });
@@ -75,7 +76,8 @@ class PlanDetailInfoVM
     }
 
     print('기존 period : $initPeriod');
-    if (initPlanbookCnt > 0) {
+    if (initPlanbookCnt >= 0) {
+      print('initPlanbookList : $initPlanbookList');
       final result = initPlanbookList.map((planbook) {
         return PlanbookModel.fromJson(planbook);
       });

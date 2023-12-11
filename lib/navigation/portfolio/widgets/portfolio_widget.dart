@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jb_finance/navigation/portfolio/models/portfolio_model.dart';
-import 'package:jb_finance/navigation/portfolio/widgets/piechart_widget.dart';
+import 'package:jb_finance/commons/widgets/piechart_widget.dart';
 
 class PortfolioWidget extends StatefulWidget {
   final PortfolioModel data;

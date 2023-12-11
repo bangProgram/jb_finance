@@ -49,6 +49,26 @@ class PieChartPainter extends CustomPainter {
       canvas.drawArc(rectPoint, startAngle, arcAngle, true,
           Paint()..color = segment.color);
       startAngle += arcAngle;
+
+      final segmentAngle = (startAngle - arcAngle / 2);
+      final textX = size.width / 3.2;
+      final textY = size.height / 3.2;
+      final textRadius = (min(textX, textY));
+      final segmentX = centerX + textRadius * cos(segmentAngle);
+      final segmentY = centerY + textRadius * sin(segmentAngle);
+
+      const textStyle = TextStyle(color: Colors.white, fontSize: 14);
+      final textSpan = TextSpan(
+          text: '${(segment.value / total * 100).toStringAsFixed(2)}%',
+          style: textStyle);
+      final textPainter =
+          TextPainter(text: textSpan, textDirection: TextDirection.ltr);
+      textPainter.layout();
+
+      textPainter.paint(
+          canvas,
+          Offset(segmentX - textPainter.width / 2,
+              segmentY - textPainter.height / 2));
     }
   }
 

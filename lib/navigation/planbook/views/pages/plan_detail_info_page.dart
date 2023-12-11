@@ -17,7 +17,17 @@ class PlanDetailInfoPage extends ConsumerStatefulWidget {
 
 class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _perEditController = TextEditingController();
+  late final TextEditingController _perEditController =
+      TextEditingController(text: '$curPer');
+
+  double? calPer;
+  late double? curPer;
+  late double? curOpinion1;
+  late double? curOpinion2;
+  late double? curOpinion3;
+  late double? curOpinion4;
+  late double? curOpinion5;
+
   Future<void> _refreshState() async {
     await ref
         .read(planDetailInfoProvider(widget.corpCode).notifier)
@@ -92,6 +102,12 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
           ),
           data: (data) {
             _paramModel.initPeriodGubn = data.periodGubn;
+            curPer = double.parse(data.estimatePer ?? '0');
+            curOpinion1 = double.parse(data.opinionAmount1 ?? '0');
+            curOpinion2 = double.parse(data.opinionAmount2 ?? '0');
+            curOpinion3 = double.parse(data.opinionAmount3 ?? '0');
+            curOpinion4 = double.parse(data.opinionAmount4 ?? '0');
+            curOpinion5 = double.parse(data.opinionAmount5 ?? '0');
 
             return SingleChildScrollView(
               child: Form(
@@ -546,17 +562,20 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                         },
                                         onChanged: (value) {
                                           if (value.isNotEmpty) {
-                                            _paramModel.estimateEps = value;
-                                            var per = NumberFormat('###.##')
-                                                .format(widget.befClsPrice /
-                                                    int.parse(value));
-                                            _paramModel.estimatePer = per;
-
-                                            print('per : $per');
-                                            _perEditController.text = per;
+                                            setState(() {
+                                              _paramModel.estimateEps = value;
+                                              calPer = (widget.befClsPrice /
+                                                          int.parse(value) *
+                                                          100)
+                                                      .roundToDouble() /
+                                                  100;
+                                              _paramModel.estimatePer =
+                                                  '$calPer';
+                                              _perEditController.text =
+                                                  '$calPer';
+                                            });
                                           }
                                         },
-                                        onEditingComplete: () {},
                                       ),
                                     ),
                                   ),
@@ -618,7 +637,6 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                       child: TextFormField(
                                         controller: _perEditController,
                                         enabled: false,
-                                        initialValue: data.estimatePer,
                                         decoration: const InputDecoration(
                                           border: OutlineInputBorder(
                                             borderSide: BorderSide.none,
@@ -667,12 +685,14 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                               child: Row(
                                 children: [
                                   Expanded(
+                                    flex: 4,
                                     child: Container(
                                       alignment: Alignment.center,
                                       child: const Text('per'),
                                     ),
                                   ),
                                   Expanded(
+                                    flex: 5,
                                     child: Container(
                                       decoration: const BoxDecoration(
                                         border: Border(
@@ -712,6 +732,7 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                     ),
                                   ),
                                   Expanded(
+                                    flex: 5,
                                     child: Container(
                                       alignment: Alignment.center,
                                       decoration: const BoxDecoration(
@@ -752,6 +773,7 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                     ),
                                   ),
                                   Expanded(
+                                    flex: 5,
                                     child: Container(
                                       alignment: Alignment.center,
                                       decoration: const BoxDecoration(
@@ -792,6 +814,7 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                     ),
                                   ),
                                   Expanded(
+                                    flex: 5,
                                     child: Container(
                                       alignment: Alignment.center,
                                       decoration: const BoxDecoration(
@@ -831,6 +854,7 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                       ),
                                     ),
                                   ),
+                                  /* 
                                   Expanded(
                                     child: Container(
                                       alignment: Alignment.center,
@@ -871,6 +895,7 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                       ),
                                     ),
                                   ),
+ */
                                 ],
                               ),
                             ),
@@ -895,8 +920,12 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                   Expanded(
                                     child: Container(
                                       alignment: Alignment.center,
-                                      decoration: const BoxDecoration(
-                                        border: Border(
+                                      decoration: BoxDecoration(
+                                        color:
+                                            (calPer ?? curPer!) < curOpinion1!
+                                                ? Colors.red
+                                                : Colors.white,
+                                        border: const Border(
                                           left: BorderSide(
                                             color: Color(0xffE9E9E7),
                                             width: 1.5,
@@ -909,8 +938,14 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                   Expanded(
                                     child: Container(
                                       alignment: Alignment.center,
-                                      decoration: const BoxDecoration(
-                                        border: Border(
+                                      decoration: BoxDecoration(
+                                        color: curOpinion1! <=
+                                                    (calPer ?? curPer!) &&
+                                                (calPer ?? curPer!) <
+                                                    curOpinion2!
+                                            ? Colors.red.shade300
+                                            : Colors.white,
+                                        border: const Border(
                                           left: BorderSide(
                                             color: Color(0xffE9E9E7),
                                             width: 1.5,
@@ -923,8 +958,14 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                   Expanded(
                                     child: Container(
                                       alignment: Alignment.center,
-                                      decoration: const BoxDecoration(
-                                        border: Border(
+                                      decoration: BoxDecoration(
+                                        color: curOpinion2! <=
+                                                    (calPer ?? curPer!) &&
+                                                (calPer ?? curPer!) <
+                                                    curOpinion3!
+                                            ? Colors.grey
+                                            : Colors.white,
+                                        border: const Border(
                                           left: BorderSide(
                                             color: Color(0xffE9E9E7),
                                             width: 1.5,
@@ -937,8 +978,14 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                   Expanded(
                                     child: Container(
                                       alignment: Alignment.center,
-                                      decoration: const BoxDecoration(
-                                        border: Border(
+                                      decoration: BoxDecoration(
+                                        color: curOpinion3! <=
+                                                    (calPer ?? curPer!) &&
+                                                (calPer ?? curPer!) <
+                                                    curOpinion4!
+                                            ? Colors.blue.shade300
+                                            : Colors.white,
+                                        border: const Border(
                                           left: BorderSide(
                                             color: Color(0xffE9E9E7),
                                             width: 1.5,
@@ -951,8 +998,12 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                   Expanded(
                                     child: Container(
                                       alignment: Alignment.center,
-                                      decoration: const BoxDecoration(
-                                        border: Border(
+                                      decoration: BoxDecoration(
+                                        color:
+                                            curOpinion4! <= (calPer ?? curPer!)
+                                                ? Colors.blue
+                                                : Colors.white,
+                                        border: const Border(
                                           left: BorderSide(
                                             color: Color(0xffE9E9E7),
                                             width: 1.5,
