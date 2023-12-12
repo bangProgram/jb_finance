@@ -13,6 +13,16 @@ void serverMessage(BuildContext context, String message) {
   );
 }
 
+void successMessage(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      backgroundColor: Colors.green.shade300,
+      content: Center(child: Text(message)),
+      duration: const Duration(seconds: 3),
+    ),
+  );
+}
+
 String amountTrans(int value) {
   var format = NumberFormat.compact(locale: 'ko');
   var formatted = format.format(value);

@@ -11,11 +11,14 @@ class PlanbookDetailScreen extends ConsumerStatefulWidget {
   final String corpCode;
   final String corpName;
   final int befClsPrice;
+  final String? periodGubn;
+
   const PlanbookDetailScreen({
     super.key,
     required this.corpCode,
     required this.corpName,
     required this.befClsPrice,
+    required this.periodGubn,
   });
 
   @override
@@ -198,8 +201,10 @@ class _PlanbookDetailScreenState extends ConsumerState<PlanbookDetailScreen> {
                 },
                 children: [
                   PlanDetailInfoPage(
-                      corpCode: widget.corpCode,
-                      befClsPrice: widget.befClsPrice),
+                    corpCode: widget.corpCode,
+                    befClsPrice: widget.befClsPrice,
+                    periodGubn: widget.periodGubn,
+                  ),
                   PlanDetailMemoPage(corpCode: widget.corpCode)
                 ],
               ),

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jb_finance/navigation/planbook/models/plan_detail_info_model.dart';
 import 'package:jb_finance/navigation/planbook/models/plan_detail_info_param_model.dart';
@@ -7,6 +8,7 @@ import 'package:jb_finance/navigation/planbook/models/plan_detail_memo_model.dar
 import 'package:jb_finance/navigation/planbook/models/planbook_model.dart';
 import 'package:jb_finance/navigation/planbook/repos/planbook_repo.dart';
 import 'package:jb_finance/navigation/planbook/view_models/planbook_vm.dart';
+import 'package:jb_finance/utils.dart';
 
 //PLanbook 기업정보 VM
 class PlanDetailInfoVM
@@ -38,7 +40,8 @@ class PlanDetailInfoVM
     );
   }
 
-  Future<void> mergePlaninfo(DetailInfoParamModel model) async {
+  Future<void> mergePlaninfo(
+      BuildContext context, DetailInfoParamModel model) async {
     final period = model.periodGubn;
     final initPeriod = model.initPeriodGubn;
     final Map<String, dynamic> param = model.toJson();
@@ -104,6 +107,7 @@ class PlanDetailInfoVM
     final result = PlanDetailInfoModel.fromJson(planDetailInfo);
 
     state = AsyncValue.data(result);
+    successMessage(context, '저장 되었습니다.');
   }
 }
 

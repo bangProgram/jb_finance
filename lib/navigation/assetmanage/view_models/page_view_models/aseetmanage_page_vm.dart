@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jb_finance/member/authentications.dart';
 import 'package:jb_finance/navigation/assetmanage/models/assetmanage_list_model.dart';
+import 'package:jb_finance/navigation/assetmanage/models/assetmanage_proportion_model.dart';
 import 'package:jb_finance/navigation/assetmanage/models/assetmanage_record_model.dart';
 import 'package:jb_finance/navigation/assetmanage/repos/assetmanage_repo.dart';
 import 'package:jb_finance/navigation/assetmanage/repos/page_repos/aseetmanage_page_repo.dart';
@@ -108,9 +109,72 @@ class AssetmanageRecordVM extends AsyncNotifier<List<AssetmanageRecordModel>?> {
       state = const AsyncValue.data(null);
     }
   }
+
+  Future<void> getAssetProportion(Map<String, dynamic> param) async {
+    state = const AsyncValue.loading();
+    final resData = await _assetmanagePageRepo.getAssetProportion(param);
+    final List<dynamic> recordList = resData['assetProportion'];
+    final int recordCnt = resData['assetProportionCnt'];
+
+    if (recordCnt > 0) {
+      final result = recordList.map((recordData) {
+        return AssetmanageRecordModel.fromJson(recordData);
+      }).toList();
+      state = AsyncValue.data(result);
+    } else {
+      state = const AsyncValue.data(null);
+    }
+  }
 }
 
 final assetRecordProvider =
     AsyncNotifierProvider<AssetmanageRecordVM, List<AssetmanageRecordModel>?>(
   () => AssetmanageRecordVM(),
+);
+
+//자산관리 자산비중 프로바이더
+class AssetmanageProportionVM
+    extends AsyncNotifier<List<AssetmanageProportionModel>?> {
+  late final AssetmanagePageRepo _assetmanagePageRepo;
+
+  @override
+  FutureOr<List<AssetmanageProportionModel>?> build() async {
+    _assetmanagePageRepo = ref.read(assetmanagePageRepo);
+
+    final resData = await _assetmanagePageRepo.getAssetProportion({});
+
+    final List<dynamic> recordList = resData['assetProportion'];
+    final int recordCnt = resData['assetProportionCnt'];
+
+    if (recordCnt > 0) {
+      final result = recordList.map((recordData) {
+        return AssetmanageProportionModel.fromJson(recordData);
+      });
+
+      return result.toList();
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> getAssetProportion(Map<String, dynamic> param) async {
+    state = const AsyncValue.loading();
+    final resData = await _assetmanagePageRepo.getAssetProportion(param);
+    final List<dynamic> recordList = resData['assetProportion'];
+    final int recordCnt = resData['assetProportionCnt'];
+
+    if (recordCnt > 0) {
+      final result = recordList.map((recordData) {
+        return AssetmanageProportionModel.fromJson(recordData);
+      }).toList();
+      state = AsyncValue.data(result);
+    } else {
+      state = const AsyncValue.data(null);
+    }
+  }
+}
+
+final assetProportionProvider = AsyncNotifierProvider<AssetmanageProportionVM,
+    List<AssetmanageProportionModel>?>(
+  () => AssetmanageProportionVM(),
 );

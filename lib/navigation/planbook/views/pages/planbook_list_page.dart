@@ -20,13 +20,15 @@ class _PlanbookListPageState extends ConsumerState<PlanbookListPage> {
     Colors.orange
   ];
 
-  void _goPlanDetailScreen(String corpCode, String corpName, int befClsPrice) {
+  void _goPlanDetailScreen(
+      String corpCode, String corpName, int befClsPrice, String? periodGubn) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => PlanbookDetailScreen(
           corpCode: corpCode,
           corpName: corpName,
           befClsPrice: befClsPrice,
+          periodGubn: periodGubn,
         ),
       ),
     );
@@ -58,7 +60,10 @@ class _PlanbookListPageState extends ConsumerState<PlanbookListPage> {
               final planbook = planbookList[index];
               return GestureDetector(
                 onTap: () => _goPlanDetailScreen(
-                    planbook.corpCode, planbook.corpName, planbook.befClsPrice),
+                    planbook.corpCode,
+                    planbook.corpName,
+                    planbook.befClsPrice,
+                    planbook.periodGubn),
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     vertical: 15,

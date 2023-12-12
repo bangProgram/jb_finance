@@ -8,8 +8,12 @@ import 'package:jb_finance/navigation/planbook/view_models/planbook_detail_vm.da
 class PlanDetailInfoPage extends ConsumerStatefulWidget {
   final String corpCode;
   final int befClsPrice;
+  final String? periodGubn;
   const PlanDetailInfoPage(
-      {super.key, required this.corpCode, required this.befClsPrice});
+      {super.key,
+      required this.corpCode,
+      required this.befClsPrice,
+      required this.periodGubn});
 
   @override
   ConsumerState<PlanDetailInfoPage> createState() => _PlanDetailInfoPageState();
@@ -21,6 +25,8 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
       TextEditingController(text: '$curPer');
 
   double? calPer;
+  late String? curPeriod;
+  late int? curEps;
   late double? curPer;
   late double? curOpinion1;
   late double? curOpinion2;
@@ -41,8 +47,8 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
     'opinionAmount3': '',
     'opinionAmount4': '',
     'opinionAmount5': '',
-    'initPeriodGubn': '',
-    'periodGubn': null,
+    'initPeriodGubn': widget.periodGubn,
+    'periodGubn': widget.periodGubn,
     'estimateEps': '',
     'estimatePer': '',
   };
@@ -60,7 +66,7 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
   void mergePlaninfo() async {
     await ref
         .read(planDetailInfoProvider(widget.corpCode).notifier)
-        .mergePlaninfo(_paramModel);
+        .mergePlaninfo(context, _paramModel);
   }
 
 /* 
@@ -74,6 +80,7 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
   @override
   void dispose() {
     // mergePlaninfo();
+    _perEditController.dispose();
     print('PlanDetailInfo Dispose !!!!!!!!');
     super.dispose();
   }
@@ -102,7 +109,9 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
           ),
           data: (data) {
             _paramModel.initPeriodGubn = data.periodGubn;
-            curPer = double.parse(data.estimatePer ?? '0');
+            curEps = int.parse(data.estimateEps ?? '1');
+            curPer =
+                ((widget.befClsPrice / (curEps!)) * 100).roundToDouble() / 100;
             curOpinion1 = double.parse(data.opinionAmount1 ?? '0');
             curOpinion2 = double.parse(data.opinionAmount2 ?? '0');
             curOpinion3 = double.parse(data.opinionAmount3 ?? '0');
@@ -160,9 +169,7 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                     elevation: 0,
                                     icon: const Icon(
                                         Icons.keyboard_arrow_down_rounded),
-                                    value: param['periodGubn'] ??
-                                        data.periodGubn ??
-                                        '',
+                                    value: param['periodGubn'] ?? '',
                                     items: const [
                                       DropdownMenuItem(
                                         value: '',

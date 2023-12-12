@@ -57,10 +57,11 @@ class PieChartPainter extends CustomPainter {
       final segmentX = centerX + textRadius * cos(segmentAngle);
       final segmentY = centerY + textRadius * sin(segmentAngle);
 
-      const textStyle = TextStyle(color: Colors.white, fontSize: 14);
-      final textSpan = TextSpan(
-          text: '${(segment.value / total * 100).toStringAsFixed(2)}%',
-          style: textStyle);
+      final textVal = (segment.value / total * 100).toStringAsFixed(2);
+      final textDouble = double.parse(textVal);
+      final textStyle = TextStyle(
+          color: textDouble > 10 ? Colors.white : Colors.white, fontSize: 14);
+      final textSpan = TextSpan(text: '$textVal%', style: textStyle);
       final textPainter =
           TextPainter(text: textSpan, textDirection: TextDirection.ltr);
       textPainter.layout();
