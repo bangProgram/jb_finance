@@ -45,16 +45,12 @@ class AssetmanageVM extends AsyncNotifier<AssetmanageModel> {
     }
   }
 
-  Future<void> updatePortfolio(
+  Future<void> mergeAssetAmount(
       BuildContext context, Map<String, dynamic> formData) async {
     state = const AsyncValue.loading();
     final userId = _auth.getUserId;
     state = await AsyncValue.guard(() async {
-      final Map<String, dynamic> newForm = {
-        ...formData,
-        'userId': userId,
-      };
-      final result = await _assetmanageRepo.updatePortfolio(newForm);
+      final result = await _assetmanageRepo.mergeAssetAmount(formData);
       //true 일경우 update 성공
       if (result) {
         final responseData = await _assetmanageRepo.getPortAmount(userId);

@@ -24,9 +24,9 @@ class AssetmanageRepo {
     }
   }
 
-  Future<bool> updatePortfolio(Map<String, dynamic> formData) async {
+  Future<bool> mergeAssetAmount(Map<String, dynamic> formData) async {
     final response = await http.post(
-      Uri.parse("${Keys.forwardURL}/appApi/portfolio/updatePortfolio"),
+      Uri.parse("${Keys.forwardURL}/appApi/asset/updatePortfolio"),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },

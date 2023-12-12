@@ -38,6 +38,8 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
     'pCorpName': '',
   };
 
+  Map<String, dynamic> formData = {};
+
   void onTapPageScreen(int page) {
     _pageController.jumpToPage(page);
   }
@@ -77,6 +79,18 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
     print('param : $searchParam');
 
     await ref.read(assetRecordProvider.notifier).getAssetRecord(searchParam);
+  }
+
+  void mergePortfolio() {
+    print('이거 실행돼?');
+    final state = _formKey.currentState;
+    if (state != null) {
+      state.save();
+      ref
+          .read(assetmanageProvider.notifier)
+          .mergeAssetAmount(context, formData);
+    }
+    Navigator.of(context).pop();
   }
 
   @override
@@ -130,18 +144,27 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                     thickness: 1,
                                     color: Color(0xFFF4F4F4),
                                   ),
-                                  const Padding(
-                                    padding: EdgeInsets.symmetric(
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
                                       vertical: 20,
                                       horizontal: 12,
                                     ),
-                                    child: Text(
-                                      '나의 자산',
-                                      style: TextStyle(
-                                        color: Color(0xFF333333),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                    child: Row(
+                                      children: [
+                                        const Expanded(
+                                          child: Text(
+                                            '나의 자산',
+                                            style: TextStyle(
+                                              color: Color(0xFF333333),
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                        TextButton(
+                                            onPressed: () {},
+                                            child: const Text('저장')),
+                                      ],
                                     ),
                                   ),
                                   Container(
@@ -226,14 +249,17 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                               Expanded(
                                                 flex: 3,
                                                 child: TextFormField(
-                                                  initialValue: NumberFormat(
-                                                          '#,###')
-                                                      .format(
-                                                          data.investAmount),
+                                                  initialValue:
+                                                      '${data.investAmount}',
                                                   keyboardType:
                                                       TextInputType.number,
                                                   decoration:
                                                       const InputDecoration(
+                                                    contentPadding:
+                                                        EdgeInsets.only(
+                                                      top: 0,
+                                                      bottom: 0,
+                                                    ),
                                                     focusedBorder:
                                                         UnderlineInputBorder(
                                                       borderSide: BorderSide(
@@ -253,14 +279,17 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                               Expanded(
                                                 flex: 3,
                                                 child: TextFormField(
-                                                  initialValue: NumberFormat(
-                                                          '#,###')
-                                                      .format(
-                                                          data.depositAmount),
+                                                  initialValue:
+                                                      '${data.depositAmount}',
                                                   keyboardType:
                                                       TextInputType.number,
                                                   decoration:
                                                       const InputDecoration(
+                                                    contentPadding:
+                                                        EdgeInsets.only(
+                                                      top: 0,
+                                                      bottom: 0,
+                                                    ),
                                                     focusedBorder:
                                                         UnderlineInputBorder(
                                                       borderSide: BorderSide(
@@ -272,6 +301,7 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w500,
                                                   ),
+                                                  onChanged: (value) {},
                                                 ),
                                               ),
                                               const Spacer(
@@ -280,14 +310,17 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                               Expanded(
                                                 flex: 3,
                                                 child: TextFormField(
-                                                  initialValue: NumberFormat(
-                                                          '#,###')
-                                                      .format(
-                                                          data.reserveAmount),
+                                                  initialValue:
+                                                      '${data.reserveAmount}',
                                                   keyboardType:
                                                       TextInputType.number,
                                                   decoration:
                                                       const InputDecoration(
+                                                    contentPadding:
+                                                        EdgeInsets.only(
+                                                      top: 0,
+                                                      bottom: 0,
+                                                    ),
                                                     focusedBorder:
                                                         UnderlineInputBorder(
                                                       borderSide: BorderSide(

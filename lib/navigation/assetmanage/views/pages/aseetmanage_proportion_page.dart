@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -73,11 +72,7 @@ class _AssetmanageProportionPageState
                     const SizedBox(
                       height: 20,
                     ),
-                    Wrap(
-                      direction: Axis.horizontal,
-                      alignment: WrapAlignment.start,
-                      spacing: 8,
-                      runSpacing: 8,
+                    Column(
                       children: [
                         for (int i = 0; i < proportionList.length; i++)
                           ProportionTextWidget(
