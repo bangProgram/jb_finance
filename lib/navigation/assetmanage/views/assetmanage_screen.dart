@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -82,15 +83,14 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
   }
 
   void mergePortfolio() {
-    print('이거 실행돼?');
     final state = _formKey.currentState;
+    focusOut(context);
     if (state != null) {
       state.save();
       ref
           .read(assetmanageProvider.notifier)
           .mergeAssetAmount(context, formData);
     }
-    Navigator.of(context).pop();
   }
 
   @override
@@ -105,6 +105,7 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
 
     return SafeArea(
       child: Form(
+        key: _formKey,
         child: Scaffold(
           body: GestureDetector(
             onTap: () => focusOut(context),
@@ -162,7 +163,7 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                           ),
                                         ),
                                         TextButton(
-                                            onPressed: () {},
+                                            onPressed: mergePortfolio,
                                             child: const Text('저장')),
                                       ],
                                     ),
@@ -251,8 +252,7 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                                 child: TextFormField(
                                                   initialValue:
                                                       '${data.investAmount}',
-                                                  keyboardType:
-                                                      TextInputType.number,
+                                                  enabled: false,
                                                   decoration:
                                                       const InputDecoration(
                                                     contentPadding:
@@ -301,7 +301,10 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w500,
                                                   ),
-                                                  onChanged: (value) {},
+                                                  onSaved: (newValue) {
+                                                    formData['depositAmount'] =
+                                                        newValue ?? '0';
+                                                  },
                                                 ),
                                               ),
                                               const Spacer(
@@ -332,6 +335,10 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w500,
                                                   ),
+                                                  onSaved: (newValue) {
+                                                    formData['reserveAmount'] =
+                                                        newValue ?? '0';
+                                                  },
                                                 ),
                                               ),
                                               /*  20231212 기존 투자금 텍스트 위젯

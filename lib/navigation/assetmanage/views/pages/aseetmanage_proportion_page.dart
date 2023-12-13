@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:jb_finance/commons/widgets/piechart_widget.dart';
 import 'package:jb_finance/navigation/assetmanage/view_models/page_view_models/aseetmanage_page_vm.dart';
 
@@ -42,6 +43,7 @@ class _AssetmanageProportionPageState
                   child: Text('비중정보가 없습니다.'),
                 );
               } else {
+                List<String> rateList = [];
                 return Column(
                   children: [
                     Container(
@@ -72,13 +74,25 @@ class _AssetmanageProportionPageState
                     const SizedBox(
                       height: 20,
                     ),
-                    Column(
-                      children: [
-                        for (int i = 0; i < proportionList.length; i++)
-                          ProportionTextWidget(
-                              color: colorList[i],
-                              text: proportionList[i].indutyName),
-                      ],
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                      ),
+                      child: Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              for (int i = 0; i < proportionList.length; i++)
+                                ProportionTextWidget(
+                                  color: colorList[i],
+                                  text: proportionList[i].indutyName,
+                                  rate: proportionList[i].amountRate,
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
                     )
                   ],
                 );
@@ -92,15 +106,18 @@ class _AssetmanageProportionPageState
 class ProportionTextWidget extends StatelessWidget {
   final Color color;
   final String text;
+  final double rate;
   const ProportionTextWidget({
     super.key,
     required this.color,
     required this.text,
+    required this.rate,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -122,6 +139,10 @@ class ProportionTextWidget extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
+          const SizedBox(
+            width: 8,
+          ),
+          Text('( ${NumberFormat('#,###.##').format(rate)} %)'),
         ],
       ),
     );

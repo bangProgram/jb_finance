@@ -6,7 +6,9 @@ import 'package:jb_finance/navigation/planbook/view_models/planbook_detail_vm.da
 
 class PlanDetailMemoPage extends ConsumerStatefulWidget {
   final String corpCode;
-  const PlanDetailMemoPage({super.key, required this.corpCode});
+  final String? periodGubn;
+  const PlanDetailMemoPage(
+      {super.key, required this.corpCode, required this.periodGubn});
 
   @override
   ConsumerState<PlanDetailMemoPage> createState() => _PlanDetailMemoPageState();
@@ -53,6 +55,7 @@ class _PlanDetailMemoPageState extends ConsumerState<PlanDetailMemoPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('memo에서 periodGubn : ${widget.periodGubn}');
     return Stack(
       children: [
         Positioned.fill(

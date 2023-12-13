@@ -205,7 +205,10 @@ class _PlanbookDetailScreenState extends ConsumerState<PlanbookDetailScreen> {
                     befClsPrice: widget.befClsPrice,
                     periodGubn: widget.periodGubn,
                   ),
-                  PlanDetailMemoPage(corpCode: widget.corpCode)
+                  PlanDetailMemoPage(
+                    corpCode: widget.corpCode,
+                    periodGubn: widget.periodGubn,
+                  )
                 ],
               ),
             ),

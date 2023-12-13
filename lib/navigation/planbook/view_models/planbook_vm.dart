@@ -116,3 +116,29 @@ final planLongProvider =
     AsyncNotifierProvider<PlanbookVMLong, List<PlanbookModel>?>(
   () => PlanbookVMLong(),
 );
+
+class PlanbookVM extends AsyncNotifier<List<PlanbookModel>?> {
+  late final PlanbookRepo _planbookRepo;
+
+  @override
+  FutureOr<List<PlanbookModel>?> build() async {
+    _planbookRepo = ref.read(planbookRepo);
+    final resData = await _planbookRepo.getPlanbookList({'pPeriodGubnAll': ''});
+    final List<dynamic> planbookList = resData['planbookList'];
+    final int planbookCnt = resData['planbookCnt'];
+
+    if (planbookCnt > 0) {
+      final result = planbookList.map((planbook) {
+        return PlanbookModel.fromJson(planbook);
+      });
+
+      return result.toList();
+    } else {
+      return null;
+    }
+  }
+}
+
+final planProvider = AsyncNotifierProvider<PlanbookVM, List<PlanbookModel>?>(
+  () => PlanbookVM(),
+);

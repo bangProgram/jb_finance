@@ -8,14 +8,14 @@ import 'package:jb_finance/keys.dart';
 class AssetmanageRepo {
   Future<Map<String, dynamic>> getPortAmount(String userId) async {
     final response = await http.post(
-      Uri.parse("${Keys.forwardURL}/appApi/portfolio/getPortAmount"),
+      Uri.parse("${Keys.forwardURL}/appApi/asset/amount"),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode({"userId": userId}),
     );
 
-    print('response.statusCode : ${response.statusCode}');
+    print('response.statusCode : ${response.request}');
     if (response.statusCode == 200) {
       Map<String, dynamic> responseData = json.decode(response.body);
       return responseData;
@@ -24,18 +24,20 @@ class AssetmanageRepo {
     }
   }
 
-  Future<bool> mergeAssetAmount(Map<String, dynamic> formData) async {
+  Future<Map<String, dynamic>> mergeAssetAmount(
+      Map<String, dynamic> formData) async {
     final response = await http.post(
-      Uri.parse("${Keys.forwardURL}/appApi/asset/updatePortfolio"),
+      Uri.parse("${Keys.forwardURL}/appApi/asset/merge"),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(formData),
     );
 
-    print('response.statusCode : ${response.statusCode}');
+    print('response.statusCode : ${response.request}');
     if (response.statusCode == 200) {
-      return true;
+      Map<String, dynamic> responseData = json.decode(response.body);
+      return responseData;
     } else {
       throw Exception('사용자 포트폴리오 정보를 가져오지 못했습니다.');
     }

@@ -47,22 +47,21 @@ class AssetmanageVM extends AsyncNotifier<AssetmanageModel> {
 
   Future<void> mergeAssetAmount(
       BuildContext context, Map<String, dynamic> formData) async {
-    state = const AsyncValue.loading();
-    final userId = _auth.getUserId;
     state = await AsyncValue.guard(() async {
-      final result = await _assetmanageRepo.mergeAssetAmount(formData);
+      final responseData = await _assetmanageRepo.mergeAssetAmount(formData);
       //true 일경우 update 성공
-      if (result) {
-        final responseData = await _assetmanageRepo.getPortAmount(userId);
-        final portfolioData = responseData['portAmountData'];
+      final portfolioData = responseData['portAmountData'];
+      if (portfolioData != null) {
         return AssetmanageModel.fromJson(portfolioData);
       } else {
-        throw Exception('VM data 오류');
+        return AssetmanageModel.empty();
       }
     });
 
     if (state.hasError) {
-      serverMessage(context, '${state.error}');
+      serverMessage(context, '자산 업데이트 오류');
+    } else {
+      successMessage(context, '저장되었습니다.');
     }
   }
 }
