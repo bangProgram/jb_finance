@@ -42,65 +42,19 @@ class PlanDetailInfoVM
 
   Future<void> mergePlaninfo(
       BuildContext context, DetailInfoParamModel model) async {
-    final period = model.periodGubn;
-    final initPeriod = model.initPeriodGubn;
     final Map<String, dynamic> param = model.toJson();
 
     final resData = await _planbookRepo.mergePlaninfo(param);
     final List<dynamic> planbookList = resData['planbookList'];
     final int planbookCnt = resData['planbookCnt'];
 
-    final List<dynamic> initPlanbookList = resData['initPlanbookList'];
-    final int initPlanbookCnt = resData['initPlanbookCnt'];
-
-    print('신규 period : $period');
     if (planbookCnt >= 0) {
       print('planbookList : $planbookList');
       final result = planbookList.map((planbook) {
         return PlanbookModel.fromJson(planbook);
       });
 
-      if (period == null) {
-        ref.read(planAllProvider.notifier).state =
-            AsyncValue.data(result.toList());
-      } else if (period == '0601') {
-        ref.read(planShortProvider.notifier).state =
-            AsyncValue.data(result.toList());
-      } else if (period == '0602') {
-        ref.read(planMediumProvider.notifier).state =
-            AsyncValue.data(result.toList());
-      } else if (period == '0603') {
-        ref.read(planLongProvider.notifier).state =
-            AsyncValue.data(result.toList());
-      } else {
-        ref.read(planAllProvider.notifier).state =
-            AsyncValue.data(result.toList());
-      }
-    }
-
-    print('기존 period : $initPeriod');
-    if (initPlanbookCnt >= 0) {
-      print('initPlanbookList : $initPlanbookList');
-      final result = initPlanbookList.map((planbook) {
-        return PlanbookModel.fromJson(planbook);
-      });
-
-      if (initPeriod == null) {
-        ref.read(planAllProvider.notifier).state =
-            AsyncValue.data(result.toList());
-      } else if (initPeriod == '0601') {
-        ref.read(planShortProvider.notifier).state =
-            AsyncValue.data(result.toList());
-      } else if (initPeriod == '0602') {
-        ref.read(planMediumProvider.notifier).state =
-            AsyncValue.data(result.toList());
-      } else if (initPeriod == '0603') {
-        ref.read(planLongProvider.notifier).state =
-            AsyncValue.data(result.toList());
-      } else {
-        ref.read(planAllProvider.notifier).state =
-            AsyncValue.data(result.toList());
-      }
+      ref.read(planProvider.notifier).state = AsyncValue.data(result.toList());
     }
 
     final planDetailInfo = resData['planDetailInfo'];
@@ -151,6 +105,18 @@ class PlanDetailMemoVM
       final List<dynamic> memoList = resData['planDetailMemo'];
       final memoCnt = resData['planDetailMemoCnt'];
 
+      final List<dynamic> planbookList = resData['planbookList'];
+      final int planbookCnt = resData['planbookCnt'];
+
+      if (planbookCnt >= 0) {
+        final result = planbookList.map((planbook) {
+          return PlanbookModel.fromJson(planbook);
+        });
+
+        ref.read(planProvider.notifier).state =
+            AsyncValue.data(result.toList());
+      }
+
       if (memoCnt > 0) {
         final result = memoList.map((memoData) {
           return PlanDetailMemoModel.fromJson(memoData);
@@ -171,6 +137,18 @@ class PlanDetailMemoVM
       final resData = await _planbookRepo.delPlanMemo(param);
       final List<dynamic> memoList = resData['planDetailMemo'];
       final memoCnt = resData['planDetailMemoCnt'];
+
+      final List<dynamic> planbookList = resData['planbookList'];
+      final int planbookCnt = resData['planbookCnt'];
+
+      if (planbookCnt >= 0) {
+        final result = planbookList.map((planbook) {
+          return PlanbookModel.fromJson(planbook);
+        });
+
+        ref.read(planProvider.notifier).state =
+            AsyncValue.data(result.toList());
+      }
 
       if (memoCnt > 0) {
         final result = memoList.map((memoData) {

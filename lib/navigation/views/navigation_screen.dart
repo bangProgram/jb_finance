@@ -6,6 +6,7 @@ import 'package:jb_finance/navigation/assetmanage/views/assetmanage_screen.dart'
 import 'package:jb_finance/navigation/finance/views/finance_screen.dart';
 import 'package:jb_finance/navigation/planbook/views/planbook_screen.dart';
 import 'package:jb_finance/navigation/setting/views/setting_screen.dart';
+import 'package:jb_finance/navigation/transaction/views/transaction_screen.dart';
 
 class NavigationScreen extends ConsumerStatefulWidget {
   static const String routeName = "navigation";
@@ -44,11 +45,11 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
           ),
           Offstage(
             offstage: taps.indexOf(widget.tap) != 2,
-            child: const AssetmanageScreen(),
+            child: const TransactionScreen(),
           ),
           Offstage(
             offstage: taps.indexOf(widget.tap) != 3,
-            child: const SettingScreen(),
+            child: const AssetmanageScreen(),
           ),
         ],
       ),
@@ -75,11 +76,11 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
             ),
             BottomNavigationBarItem(
               icon: Icon(FontAwesomeIcons.wonSign),
-              label: '자산관리',
+              label: '거래일지',
             ),
             BottomNavigationBarItem(
               icon: Icon(FontAwesomeIcons.user),
-              label: '설정',
+              label: '포트폴리오',
             ),
           ],
         ),

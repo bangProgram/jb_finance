@@ -23,63 +23,10 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
 
   int curPage = 0;
 
-  DateTime now = DateTime.now();
-  //서버단 parameter
-  late DateTime stDate = DateTime(now.year, now.month, 1);
-  late DateTime edDate = now;
-  String? pGubn;
-
-  late String stDateStr = '${stDate.year}. ${stDate.month}. ${stDate.day}';
-  late String edDateStr = '${edDate.year}. ${edDate.month}. ${edDate.day}';
-
-  late Map<String, dynamic> searchParam = {
-    'pStDate': DateFormat('yyyyMMdd').format(stDate).toString(),
-    'pEdDate': DateFormat('yyyyMMdd').format(edDate).toString(),
-    'pGubn': '',
-    'pCorpName': '',
-  };
-
   Map<String, dynamic> formData = {};
 
   void onTapPageScreen(int page) {
     _pageController.jumpToPage(page);
-  }
-
-  Future<void> _selectDate(BuildContext context, String flag) async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: flag == 'st' ? stDate : edDate,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
-    );
-
-    if (picked != null) {
-      setState(() {
-        if (flag == 'st') {
-          stDate = picked;
-          searchParam['pStDate'] =
-              DateFormat('yyyyMMdd').format(stDate).toString();
-          stDateStr = '${picked.year}. ${picked.month}. ${picked.day}';
-        } else {
-          edDate = picked;
-          searchParam['pEdDate'] =
-              DateFormat('yyyyMMdd').format(edDate).toString();
-          edDateStr = '${picked.year}. ${picked.month}. ${picked.day}';
-        }
-      });
-    }
-  }
-
-  void _selectGubn(String? gubn) {
-    setState(() {
-      pGubn = gubn;
-    });
-  }
-
-  void getAssetRecord() async {
-    print('param : $searchParam');
-
-    await ref.read(assetRecordProvider.notifier).getAssetRecord(searchParam);
   }
 
   void mergePortfolio() {
@@ -116,7 +63,7 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                   return [
                     const SliverAppBar(
                       title: Text(
-                        '자산관리',
+                        '포트폴리오',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
@@ -125,7 +72,7 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                       centerTitle: true,
                       elevation: 1,
                       foregroundColor: Color(0xFFA8A8A8),
-                      backgroundColor: Colors.transparent,
+                      backgroundColor: Colors.white,
                     ),
                     SliverToBoxAdapter(
                       child: ref.watch(assetmanageProvider).when(
@@ -140,10 +87,14 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Divider(
-                                    height: 0,
-                                    thickness: 1,
-                                    color: Color(0xFFF4F4F4),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Divider(
+                                      height: 1,
+                                      thickness: 1,
+                                      color: const Color(0xFFA8A8A8)
+                                          .withOpacity(0.6),
+                                    ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(

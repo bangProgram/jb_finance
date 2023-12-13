@@ -36,7 +36,6 @@ class _PlanbookListPageState extends ConsumerState<PlanbookListPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('${widget.index} 화면 리빌드');
     final provider = ref.watch(planProvider);
 
     return provider.when(
@@ -49,8 +48,20 @@ class _PlanbookListPageState extends ConsumerState<PlanbookListPage> {
         if (planbookList != null) {
           return ListView.separated(
             itemCount: planbookList.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 12),
+            separatorBuilder: (context, index) {
+              final planbook = planbookList[index];
+              final page = widget.index;
+              if ((page == 0 && planbook.periodGubn == null) ||
+                  (page == 1 && planbook.periodGubn == '0601') ||
+                  (page == 2 && planbook.periodGubn == '0602') ||
+                  (page == 3 && planbook.periodGubn == '0603')) {
+                return const SizedBox(height: 12);
+              } else {
+                return Container();
+              }
+            },
             itemBuilder: (context, index) {
+              print('$index / ${planbookList.length}');
               final planbook = planbookList[index];
               final page = widget.index;
               print('${widget.index} 화면 ${planbook.periodGubn}');
@@ -147,13 +158,35 @@ class _PlanbookListPageState extends ConsumerState<PlanbookListPage> {
                                 horizontal: 5,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(0xffFFE0DE),
+                                color: planbook.investOpinion == null
+                                    ? Colors.grey.shade200
+                                    : planbook.investOpinion == '매수'
+                                        ? Colors.red.shade100
+                                        : planbook.investOpinion == '비중확대'
+                                            ? Colors.red.shade100
+                                            : planbook.investOpinion == '중립'
+                                                ? Colors.grey.shade200
+                                                : planbook.investOpinion ==
+                                                        '비중축소'
+                                                    ? Colors.blue.shade100
+                                                    : Colors.blue.shade100,
                                 borderRadius: BorderRadius.circular(2),
                               ),
-                              child: const Text(
-                                '매수',
+                              child: Text(
+                                '${planbook.investOpinion}',
                                 style: TextStyle(
-                                  color: Color(0xffe84a41),
+                                  color: planbook.investOpinion == null
+                                      ? Colors.grey
+                                      : planbook.investOpinion == '매수'
+                                          ? Colors.red
+                                          : planbook.investOpinion == '비중확대'
+                                              ? Colors.red
+                                              : planbook.investOpinion == '중립'
+                                                  ? Colors.grey
+                                                  : planbook.investOpinion ==
+                                                          '비중축소'
+                                                      ? Colors.blue
+                                                      : Colors.blue,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -162,9 +195,9 @@ class _PlanbookListPageState extends ConsumerState<PlanbookListPage> {
                             const SizedBox(
                               width: 12,
                             ),
-                            const Text(
-                              '7만원대 올라서면 매수하기 👍',
-                              style: TextStyle(
+                            Text(
+                              '${planbook.memo}',
+                              style: const TextStyle(
                                 color: Color(0xff333333),
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
@@ -176,9 +209,9 @@ class _PlanbookListPageState extends ConsumerState<PlanbookListPage> {
                     ),
                   ),
                 );
-                return null;
+              } else {
+                return Container();
               }
-              return null;
             },
           );
         } else {

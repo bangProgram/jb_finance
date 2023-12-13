@@ -41,8 +41,6 @@ class _PlanbookScreenState extends ConsumerState<PlanbookScreen> {
     final screenH = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        elevation: 1,
         title: const Text(
           '목표관리',
           style: TextStyle(
@@ -51,6 +49,9 @@ class _PlanbookScreenState extends ConsumerState<PlanbookScreen> {
             fontWeight: FontWeight.w500,
           ),
         ),
+        centerTitle: true,
+        elevation: 1,
+        foregroundColor: const Color(0xFFA8A8A8),
         backgroundColor: Colors.white,
       ),
       body: Padding(

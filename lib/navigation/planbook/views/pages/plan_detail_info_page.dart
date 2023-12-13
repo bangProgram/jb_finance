@@ -79,7 +79,6 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
  */
   @override
   void dispose() {
-    // mergePlaninfo();
     _perEditController.dispose();
     print('PlanDetailInfo Dispose !!!!!!!!');
     super.dispose();
