@@ -6,17 +6,29 @@ import 'package:jb_finance/navigation/transaction/models/trans_record_model.dart
 import 'package:jb_finance/navigation/transaction/repos/transaction_repo.dart';
 
 //거래일지 기업 리스트 프로바이더
-class TransactionCorpVM extends AsyncNotifier<List<TransCorpModel>?> {
+class TransactionCorpListVM extends AsyncNotifier<List<TransCorpModel>?> {
+  late final TransactionRepo _transactionRepo;
   @override
-  FutureOr<List<TransCorpModel>?> build() {
-    // TODO: implement build
-    throw UnimplementedError();
+  FutureOr<List<TransCorpModel>?> build() async {
+    _transactionRepo = ref.read(transactionRepo);
+
+    final responseData = await _transactionRepo.getTransCorpList();
+    final List<dynamic> corpList = responseData['corpList'];
+    final int corpCnt = responseData['corpListCnt'];
+    if (corpCnt > 0) {
+      final result = corpList.map((assetData) {
+        return TransCorpModel.fromJson(assetData);
+      });
+      return result.toList();
+    } else {
+      return null;
+    }
   }
 }
 
-final transCorpProvider =
-    AsyncNotifierProvider<TransactionCorpVM, List<TransCorpModel>?>(
-  () => TransactionCorpVM(),
+final transCorpListProvider =
+    AsyncNotifierProvider<TransactionCorpListVM, List<TransCorpModel>?>(
+  () => TransactionCorpListVM(),
 );
 
 //거래일지 거래기록 프로바이더

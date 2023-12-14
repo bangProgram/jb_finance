@@ -52,6 +52,7 @@ class _TransRecordPageState extends ConsumerState<TransRecordPage> {
               DateFormat('yyyyMMdd').format(edDate).toString();
           edDateStr = '${picked.year}. ${picked.month}. ${picked.day}';
         }
+        getTransRecord();
       });
     }
   }
@@ -59,12 +60,13 @@ class _TransRecordPageState extends ConsumerState<TransRecordPage> {
   void _selectGubn(String? gubn) {
     setState(() {
       pGubn = gubn;
+      searchParam['pGubn'] = gubn;
+      getTransRecord();
     });
   }
 
   void getTransRecord() async {
     print('param : $searchParam');
-
     await ref.read(transRecordProvider.notifier).getTransRecord(searchParam);
   }
 
@@ -229,16 +231,19 @@ class _TransRecordPageState extends ConsumerState<TransRecordPage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                const Expanded(
+                                Expanded(
                                   child: TextField(
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       border: UnderlineInputBorder(
                                         borderSide: BorderSide.none,
                                       ),
                                     ),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 18,
                                     ),
+                                    onChanged: (value) {
+                                      searchParam['pCorpName'] = value;
+                                    },
                                   ),
                                 ),
                                 GestureDetector(
