@@ -6,7 +6,7 @@ import 'package:jb_finance/navigation/assetmanage/views/assetmanage_screen.dart'
 import 'package:jb_finance/navigation/finance/views/finance_screen.dart';
 import 'package:jb_finance/navigation/planbook/views/planbook_screen.dart';
 import 'package:jb_finance/navigation/setting/views/setting_screen.dart';
-import 'package:jb_finance/navigation/transaction/views/transaction_screen.dart';
+import 'package:jb_finance/navigation/trade/views/trade_screen.dart';
 
 class NavigationScreen extends ConsumerStatefulWidget {
   static const String routeName = "navigation";
@@ -45,7 +45,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
           ),
           Offstage(
             offstage: taps.indexOf(widget.tap) != 2,
-            child: const TransactionScreen(),
+            child: const TradeScreen(),
           ),
           Offstage(
             offstage: taps.indexOf(widget.tap) != 3,

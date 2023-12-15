@@ -1,4 +1,4 @@
-class TransRecordModel {
+class TradeRecordModel {
   final int seq;
   final String corpCode;
   final String corpName;
@@ -16,7 +16,7 @@ class TransRecordModel {
   final String changeId;
   final String changeDate;
 
-  TransRecordModel({
+  TradeRecordModel({
     required this.seq,
     required this.corpCode,
     required this.corpName,
@@ -35,7 +35,7 @@ class TransRecordModel {
     required this.changeDate,
   });
 
-  TransRecordModel.fromJson(Map<String, dynamic> json)
+  TradeRecordModel.fromJson(Map<String, dynamic> json)
       : seq = json['seq'],
         corpCode = json['corpCode'],
         corpName = json['corpName'],
@@ -53,7 +53,7 @@ class TransRecordModel {
         changeId = json['changeId'],
         changeDate = json['changeDate'];
 
-  TransRecordModel.empty()
+  TradeRecordModel.empty()
       : seq = 0,
         corpCode = "",
         corpName = "",

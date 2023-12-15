@@ -59,17 +59,19 @@ class PieChartPainter extends CustomPainter {
 
       final textVal = (segment.value / total * 100).toStringAsFixed(2);
       final textDouble = double.parse(textVal);
-      final textStyle = TextStyle(
-          color: textDouble > 10 ? Colors.white : Colors.white, fontSize: 14);
+      const textStyle = TextStyle(color: Colors.white, fontSize: 14);
       final textSpan = TextSpan(text: '$textVal%', style: textStyle);
-      final textPainter =
-          TextPainter(text: textSpan, textDirection: TextDirection.ltr);
-      textPainter.layout();
+      if (textDouble > 5) {
+        final textPainter =
+            TextPainter(text: textSpan, textDirection: TextDirection.ltr);
+        textPainter.layout();
 
-      textPainter.paint(
+        textPainter.paint(
           canvas,
           Offset(segmentX - textPainter.width / 2,
-              segmentY - textPainter.height / 2));
+              segmentY - textPainter.height / 2),
+        );
+      }
     }
   }
 

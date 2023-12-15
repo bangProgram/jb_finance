@@ -17,13 +17,28 @@ class AssetmanageProportionPage extends ConsumerStatefulWidget {
 
 class _AssetmanageProportionPageState
     extends ConsumerState<AssetmanageProportionPage> {
-  List<Color> colorList = List<Color>.generate(30, (index) {
-    Random random = Random();
-    int r = random.nextInt(256);
-    int g = random.nextInt(256);
-    int b = random.nextInt(256);
-    return Color.fromRGBO(r, g, b, 1.0);
-  });
+  List<Color> colorList = [
+    const Color(0xffF4364C),
+    const Color(0xff333333),
+    const Color(0xff477EEA),
+    const Color(0xffFFC84D),
+    const Color(0xff2DB400),
+    const Color(0xffFFB7B7),
+    const Color(0xffAADFF7),
+    const Color(0xffA0E7E5),
+    const Color(0xff92A8D1),
+    const Color(0xffA8D8B9),
+    const Color(0xffFB9FB9),
+    const Color(0xff39A420),
+    const Color(0xffB5E7A0),
+    const Color(0xffD9B3FF),
+    const Color(0xff9370DB),
+    const Color(0xffD8BFD8),
+    const Color(0xff9932CC),
+    const Color(0xff5C6F93),
+    const Color(0xff9370DB),
+    const Color(0xffE77D00),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +58,6 @@ class _AssetmanageProportionPageState
                   child: Text('비중정보가 없습니다.'),
                 );
               } else {
-                List<String> rateList = [];
                 return Column(
                   children: [
                     Container(

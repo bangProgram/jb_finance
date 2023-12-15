@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:jb_finance/navigation/transaction/views/pages/trans_corp_page.dart';
-import 'package:jb_finance/navigation/transaction/views/pages/trans_record_page.dart';
+import 'package:jb_finance/navigation/trade/views/pages/trade_corp_page.dart';
+import 'package:jb_finance/navigation/trade/views/pages/trade_record_page.dart';
 import 'package:jb_finance/utils.dart';
 
-class TransactionScreen extends StatefulWidget {
-  const TransactionScreen({super.key});
+class TradeScreen extends StatefulWidget {
+  const TradeScreen({super.key});
 
   @override
-  State<TransactionScreen> createState() => _TransactionScreenState();
+  State<TradeScreen> createState() => _TradeScreenState();
 }
 
-class _TransactionScreenState extends State<TransactionScreen> {
+class _TradeScreenState extends State<TradeScreen> {
   final PageController _pageController = PageController(initialPage: 0);
 
   int curPage = 0;
@@ -108,8 +108,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   });
                 },
                 children: const [
-                  TransCorpPage(),
-                  TransRecordPage(),
+                  TradeCorpPage(),
+                  TradeRecordPage(),
                 ],
               ),
             ),

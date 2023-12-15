@@ -39,8 +39,8 @@ class InterestVM extends AsyncNotifier<List<CorporationModel>> {
   }
 
   Future<void> getCorpList({Map<String, dynamic>? param}) async {
-    state = const AsyncValue.loading();
-    print('state 대기 변경');
+    print('getInter param : $param');
+
     state = await AsyncValue.guard(() async {
       final resData = await _interestRepo.getCorpList(param);
       if (resData['corpCnt'] > 0) {

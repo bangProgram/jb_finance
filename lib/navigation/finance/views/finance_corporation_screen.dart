@@ -16,11 +16,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class FinanceCorpScreen extends ConsumerStatefulWidget {
   final List<String> interList;
-  final Function(String, String) toggleFunc;
+  final Function(String, String) toggleInterest;
+  final List<String> tradeList;
+  final Function(String, String) toggleTrade;
   const FinanceCorpScreen({
     super.key,
     required this.interList,
-    required this.toggleFunc,
+    required this.toggleInterest,
+    required this.tradeList,
+    required this.toggleTrade,
   });
 
   @override
@@ -522,272 +526,272 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
           children: [
             Positioned.fill(
               child: ref.watch(corpProvider).when(
-                    error: (error, stackTrace) {
-                      return Center(
-                        child: Text('에러? $error'),
-                      );
-                    },
-                    loading: () => const Center(
-                      child: CircularProgressIndicator.adaptive(),
-                    ),
-                    data: (data) {
-                      final corpList = data;
-                      stYear = data.first.stYear!;
-                      edYear = data.first.edYear!;
-                      stHalf = data.first.stHalf ?? '';
-                      edHalf = data.first.edHalf ?? '';
+                error: (error, stackTrace) {
+                  return Center(
+                    child: Text('에러? $error'),
+                  );
+                },
+                loading: () {
+                  selectCorpList();
+                  return const Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  );
+                },
+                data: (data) {
+                  final corpList = data;
+                  stYear = data.first.stYear!;
+                  edYear = data.first.edYear!;
+                  stHalf = data.first.stHalf ?? '';
+                  edHalf = data.first.edHalf ?? '';
 
-                      return corpList.first.corpName == ""
-                          ? const Center(
-                              child: Text('만족하는 사업장이 없습니다'),
-                            )
-                          : ListView.builder(
-                              controller: _scrollController,
-                              scrollDirection: Axis.vertical,
-                              itemCount: corpList.length,
-                              itemBuilder: (context, index) {
-                                final corpData = corpList[index];
+                  return corpList.first.corpName == ""
+                      ? const Center(
+                          child: Text('만족하는 사업장이 없습니다'),
+                        )
+                      : ListView.builder(
+                          controller: _scrollController,
+                          scrollDirection: Axis.vertical,
+                          itemCount: corpList.length,
+                          itemBuilder: (context, index) {
+                            final corpData = corpList[index];
 
-                                return GestureDetector(
-                                  onTap: () => _goCorpDetailScreen(
-                                      corpData.corpName, corpData.corpCode),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 10,
-                                      horizontal: 15,
+                            return GestureDetector(
+                              onTap: () => _goCorpDetailScreen(
+                                  corpData.corpName, corpData.corpCode),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 15,
+                                ),
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFFFFFFFF),
+                                  border: Border(
+                                    top: BorderSide(
+                                      color: Color(0xFFEFEFEF),
+                                      width: 1,
                                     ),
-                                    decoration: const BoxDecoration(
-                                      color: Color(0xFFFFFFFF),
-                                      border: Border(
-                                        top: BorderSide(
-                                          color: Color(0xFFEFEFEF),
-                                          width: 1,
-                                        ),
-                                      ),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    const CircleAvatar(
+                                      backgroundColor: Colors.blue,
+                                      radius: 30,
                                     ),
-                                    child: Row(
-                                      children: [
-                                        const CircleAvatar(
-                                          backgroundColor: Colors.blue,
-                                          radius: 30,
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
                                             children: [
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Text(
-                                                      corpData.corpName,
-                                                      style: const TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
+                                              Expanded(
+                                                child: Text(
+                                                  corpData.corpName,
+                                                  style: const TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w600,
                                                   ),
-                                                  IconButton(
-                                                    onPressed: () {},
-                                                    icon: SvgPicture.asset(
-                                                      'assets/svgs/icons/Icon_money_inact.svg',
-                                                    ),
-                                                  ),
-                                                  IconButton(
-                                                    onPressed: () =>
-                                                        widget.toggleFunc(
-                                                            widget.interList
-                                                                    .contains(
-                                                                        corpData
-                                                                            .corpCode)
-                                                                ? 'del'
-                                                                : 'add',
-                                                            corpData.corpCode),
-                                                    icon: SvgPicture.asset(
-                                                      widget.interList.contains(
-                                                              corpData.corpCode)
-                                                          ? 'assets/svgs/icons/Icon_heart_act.svg'
-                                                          : 'assets/svgs/icons/Icon_heart_inact.svg',
-                                                    ),
-                                                  ),
-                                                ],
+                                                ),
                                               ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                  Expanded(
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        const Text(
-                                                          '매출액',
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFC4C4C4),
-                                                            fontSize: 14,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          corpData.curAmount1 ==
-                                                                  null
-                                                              ? '적자'
-                                                              : amountTrans(corpData
-                                                                  .curAmount1!),
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          corpData.avgAmount1 ==
-                                                                  null
-                                                              ? '적자'
-                                                              : '${corpData.avgAmount1} %',
-                                                          style: TextStyle(
-                                                            color: corpData
-                                                                        .avgAmount1 ==
-                                                                    null
-                                                                ? Colors.black
-                                                                : corpData.avgAmount1 >
-                                                                        0
-                                                                    ? Colors.red
-                                                                    : Colors
-                                                                        .blue,
-                                                            fontSize: 12,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        const Text(
-                                                          '영업이익',
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFC4C4C4),
-                                                            fontSize: 14,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          corpData.curAmount2 ==
-                                                                  null
-                                                              ? '적자'
-                                                              : amountTrans(corpData
-                                                                  .curAmount2!),
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          corpData.avgAmount2 ==
-                                                                  null
-                                                              ? '적자'
-                                                              : '${corpData.avgAmount2} %',
-                                                          style: TextStyle(
-                                                            color: corpData
-                                                                        .avgAmount2 ==
-                                                                    null
-                                                                ? Colors.black
-                                                                : corpData.avgAmount2 >
-                                                                        0
-                                                                    ? Colors.red
-                                                                    : Colors
-                                                                        .blue,
-                                                            fontSize: 12,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        const Text(
-                                                          '순이익',
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFC4C4C4),
-                                                            fontSize: 14,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          corpData.curAmount3 ==
-                                                                  null
-                                                              ? '적자'
-                                                              : amountTrans(corpData
-                                                                  .curAmount3!),
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          corpData.avgAmount3 ==
-                                                                  null
-                                                              ? '적자'
-                                                              : '${corpData.avgAmount3} %',
-                                                          textAlign:
-                                                              TextAlign.end,
-                                                          style: TextStyle(
-                                                            color: corpData
-                                                                        .avgAmount3 ==
-                                                                    null
-                                                                ? Colors.black
-                                                                : corpData.avgAmount3 >
-                                                                        0
-                                                                    ? Colors.red
-                                                                    : Colors
-                                                                        .blue,
-                                                            fontSize: 12,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
+                                              IconButton(
+                                                onPressed: () =>
+                                                    widget.toggleTrade(
+                                                        widget.tradeList.contains(
+                                                                corpData
+                                                                    .corpCode)
+                                                            ? 'del'
+                                                            : 'add',
+                                                        corpData.corpCode),
+                                                icon: SvgPicture.asset(
+                                                  widget.tradeList.contains(
+                                                          corpData.corpCode)
+                                                      ? 'assets/svgs/icons/Icon_money_act.svg'
+                                                      : 'assets/svgs/icons/Icon_money_inact.svg',
+                                                ),
+                                              ),
+                                              IconButton(
+                                                onPressed: () =>
+                                                    widget.toggleInterest(
+                                                        widget.interList.contains(
+                                                                corpData
+                                                                    .corpCode)
+                                                            ? 'del'
+                                                            : 'add',
+                                                        corpData.corpCode),
+                                                icon: SvgPicture.asset(
+                                                  widget.interList.contains(
+                                                          corpData.corpCode)
+                                                      ? 'assets/svgs/icons/Icon_heart_act.svg'
+                                                      : 'assets/svgs/icons/Icon_heart_inact.svg',
+                                                ),
                                               ),
                                             ],
                                           ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    const Text(
+                                                      '매출액',
+                                                      style: TextStyle(
+                                                        color:
+                                                            Color(0xFFC4C4C4),
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      corpData.curAmount1 ==
+                                                              null
+                                                          ? '적자'
+                                                          : amountTrans(corpData
+                                                              .curAmount1!),
+                                                      style: const TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      corpData.avgAmount1 ==
+                                                              null
+                                                          ? '적자'
+                                                          : '${corpData.avgAmount1} %',
+                                                      style: TextStyle(
+                                                        color: corpData
+                                                                    .avgAmount1 ==
+                                                                null
+                                                            ? Colors.black
+                                                            : corpData.avgAmount1 >
+                                                                    0
+                                                                ? Colors.red
+                                                                : Colors.blue,
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    const Text(
+                                                      '영업이익',
+                                                      style: TextStyle(
+                                                        color:
+                                                            Color(0xFFC4C4C4),
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      corpData.curAmount2 ==
+                                                              null
+                                                          ? '적자'
+                                                          : amountTrans(corpData
+                                                              .curAmount2!),
+                                                      style: const TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      corpData.avgAmount2 ==
+                                                              null
+                                                          ? '적자'
+                                                          : '${corpData.avgAmount2} %',
+                                                      style: TextStyle(
+                                                        color: corpData
+                                                                    .avgAmount2 ==
+                                                                null
+                                                            ? Colors.black
+                                                            : corpData.avgAmount2 >
+                                                                    0
+                                                                ? Colors.red
+                                                                : Colors.blue,
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    const Text(
+                                                      '순이익',
+                                                      style: TextStyle(
+                                                        color:
+                                                            Color(0xFFC4C4C4),
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      corpData.curAmount3 ==
+                                                              null
+                                                          ? '적자'
+                                                          : amountTrans(corpData
+                                                              .curAmount3!),
+                                                      style: const TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      corpData.avgAmount3 ==
+                                                              null
+                                                          ? '적자'
+                                                          : '${corpData.avgAmount3} %',
+                                                      textAlign: TextAlign.end,
+                                                      style: TextStyle(
+                                                        color: corpData
+                                                                    .avgAmount3 ==
+                                                                null
+                                                            ? Colors.black
+                                                            : corpData.avgAmount3 >
+                                                                    0
+                                                                ? Colors.red
+                                                                : Colors.blue,
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
                             );
-                    },
-                  ),
+                          },
+                        );
+                },
+              ),
             ),
             if (isToggle)
               Positioned(

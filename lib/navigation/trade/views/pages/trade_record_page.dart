@@ -3,32 +3,32 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:jb_finance/navigation/assetmanage/view_models/page_view_models/aseetmanage_page_vm.dart';
-import 'package:jb_finance/navigation/transaction/view_models/transaction_vm.dart';
+import 'package:jb_finance/navigation/trade/view_models/trade_vm.dart';
 
-class TransRecordPage extends ConsumerStatefulWidget {
-  const TransRecordPage({
+class TradeRecordPage extends ConsumerStatefulWidget {
+  const TradeRecordPage({
     super.key,
   });
 
   @override
-  ConsumerState<TransRecordPage> createState() => _TransRecordPageState();
+  ConsumerState<TradeRecordPage> createState() => _TradeRecordPageState();
 }
 
-class _TransRecordPageState extends ConsumerState<TransRecordPage> {
+class _TradeRecordPageState extends ConsumerState<TradeRecordPage> {
   int curPage = 0;
 
   DateTime now = DateTime.now();
   //서버단 parameter
   late DateTime stDate = DateTime(now.year, now.month, 1);
   late DateTime edDate = now;
-  String? pGubn;
+  String? pTradeGubn;
   late String stDateStr = '${stDate.year}. ${stDate.month}. ${stDate.day}';
   late String edDateStr = '${edDate.year}. ${edDate.month}. ${edDate.day}';
 
   late Map<String, dynamic> searchParam = {
     'pStDate': DateFormat('yyyyMMdd').format(stDate).toString(),
     'pEdDate': DateFormat('yyyyMMdd').format(edDate).toString(),
-    'pGubn': '',
+    'pTradeGubn': '',
     'pCorpName': '',
   };
   Future<void> _selectDate(BuildContext context, String flag) async {
@@ -52,22 +52,22 @@ class _TransRecordPageState extends ConsumerState<TransRecordPage> {
               DateFormat('yyyyMMdd').format(edDate).toString();
           edDateStr = '${picked.year}. ${picked.month}. ${picked.day}';
         }
-        getTransRecord();
+        getTradeRecord();
       });
     }
   }
 
   void _selectGubn(String? gubn) {
     setState(() {
-      pGubn = gubn;
-      searchParam['pGubn'] = gubn;
-      getTransRecord();
+      pTradeGubn = gubn;
+      searchParam['pTradeGubn'] = gubn;
+      getTradeRecord();
     });
   }
 
-  void getTransRecord() async {
+  void getTradeRecord() async {
     print('param : $searchParam');
-    await ref.read(transRecordProvider.notifier).getTransRecord(searchParam);
+    await ref.read(tradeRecordProvider.notifier).getTradeRecord(searchParam);
   }
 
   @override
@@ -172,7 +172,7 @@ class _TransRecordPageState extends ConsumerState<TransRecordPage> {
                             borderRadius: BorderRadius.circular(15),
                             underline: Container(),
                             icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                            value: pGubn,
+                            value: pTradeGubn,
                             items: const [
                               DropdownMenuItem(
                                 value: null,
@@ -247,7 +247,7 @@ class _TransRecordPageState extends ConsumerState<TransRecordPage> {
                                   ),
                                 ),
                                 GestureDetector(
-                                  onTap: getTransRecord,
+                                  onTap: getTradeRecord,
                                   child: const FaIcon(
                                     FontAwesomeIcons.magnifyingGlass,
                                     size: 15,
@@ -266,13 +266,17 @@ class _TransRecordPageState extends ConsumerState<TransRecordPage> {
             ),
           ),
           Expanded(
-            child: ref.watch(transRecordProvider).when(
+            child: ref.watch(tradeRecordProvider).when(
                   error: (error, stackTrace) => Center(
                     child: Text('error: $error'),
                   ),
-                  loading: () => const Center(
-                    child: CircularProgressIndicator(),
-                  ),
+                  loading: () {
+                    getTradeRecord();
+
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
                   data: (data) {
                     final recordList = data;
                     if (recordList == null) {
@@ -376,60 +380,6 @@ class _TransRecordPageState extends ConsumerState<TransRecordPage> {
                                             ),
                                           ),
                                         ),
-                                        /* 
-                                        Expanded(
-                                          child: Flex(
-                                            direction: Axis.horizontal,
-                                            children: [
-                                              Flexible(
-                                                fit: FlexFit.tight,
-                                                flex: 2,
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      recordData.corpCode,
-                                                      style: const TextStyle(
-                                                        color:
-                                                            Color(0xff333333),
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      recordData.gubn == '0101'
-                                                          ? '${recordData.tradePrice} · ${recordData.buyQuantity}주'
-                                                          : '${recordData.tradePrice} · ${recordData.sellQuantity}주',
-                                                      style: const TextStyle(
-                                                        color:
-                                                            Color(0xffC4C4C4),
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Flexible(
-                                                flex: 1,
-                                                child: Text(
-                                                  textAlign: TextAlign.right,
-                                                  recordData.gubn == '0101'
-                                                      ? '${recordData.buyAmount} 원'
-                                                      : '${recordData.sellAmount} 원',
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                       */
                                       ],
                                     ),
                                   ],

@@ -5,6 +5,7 @@ import 'package:jb_finance/navigation/finance/view_models/corporation_vm.dart';
 import 'package:jb_finance/navigation/finance/view_models/interest_vm.dart';
 import 'package:jb_finance/navigation/finance/views/finance_corporation_screen.dart';
 import 'package:jb_finance/navigation/finance/views/finance_interest_screen.dart';
+import 'package:jb_finance/navigation/trade/view_models/trade_vm.dart';
 import 'package:jb_finance/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,21 +20,21 @@ class FinanceScreen extends ConsumerStatefulWidget {
 }
 
 class _FinanceScreenState extends ConsumerState<FinanceScreen> {
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   late SharedPreferences prefs;
 
   int screenIndex = 0;
 
   List<String> interList = [];
+  List<String> tradeList = [];
 
   @override
   void initState() {
     super.initState();
-    initPreference();
+    initInter();
+    initTrade();
   }
 
-  void initPreference() async {
-    prefs = await _prefs;
+  void initInter() async {
     final initInterData =
         await ref.read(interProvider.notifier).initinterList();
     int initInterCnt = initInterData['initCnt'];
@@ -45,22 +46,65 @@ class _FinanceScreenState extends ConsumerState<FinanceScreen> {
     }
   }
 
+  void initTrade() async {
+    final initTradeData =
+        await ref.read(tradeCorpListProvider.notifier).initTradeList();
+    int initTradeCnt = initTradeData['initCnt'];
+    if (initTradeCnt > 0) {
+      final List<dynamic> initTradeList = initTradeData['initList'];
+      initTradeList.map((data) {
+        tradeList.add('${data['STOCK_CODE']}');
+      }).toList();
+    }
+  }
+
   void onTapCorpScreen(int index) {
     setState(() {
       screenIndex = index;
     });
   }
 
-  void toggleInterest(String flag, String corpCode) async {
-    prefs = await _prefs;
-
+  Future<void> toggleInterest(String flag, String corpCode) async {
     if (flag == 'del') {
-      interList.remove(corpCode);
-      ref.read(interProvider.notifier).delInterest({'STOCK_CODE': corpCode});
+      if (tradeList.contains(corpCode)) {
+        serverMessage(context, '거래일지로 등록이 되어있는 종목은 삭제할 수 없습니다');
+        return;
+      } else {
+        interList.remove(corpCode);
+        await ref
+            .read(interProvider.notifier)
+            .delInterest({'STOCK_CODE': corpCode});
+      }
     } else {
       interList.add(corpCode);
-      ref.read(interProvider.notifier).addInterest({'STOCK_CODE': corpCode});
+      await ref
+          .read(interProvider.notifier)
+          .addInterest({'STOCK_CODE': corpCode});
     }
+
+    setState(() {});
+  }
+
+  Future<void> toggleTrade(String flag, String corpCode) async {
+    if (flag == 'del') {
+      tradeList.remove(corpCode);
+      await ref
+          .read(tradeCorpListProvider.notifier)
+          .delTrade({'pStockCode': corpCode});
+    } else {
+      tradeList.add(corpCode);
+      await ref
+          .read(tradeCorpListProvider.notifier)
+          .addTrade({'pStockCode': corpCode});
+
+      if (interList.contains(corpCode)) {
+        return;
+      } else {
+        print('관심기업도 등록한다');
+        await toggleInterest(flag, corpCode);
+      }
+    }
+
     setState(() {});
   }
 
@@ -163,12 +207,18 @@ class _FinanceScreenState extends ConsumerState<FinanceScreen> {
                       Offstage(
                         offstage: screenIndex != 0,
                         child: FinanceCorpScreen(
-                            interList: interList, toggleFunc: toggleInterest),
+                            interList: interList,
+                            toggleInterest: toggleInterest,
+                            tradeList: tradeList,
+                            toggleTrade: toggleTrade),
                       ),
                       Offstage(
                         offstage: screenIndex != 1,
                         child: FinanceInterestScreen(
-                            interList: interList, toggleFunc: toggleInterest),
+                            interList: interList,
+                            toggleInterest: toggleInterest,
+                            tradeList: tradeList,
+                            toggleTrade: toggleTrade),
                       ),
                     ],
                   ),

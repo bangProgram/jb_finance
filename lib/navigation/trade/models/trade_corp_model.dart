@@ -1,4 +1,4 @@
-class TransCorpModel {
+class TradeCorpModel {
   final String corpCode;
   final String userId;
   final String corpName;
@@ -11,8 +11,9 @@ class TransCorpModel {
   final int avgPrice;
   final int befClsPrice;
   final int valPrice;
+  final int returnAmount;
 
-  TransCorpModel({
+  TradeCorpModel({
     required this.corpCode,
     required this.userId,
     required this.corpName,
@@ -25,9 +26,10 @@ class TransCorpModel {
     required this.avgPrice,
     required this.befClsPrice,
     required this.valPrice,
+    required this.returnAmount,
   });
 
-  TransCorpModel.fromJson(Map<String, dynamic> json)
+  TradeCorpModel.fromJson(Map<String, dynamic> json)
       : corpCode = json['corpCode'],
         userId = json['userId'],
         corpName = json['corpName'],
@@ -39,9 +41,10 @@ class TransCorpModel {
         holdQuantity = json['holdQuantity'],
         avgPrice = json['avgPrice'],
         befClsPrice = json['befClsPrice'],
-        valPrice = json['valPrice'];
+        valPrice = json['valPrice'],
+        returnAmount = json['returnAmount'];
 
-  TransCorpModel.empty()
+  TradeCorpModel.empty()
       : corpCode = "",
         userId = "",
         corpName = "",
@@ -53,7 +56,8 @@ class TransCorpModel {
         holdQuantity = 0,
         avgPrice = 0,
         befClsPrice = 0,
-        valPrice = 0;
+        valPrice = 0,
+        returnAmount = 0;
 
   Map<String, dynamic> toJson() {
     return {
@@ -69,6 +73,7 @@ class TransCorpModel {
       'avgPrice': avgPrice,
       'befClsPrice': befClsPrice,
       'valPrice': valPrice,
+      'returnAmount': returnAmount,
     };
   }
 }
