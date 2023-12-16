@@ -9,6 +9,7 @@ import 'package:jb_finance/navigation/assetmanage/models/assetmanage_record_mode
 import 'package:jb_finance/navigation/assetmanage/repos/assetmanage_repo.dart';
 import 'package:jb_finance/navigation/assetmanage/repos/page_repos/aseetmanage_page_repo.dart';
 
+//포트폴리오 > 자산평가 리스트 프로바이더
 class AssetmanageListVM extends AsyncNotifier<List<AssetmanageListModel>> {
   late final Authentications _auth;
   late final AssetmanagePageRepo _assetmanagePageRepo;
@@ -36,7 +37,6 @@ class AssetmanageListVM extends AsyncNotifier<List<AssetmanageListModel>> {
   }
 
   Future<void> getAssetList() async {
-    state = const AsyncValue.loading();
     final responseData = await _assetmanagePageRepo.getAssetList();
     final List<dynamic> assetList = responseData['assetList'];
     final int assetCnt = responseData['assetListCnt'];
@@ -57,7 +57,7 @@ final assetListProvider =
   () => AssetmanageListVM(),
 );
 
-//자산관리 자산비중 프로바이더
+//포트폴리오 > 자산비중 프로바이더
 class AssetmanageProportionVM
     extends AsyncNotifier<List<AssetmanageProportionModel>?> {
   late final AssetmanagePageRepo _assetmanagePageRepo;
@@ -83,7 +83,6 @@ class AssetmanageProportionVM
   }
 
   Future<void> getAssetProportion(Map<String, dynamic> param) async {
-    state = const AsyncValue.loading();
     final resData = await _assetmanagePageRepo.getAssetProportion(param);
     final List<dynamic> recordList = resData['assetProportion'];
     final int recordCnt = resData['assetProportionCnt'];

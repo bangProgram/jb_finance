@@ -7,7 +7,6 @@ import 'package:jb_finance/navigation/assetmanage/view_models/assetmanage_vm.dar
 import 'package:jb_finance/navigation/assetmanage/view_models/page_view_models/aseetmanage_page_vm.dart';
 import 'package:jb_finance/navigation/assetmanage/views/pages/aseetmanage_list_page.dart';
 import 'package:jb_finance/navigation/assetmanage/views/pages/aseetmanage_proportion_page.dart';
-import 'package:jb_finance/navigation/assetmanage/views/pages/assetmanage_record_page.dart';
 import 'package:jb_finance/utils.dart';
 
 class AssetmanageScreen extends ConsumerStatefulWidget {
@@ -29,15 +28,19 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
     _pageController.jumpToPage(page);
   }
 
-  void mergePortfolio() {
+  void mergePortfolio() async {
     final state = _formKey.currentState;
     focusOut(context);
     if (state != null) {
       state.save();
-      ref
+      await ref
           .read(assetmanageProvider.notifier)
           .mergeAssetAmount(context, formData);
     }
+  }
+
+  void getPortfolio() async {
+    await ref.read(assetmanageProvider.notifier).getPortfolio();
   }
 
   @override
@@ -76,7 +79,10 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                     ),
                     SliverToBoxAdapter(
                       child: ref.watch(assetmanageProvider).when(
-                            loading: () => Container(),
+                            loading: () {
+                              getPortfolio();
+                              return Container();
+                            },
                             error: (error, stackTrace) => Container(
                               child: Text('error $error'),
                             ),
@@ -292,77 +298,6 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                                   },
                                                 ),
                                               ),
-                                              /*  20231212 기존 투자금 텍스트 위젯
-                                              Row(
-                                                children: [
-                                                  const Text(
-                                                    '투자금',
-                                                    style: TextStyle(
-                                                      color: Color(0xFFA8A8A8),
-                                                      fontSize: 14,
-                                                      fontWeight: FontWeight.w500,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 5,
-                                                  ),
-                                                  Text(
-                                                    NumberFormat("#,###")
-                                                        .format(data.investAmount),
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight: FontWeight.w500,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  const Text(
-                                                    '예수금',
-                                                    style: TextStyle(
-                                                      color: Color(0xFFA8A8A8),
-                                                      fontSize: 14,
-                                                      fontWeight: FontWeight.w500,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 5,
-                                                  ),
-                                                  Text(
-                                                    NumberFormat("#,###")
-                                                        .format(data.depositAmount),
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight: FontWeight.w500,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  const Text(
-                                                    '예비금',
-                                                    style: TextStyle(
-                                                      color: Color(0xFFA8A8A8),
-                                                      fontSize: 14,
-                                                      fontWeight: FontWeight.w500,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 5,
-                                                  ),
-                                                  Text(
-                                                    NumberFormat("#,###")
-                                                        .format(data.reserveAmount),
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight: FontWeight.w500,
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                             */
                                             ],
                                           ),
                                         ),
@@ -573,15 +508,17 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                     SliverToBoxAdapter(
                         child: curPage == 0
                             ? ref.watch(assetmanageProvider).when(
-                                  loading: () => Container(),
+                                  loading: () {
+                                    getPortfolio();
+                                    return Container();
+                                  },
                                   error: (error, stackTrace) => Container(
                                     child: Text('error $error'),
                                   ),
                                   data: (data) {
-                                    final totalReturn = data.investAmount > 0
-                                        ? (data.evaluationAmount /
-                                                    data.investAmount) *
-                                                100 -
+                                    final profitRate = data.investAmount > 0
+                                        ? (data.evaluationProfit /
+                                                data.investAmount) *
                                             100
                                         : 0;
                                     return Column(
@@ -589,96 +526,208 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                         Container(
                                           padding: const EdgeInsets.symmetric(
                                             vertical: 20,
+                                            horizontal: 10,
                                           ),
                                           child: Column(
                                             children: [
                                               Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
                                                 children: [
-                                                  Container(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                      horizontal: 10,
-                                                    ),
-                                                    child: Row(
-                                                      children: [
-                                                        const Text(
-                                                          '총 수익률',
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFC4C4C4),
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w500,
+                                                  Expanded(
+                                                    child: Container(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                        horizontal: 10,
+                                                      ),
+                                                      child: Row(
+                                                        children: [
+                                                          const Expanded(
+                                                            flex: 3,
+                                                            child: Text(
+                                                              '매입금액',
+                                                              style: TextStyle(
+                                                                color: Color(
+                                                                    0xFFC4C4C4),
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                            ),
                                                           ),
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 11,
-                                                        ),
-                                                        Text(
-                                                          totalReturn != 0
-                                                              ? '${NumberFormat("#,###.##").format(totalReturn)}%'
-                                                              : '-- %',
-                                                          style: TextStyle(
-                                                            color: totalReturn ==
-                                                                    0
-                                                                ? Colors.black
-                                                                : totalReturn >
-                                                                        0
-                                                                    ? Colors.red
-                                                                    : Colors
-                                                                        .blue,
-                                                            fontSize: 18,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        )
-                                                      ],
+                                                          Expanded(
+                                                            flex: 4,
+                                                            child: Text(
+                                                              NumberFormat(
+                                                                      "#,###")
+                                                                  .format(data
+                                                                      .investAmount),
+                                                              style:
+                                                                  const TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
-                                                  Container(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                      horizontal: 10,
-                                                    ),
-                                                    child: Row(
-                                                      children: [
-                                                        const Text(
-                                                          '총 수익',
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFC4C4C4),
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w500,
+                                                  Expanded(
+                                                    child: Container(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                        horizontal: 10,
+                                                      ),
+                                                      child: Row(
+                                                        children: [
+                                                          const Expanded(
+                                                            flex: 3,
+                                                            child: Text(
+                                                              '평가손익',
+                                                              style: TextStyle(
+                                                                color: Color(
+                                                                    0xFFC4C4C4),
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                            ),
                                                           ),
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 11,
-                                                        ),
-                                                        Text(
-                                                          NumberFormat("#,###")
-                                                              .format(data
-                                                                  .evaluationProfit),
-                                                          style: TextStyle(
-                                                            color: data.evaluationProfit ==
-                                                                    0
-                                                                ? Colors.black
-                                                                : data.evaluationProfit >
+                                                          Expanded(
+                                                            flex: 4,
+                                                            child: Text(
+                                                              NumberFormat(
+                                                                      "#,###")
+                                                                  .format(data
+                                                                      .evaluationProfit),
+                                                              style: TextStyle(
+                                                                color: data.evaluationProfit ==
                                                                         0
-                                                                    ? Colors.red
-                                                                    : Colors
-                                                                        .blue,
-                                                            fontSize: 18,
-                                                            fontWeight:
-                                                                FontWeight.w500,
+                                                                    ? Colors
+                                                                        .black
+                                                                    : data.evaluationProfit >
+                                                                            0
+                                                                        ? Colors
+                                                                            .red
+                                                                        : Colors
+                                                                            .blue,
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                            ),
                                                           ),
-                                                        ),
-                                                      ],
+                                                        ],
+                                                      ),
                                                     ),
                                                   )
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                height: 8,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Container(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                        horizontal: 10,
+                                                      ),
+                                                      child: Row(
+                                                        children: [
+                                                          const Expanded(
+                                                            flex: 3,
+                                                            child: Text(
+                                                              '평가금액',
+                                                              style: TextStyle(
+                                                                color: Color(
+                                                                    0xFFC4C4C4),
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Expanded(
+                                                            flex: 4,
+                                                            child: Text(
+                                                              NumberFormat(
+                                                                      "#,###")
+                                                                  .format(data
+                                                                      .evaluationAmount),
+                                                              style:
+                                                                  const TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Container(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                        horizontal: 10,
+                                                      ),
+                                                      child: Row(
+                                                        children: [
+                                                          const Expanded(
+                                                            flex: 3,
+                                                            child: Text(
+                                                              '총 수익률',
+                                                              style: TextStyle(
+                                                                color: Color(
+                                                                    0xFFC4C4C4),
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Expanded(
+                                                            flex: 4,
+                                                            child: Text(
+                                                              profitRate != 0
+                                                                  ? '${NumberFormat("#,###.##").format(profitRate)}%'
+                                                                  : '-- %',
+                                                              style: TextStyle(
+                                                                color: profitRate ==
+                                                                        0
+                                                                    ? Colors
+                                                                        .black
+                                                                    : profitRate >
+                                                                            0
+                                                                        ? Colors
+                                                                            .red
+                                                                        : Colors
+                                                                            .blue,
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ],
                                               ),
                                             ],

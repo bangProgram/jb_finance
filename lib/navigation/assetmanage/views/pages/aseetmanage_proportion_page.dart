@@ -40,6 +40,10 @@ class _AssetmanageProportionPageState
     const Color(0xffE77D00),
   ];
 
+  void getAssetProportion() async {
+    await ref.read(assetProportionProvider.notifier).getAssetProportion({});
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenW = MediaQuery.of(context).size.width;
@@ -48,9 +52,12 @@ class _AssetmanageProportionPageState
             error: (error, stackTrace) => Center(
               child: Text('error : $error'),
             ),
-            loading: () => const Center(
-              child: CircularProgressIndicator(),
-            ),
+            loading: () {
+              getAssetProportion();
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
             data: (data) {
               final proportionList = data;
               if (proportionList == null) {
@@ -101,7 +108,8 @@ class _AssetmanageProportionPageState
                                 ProportionTextWidget(
                                   color: colorList[i],
                                   text: proportionList[i].indutyName,
-                                  rate: proportionList[i].amountRate,
+                                  rate: double.parse(
+                                      proportionList[i].amountRate),
                                 ),
                             ],
                           ),

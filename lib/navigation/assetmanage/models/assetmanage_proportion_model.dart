@@ -2,7 +2,7 @@ class AssetmanageProportionModel {
   final String indutyCode;
   final String indutyName;
   final int totalAmount;
-  final double amountRate;
+  final String amountRate;
 
   AssetmanageProportionModel({
     required this.indutyCode,
@@ -21,7 +21,7 @@ class AssetmanageProportionModel {
       : indutyCode = "",
         indutyName = "",
         totalAmount = 0,
-        amountRate = 0;
+        amountRate = "0";
 
   Map<String, dynamic> toJson() {
     return {

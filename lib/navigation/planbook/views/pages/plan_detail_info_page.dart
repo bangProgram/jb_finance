@@ -34,6 +34,8 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
   late double? curOpinion4;
   late double? curOpinion5;
 
+  final double _counter = 0.0;
+
   Future<void> _refreshState() async {
     await ref
         .read(planDetailInfoProvider(widget.corpCode).notifier)
@@ -245,9 +247,13 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                     ),
                                   ),
                                   Expanded(
-                                    child: Text(
-                                      NumberFormat('#,###')
-                                          .format(data.sharesAmount),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8),
+                                      child: Text(
+                                        NumberFormat('#,###')
+                                            .format(data.sharesAmount),
+                                      ),
                                     ),
                                   ),
                                   Expanded(
@@ -269,9 +275,13 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                     ),
                                   ),
                                   Expanded(
-                                    child: Text(
-                                      NumberFormat('#,###')
-                                          .format(data.marketCapital),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8),
+                                      child: Text(
+                                        NumberFormat('#,###')
+                                            .format(data.marketCapital),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -301,9 +311,13 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                     ),
                                   ),
                                   Expanded(
-                                    child: Text(
-                                      NumberFormat('#,###')
-                                          .format(data.tradeVolume),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8),
+                                      child: Text(
+                                        NumberFormat('#,###')
+                                            .format(data.tradeVolume),
+                                      ),
                                     ),
                                   ),
                                   Expanded(
@@ -326,9 +340,13 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                     ),
                                   ),
                                   Expanded(
-                                    child: Text(
-                                      NumberFormat('#,###')
-                                          .format(data.tradeAmount),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8),
+                                      child: Text(
+                                        NumberFormat('#,###')
+                                            .format(data.tradeAmount),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -1025,6 +1043,138 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                           ],
                         ),
                       ),
+                      //eps & per 20231216 슬라이더 적용 어려운 관계로 일단 skip
+                      /* 
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Stack(
+                        children: [
+                          Container(
+                            height: 46,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 25,
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    height: 0,
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                        top: BorderSide(
+                                          color: Color(0xff333333),
+                                          width: 1,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const VerticalDivider(
+                                  color: Color(0xff333333),
+                                  thickness: 1,
+                                  width: 0,
+                                  indent: 15,
+                                  endIndent: 15,
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    height: 0,
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                        top: BorderSide(
+                                          color: Color(0xff333333),
+                                          width: 1,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const VerticalDivider(
+                                  color: Color(0xff333333),
+                                  thickness: 1,
+                                  width: 0,
+                                  indent: 15,
+                                  endIndent: 15,
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    height: 0,
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                        top: BorderSide(
+                                          color: Color(0xff333333),
+                                          width: 1,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const VerticalDivider(
+                                  color: Color(0xff333333),
+                                  thickness: 1,
+                                  width: 0,
+                                  indent: 15,
+                                  endIndent: 15,
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    height: 0,
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                        top: BorderSide(
+                                          color: Color(0xff333333),
+                                          width: 1,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const VerticalDivider(
+                                  color: Color(0xff333333),
+                                  thickness: 1,
+                                  width: 0,
+                                  indent: 15,
+                                  endIndent: 15,
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    height: 0,
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                        top: BorderSide(
+                                          color: Color(0xff333333),
+                                          width: 1,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Positioned(
+                            child: Container(
+                              color: Colors.transparent,
+                              child: Slider(
+                                value: _counter,
+                                activeColor: Colors.red.shade200,
+                                inactiveColor: Colors.red.withOpacity(0.5),
+                                max: 100,
+                                divisions: 100,
+                                label: _counter.toString(),
+
+                                onChanged: (value) {
+                                  setState(() {
+                                    _counter = value;
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                       */
                     ],
                   ),
                 ),

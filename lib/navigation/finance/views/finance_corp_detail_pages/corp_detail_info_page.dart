@@ -771,26 +771,55 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                     const SizedBox(
                       height: 12,
                     ),
+                    /* 
                     Row(
                       children: [
                         Expanded(
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: 58,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(
-                                color: const Color(0xFFE9E9EC),
-                                width: 1,
+                          child: GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog.adaptive(
+                                  content: const Text(
+                                    '포트폴리오로 등록하시겠습니까?',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {},
+                                      child: const Text('예'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('아니요'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 58,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: const Color(0xFFE9E9EC),
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(6),
                               ),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: const Text(
-                              '거래일지 작성하기',
-                              style: TextStyle(
-                                color: Color(0xFF444447),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
+                              child: const Text(
+                                '거래일지 작성하기',
+                                style: TextStyle(
+                                  color: Color(0xFF444447),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ),
@@ -799,29 +828,33 @@ class _CorpDetailInfoPageState extends ConsumerState<CorpDetailInfoPage> {
                           width: 30,
                         ),
                         Expanded(
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: 58,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(
-                                color: const Color(0xFFE9E9EC),
-                                width: 1,
+                          child: GestureDetector(
+                            onTap: () {},
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 58,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: const Color(0xFFE9E9EC),
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(6),
                               ),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: const Text(
-                              '목표관리 작성하기',
-                              style: TextStyle(
-                                color: Color(0xFF444447),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
+                              child: const Text(
+                                '목표관리 작성하기',
+                                style: TextStyle(
+                                  color: Color(0xFF444447),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ],
                     ),
+                   */
                   ],
                 ),
               ),

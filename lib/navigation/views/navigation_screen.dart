@@ -7,6 +7,7 @@ import 'package:jb_finance/navigation/finance/views/finance_screen.dart';
 import 'package:jb_finance/navigation/planbook/views/planbook_screen.dart';
 import 'package:jb_finance/navigation/setting/views/setting_screen.dart';
 import 'package:jb_finance/navigation/trade/views/trade_screen.dart';
+import 'package:jb_finance/utils.dart';
 
 class NavigationScreen extends ConsumerStatefulWidget {
   static const String routeName = "navigation";
@@ -32,113 +33,116 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Offstage(
-            offstage: taps.indexOf(widget.tap) != 0,
-            child: const FinanceScreen(),
-          ),
-          Offstage(
-            offstage: taps.indexOf(widget.tap) != 1,
-            child: const PlanbookScreen(),
-          ),
-          Offstage(
-            offstage: taps.indexOf(widget.tap) != 2,
-            child: const TradeScreen(),
-          ),
-          Offstage(
-            offstage: taps.indexOf(widget.tap) != 3,
-            child: const AssetmanageScreen(),
-          ),
-        ],
-      ),
-      bottomNavigationBar: BottomAppBar(
-        surfaceTintColor: Colors.white,
-        child: BottomNavigationBar(
-          elevation: 0,
-          iconSize: 20,
-          type: BottomNavigationBarType.fixed,
-          unselectedItemColor: Colors.grey,
-          selectedItemColor: Colors.blue,
-          onTap: (index) {
-            goNavigationScreen(index);
-          },
-          currentIndex: taps.indexOf(widget.tap),
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.chartLine),
-              label: '종목',
+    return GestureDetector(
+      onTap: () => focusOut(context),
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Offstage(
+              offstage: taps.indexOf(widget.tap) != 0,
+              child: const FinanceScreen(),
             ),
-            BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.flag),
-              label: '목표관리',
+            Offstage(
+              offstage: taps.indexOf(widget.tap) != 1,
+              child: const PlanbookScreen(),
             ),
-            BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.wonSign),
-              label: '거래일지',
+            Offstage(
+              offstage: taps.indexOf(widget.tap) != 2,
+              child: const TradeScreen(),
             ),
-            BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.user),
-              label: '포트폴리오',
+            Offstage(
+              offstage: taps.indexOf(widget.tap) != 3,
+              child: const AssetmanageScreen(),
             ),
           ],
         ),
+        bottomNavigationBar: BottomAppBar(
+          surfaceTintColor: Colors.white,
+          child: BottomNavigationBar(
+            elevation: 0,
+            iconSize: 20,
+            type: BottomNavigationBarType.fixed,
+            unselectedItemColor: Colors.grey,
+            selectedItemColor: Colors.blue,
+            onTap: (index) {
+              goNavigationScreen(index);
+            },
+            currentIndex: taps.indexOf(widget.tap),
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(FontAwesomeIcons.chartLine),
+                label: '종목',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(FontAwesomeIcons.flag),
+                label: '목표관리',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(FontAwesomeIcons.wonSign),
+                label: '거래일지',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(FontAwesomeIcons.user),
+                label: '포트폴리오',
+              ),
+            ],
+          ),
 
-        // CupertinoActionSheet(
+          // CupertinoActionSheet(
 
-        //   actions: [
-        //     Row(
-        //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        //       children: [
-        //         Expanded(
-        //           child: Container(
-        //             color: Colors.transparent,
-        //             child: CupertinoActionSheetAction(
-        //               onPressed: () {
-        //                 context.replace(FinanceScreen.routeURL);
-        //               },
-        //               child: const Icon(FontAwesomeIcons.house),
-        //             ),
-        //           ),
-        //         ),
-        //         Container(
-        //           height: 30,
-        //           decoration: BoxDecoration(border: Border.all()), // 두께 조정
-        //         ),
-        //         Expanded(
-        //           child: Container(
-        //             color: Colors.transparent,
-        //             child: CupertinoActionSheetAction(
-        //               onPressed: () {
-        //                 context.replace(PortfolioScreen.routeURL);
-        //               },
-        //               child: const Icon(FontAwesomeIcons.solidUser),
-        //             ),
-        //           ),
-        //         ),
-        //         const Divider(
-        //           color: Colors.black, // Divider의 색상 설정
-        //           height: 1, // 높이 조정
-        //           thickness: 1, // 두께 조정
-        //         ),
-        //         Expanded(
-        //           child: Container(
-        //             color: Colors.transparent,
-        //             child: CupertinoActionSheetAction(
-        //               onPressed: () {
-        //                 context.replace(PortfolioScreen.routeURL);
-        //               },
-        //               child: const Icon(
-        //                 FontAwesomeIcons.gear,
-        //               ),
-        //             ),
-        //           ),
-        //         ),
-        //       ],
-        //     )
-        //   ],
-        // ),
+          //   actions: [
+          //     Row(
+          //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          //       children: [
+          //         Expanded(
+          //           child: Container(
+          //             color: Colors.transparent,
+          //             child: CupertinoActionSheetAction(
+          //               onPressed: () {
+          //                 context.replace(FinanceScreen.routeURL);
+          //               },
+          //               child: const Icon(FontAwesomeIcons.house),
+          //             ),
+          //           ),
+          //         ),
+          //         Container(
+          //           height: 30,
+          //           decoration: BoxDecoration(border: Border.all()), // 두께 조정
+          //         ),
+          //         Expanded(
+          //           child: Container(
+          //             color: Colors.transparent,
+          //             child: CupertinoActionSheetAction(
+          //               onPressed: () {
+          //                 context.replace(PortfolioScreen.routeURL);
+          //               },
+          //               child: const Icon(FontAwesomeIcons.solidUser),
+          //             ),
+          //           ),
+          //         ),
+          //         const Divider(
+          //           color: Colors.black, // Divider의 색상 설정
+          //           height: 1, // 높이 조정
+          //           thickness: 1, // 두께 조정
+          //         ),
+          //         Expanded(
+          //           child: Container(
+          //             color: Colors.transparent,
+          //             child: CupertinoActionSheetAction(
+          //               onPressed: () {
+          //                 context.replace(PortfolioScreen.routeURL);
+          //               },
+          //               child: const Icon(
+          //                 FontAwesomeIcons.gear,
+          //               ),
+          //             ),
+          //           ),
+          //         ),
+          //       ],
+          //     )
+          //   ],
+          // ),
+        ),
       ),
     );
   }

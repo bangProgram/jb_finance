@@ -34,6 +34,10 @@ class _PlanbookListPageState extends ConsumerState<PlanbookListPage> {
     );
   }
 
+  void getPlanbookList() async {
+    await ref.read(planProvider.notifier).getPlanbookList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = ref.watch(planProvider);
@@ -42,7 +46,10 @@ class _PlanbookListPageState extends ConsumerState<PlanbookListPage> {
       error: (error, stackTrace) => Center(
         child: Text('error : $error'),
       ),
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () {
+        getPlanbookList();
+        return const Center(child: CircularProgressIndicator());
+      },
       data: (data) {
         final planbookList = data;
         if (planbookList != null) {
@@ -158,7 +165,7 @@ class _PlanbookListPageState extends ConsumerState<PlanbookListPage> {
                                 horizontal: 5,
                               ),
                               decoration: BoxDecoration(
-                                color: planbook.investOpinion == null
+                                color: planbook.investOpinion == '미추정'
                                     ? Colors.grey.shade200
                                     : planbook.investOpinion == '매수'
                                         ? Colors.red.shade100
@@ -175,7 +182,7 @@ class _PlanbookListPageState extends ConsumerState<PlanbookListPage> {
                               child: Text(
                                 '${planbook.investOpinion}',
                                 style: TextStyle(
-                                  color: planbook.investOpinion == null
+                                  color: planbook.investOpinion == '미추정'
                                       ? Colors.grey
                                       : planbook.investOpinion == '매수'
                                           ? Colors.red
@@ -196,10 +203,12 @@ class _PlanbookListPageState extends ConsumerState<PlanbookListPage> {
                               width: 12,
                             ),
                             Text(
-                              '${planbook.memo}',
-                              style: const TextStyle(
-                                color: Color(0xff333333),
-                                fontSize: 16,
+                              planbook.memo ?? '작성된 메모가 없습니다.',
+                              style: TextStyle(
+                                color: planbook.memo == null
+                                    ? Colors.grey
+                                    : const Color(0xff333333),
+                                fontSize: planbook.memo == null ? 14 : 16,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),

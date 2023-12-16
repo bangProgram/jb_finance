@@ -49,6 +49,7 @@ class TradeCorpListVM extends AsyncNotifier<List<TradeCorpModel>?> {
     return initData;
   }
 
+  //종목찾기 > 포트폴리오 등록
   Future<void> addTrade(Map<String, dynamic> param) async {
     await _tradeRepo.addTrade(param);
     //종목찾기, 관심종목 리스트 초기화
@@ -56,9 +57,9 @@ class TradeCorpListVM extends AsyncNotifier<List<TradeCorpModel>?> {
     ref.read(corpProvider.notifier).state = const AsyncValue.loading();
     //거래일지 기업 리스트 초기화
     ref.read(tradeCorpListProvider.notifier).state = const AsyncValue.loading();
-    //ref.read(tradeRecordProvider.notifier).state = const AsyncValue.loading();
+    ref.read(tradeRecordProvider.notifier).state = const AsyncValue.loading();
     //목표관리 리스트 초기화
-    //ref.read(planProvider.notifier).state = const AsyncValue.loading();
+    ref.read(planProvider.notifier).state = const AsyncValue.loading();
     //포트폴리오 초기화
     //ref.read(assetmanageProvider.notifier).state = const AsyncValue.loading();
     //ref.read(assetListProvider.notifier).state = const AsyncValue.loading();
@@ -66,6 +67,7 @@ class TradeCorpListVM extends AsyncNotifier<List<TradeCorpModel>?> {
     const AsyncValue.loading();
   }
 
+  //종목찾기 > 포트폴리오 삭제
   Future<void> delTrade(Map<String, dynamic> param) async {
     await _tradeRepo.delTrade(param);
     //종목찾기, 관심종목 리스트 초기화
@@ -73,9 +75,9 @@ class TradeCorpListVM extends AsyncNotifier<List<TradeCorpModel>?> {
     ref.read(corpProvider.notifier).state = const AsyncValue.loading();
     //거래일지 기업 리스트 초기화
     ref.read(tradeCorpListProvider.notifier).state = const AsyncValue.loading();
-    //ref.read(tradeRecordProvider.notifier).state = const AsyncValue.loading();
+    ref.read(tradeRecordProvider.notifier).state = const AsyncValue.loading();
     //목표관리 리스트 초기화
-    //ref.read(planProvider.notifier).state = const AsyncValue.loading();
+    ref.read(planProvider.notifier).state = const AsyncValue.loading();
     //포트폴리오 초기화
     //ref.read(assetmanageProvider.notifier).state = const AsyncValue.loading();
     //ref.read(assetListProvider.notifier).state = const AsyncValue.loading();

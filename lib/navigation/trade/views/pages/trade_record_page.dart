@@ -272,7 +272,6 @@ class _TradeRecordPageState extends ConsumerState<TradeRecordPage> {
                   ),
                   loading: () {
                     getTradeRecord();
-
                     return const Center(
                       child: CircularProgressIndicator(),
                     );

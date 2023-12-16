@@ -25,6 +25,21 @@ class PlanbookVM extends AsyncNotifier<List<PlanbookModel>?> {
       return null;
     }
   }
+
+  Future<void> getPlanbookList() async {
+    final resData = await _planbookRepo.getPlanbookList({});
+    final List<dynamic> planbookList = resData['planbookList'];
+    final int planbookCnt = resData['planbookCnt'];
+
+    if (planbookCnt > 0) {
+      final result = planbookList.map((planbook) {
+        return PlanbookModel.fromJson(planbook);
+      });
+      state = AsyncValue.data(result.toList());
+    } else {
+      state = const AsyncValue.data(null);
+    }
+  }
 }
 
 final planProvider = AsyncNotifierProvider<PlanbookVM, List<PlanbookModel>?>(

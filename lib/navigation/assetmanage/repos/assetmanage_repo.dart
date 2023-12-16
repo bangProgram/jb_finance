@@ -6,13 +6,13 @@ import 'package:jb_finance/consts.dart';
 import 'package:jb_finance/keys.dart';
 
 class AssetmanageRepo {
-  Future<Map<String, dynamic>> getPortAmount(String userId) async {
+  Future<Map<String, dynamic>> getAssetAmount() async {
     final response = await http.post(
       Uri.parse("${Keys.forwardURL}/appApi/asset/amount"),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode({"userId": userId}),
+      body: jsonEncode({}),
     );
 
     print('response.statusCode : ${response.request}');

@@ -48,112 +48,77 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         backgroundColor: Colors.black,
-        body: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 40,
-                horizontal: 30,
+        body: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 40,
+            horizontal: 30,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.5,
+                height: MediaQuery.of(context).size.width * 0.5,
+                child:
+                    SvgPicture.asset('assets/svgs/logos/Logo_icon_login.svg'),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Column(
                 children: [
-                  const SizedBox(
-                    height: 55,
-                  ),
-                  SizedBox(
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      alignment: Alignment.center,
-                      children: [
-                        Positioned(
-                          bottom: 50,
-                          child: Container(
-                            width: 200,
-                            height: 200,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage(_imageList[0]),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Opacity(
-                          opacity: 0.96,
-                          child: Container(
-                            width: 238,
-                            height: 141,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage(_imageList[1]),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          right: 40,
-                          bottom: 34,
-                          child: Column(
-                            children: [
-                              const Text(
-                                '누구나 누리는 주식',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              SvgPicture.asset(
-                                'assets/svgs/logos/Logo_jutopia_main.svg',
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
+                  const Text(
+                    '누구나 누리는 주식',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(
-                    height: 55,
+                    height: 5,
                   ),
-                  GestureDetector(
-                    onTap: _signinWithKAKAO,
-                    child: const SocialLoginBtnWidget(
-                      btnColor: Color(0xFFFFED4B),
-                      btnImage: 'assets/svgs/icons/Icon_kakao.svg',
-                      btnText: '카카오톡으로 시작하기',
-                      textColor: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                  GestureDetector(
-                    onTap: _signinWithGoogle,
-                    child: const SocialLoginBtnWidget(
-                      btnColor: Colors.white,
-                      btnImage: 'assets/svgs/icons/Icon_google.svg',
-                      btnText: '구글로 시작하기',
-                      textColor: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                  GestureDetector(
-                    onTap: _signinWithNaver,
-                    child: const SocialLoginBtnWidget(
-                      btnColor: Color(0xFF03CF5D),
-                      btnImage: 'assets/svgs/icons/Icon_naver.svg',
-                      btnText: '네이버 계정으로 시작하기',
-                      textColor: Colors.white,
-                    ),
+                  SvgPicture.asset(
+                    'assets/svgs/logos/Logo_login.svg',
+                    width: MediaQuery.of(context).size.width * 0.4,
                   ),
                 ],
               ),
-            ),
-          ],
+              const SizedBox(
+                height: 50,
+              ),
+              GestureDetector(
+                onTap: _signinWithKAKAO,
+                child: const SocialLoginBtnWidget(
+                  btnColor: Color(0xFFFFED4B),
+                  btnImage: 'assets/svgs/icons/Icon_kakao.svg',
+                  btnText: '카카오톡으로 시작하기',
+                  textColor: Colors.black,
+                ),
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              GestureDetector(
+                onTap: _signinWithGoogle,
+                child: const SocialLoginBtnWidget(
+                  btnColor: Colors.white,
+                  btnImage: 'assets/svgs/icons/Icon_google.svg',
+                  btnText: '구글로 시작하기',
+                  textColor: Colors.black,
+                ),
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              GestureDetector(
+                onTap: _signinWithNaver,
+                child: const SocialLoginBtnWidget(
+                  btnColor: Color(0xFF03CF5D),
+                  btnImage: 'assets/svgs/icons/Icon_naver.svg',
+                  btnText: '네이버 계정으로 시작하기',
+                  textColor: Colors.white,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
