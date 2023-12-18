@@ -101,17 +101,19 @@ class _AssetmanageProportionPageState
                       ),
                       child: Row(
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              for (int i = 0; i < proportionList.length; i++)
-                                ProportionTextWidget(
-                                  color: colorList[i],
-                                  text: proportionList[i].indutyName,
-                                  rate: double.parse(
-                                      proportionList[i].amountRate),
-                                ),
-                            ],
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                for (int i = 0; i < proportionList.length; i++)
+                                  ProportionTextWidget(
+                                    color: colorList[i],
+                                    text: proportionList[i].indutyName,
+                                    rate: double.parse(
+                                        proportionList[i].amountRate),
+                                  ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -152,19 +154,24 @@ class ProportionTextWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            width: 8,
+            width: 5,
           ),
-          Text(
-            text,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
-          const SizedBox(
-            width: 8,
+          Text(
+            '${NumberFormat('#,###.##').format(rate)} %',
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-          Text('( ${NumberFormat('#,###.##').format(rate)} %)'),
         ],
       ),
     );

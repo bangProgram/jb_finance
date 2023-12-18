@@ -83,6 +83,7 @@ class _PlanbookListPageState extends ConsumerState<PlanbookListPage> {
                       planbook.befClsPrice,
                       planbook.periodGubn),
                   child: Container(
+                    width: MediaQuery.of(context).size.width,
                     padding: const EdgeInsets.symmetric(
                       vertical: 15,
                       horizontal: 18,
@@ -202,14 +203,17 @@ class _PlanbookListPageState extends ConsumerState<PlanbookListPage> {
                             const SizedBox(
                               width: 12,
                             ),
-                            Text(
-                              planbook.memo ?? '작성된 메모가 없습니다.',
-                              style: TextStyle(
-                                color: planbook.memo == null
-                                    ? Colors.grey
-                                    : const Color(0xff333333),
-                                fontSize: planbook.memo == null ? 14 : 16,
-                                fontWeight: FontWeight.w500,
+                            Expanded(
+                              child: Text(
+                                planbook.memo ?? '작성된 메모가 없습니다.',
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: planbook.memo == null
+                                      ? Colors.grey
+                                      : const Color(0xff333333),
+                                  fontSize: planbook.memo == null ? 14 : 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ],

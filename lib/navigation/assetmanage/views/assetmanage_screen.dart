@@ -541,13 +541,13 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                                       child: Row(
                                                         children: [
                                                           const Expanded(
-                                                            flex: 3,
+                                                            flex: 2,
                                                             child: Text(
                                                               '매입금액',
                                                               style: TextStyle(
                                                                 color: Color(
                                                                     0xFFC4C4C4),
-                                                                fontSize: 16,
+                                                                fontSize: 14,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w500,
@@ -561,11 +561,14 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                                                       "#,###")
                                                                   .format(data
                                                                       .investAmount),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
                                                               style:
                                                                   const TextStyle(
                                                                 color: Colors
                                                                     .black,
-                                                                fontSize: 18,
+                                                                fontSize: 16,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w500,
@@ -585,13 +588,13 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                                       child: Row(
                                                         children: [
                                                           const Expanded(
-                                                            flex: 3,
+                                                            flex: 2,
                                                             child: Text(
                                                               '평가손익',
                                                               style: TextStyle(
                                                                 color: Color(
                                                                     0xFFC4C4C4),
-                                                                fontSize: 16,
+                                                                fontSize: 14,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w500,
@@ -605,6 +608,9 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                                                       "#,###")
                                                                   .format(data
                                                                       .evaluationProfit),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
                                                               style: TextStyle(
                                                                 color: data.evaluationProfit ==
                                                                         0
@@ -616,7 +622,7 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                                                             .red
                                                                         : Colors
                                                                             .blue,
-                                                                fontSize: 18,
+                                                                fontSize: 16,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w500,
@@ -643,13 +649,13 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                                       child: Row(
                                                         children: [
                                                           const Expanded(
-                                                            flex: 3,
+                                                            flex: 2,
                                                             child: Text(
                                                               '평가금액',
                                                               style: TextStyle(
                                                                 color: Color(
                                                                     0xFFC4C4C4),
-                                                                fontSize: 16,
+                                                                fontSize: 14,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w500,
@@ -663,11 +669,14 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                                                       "#,###")
                                                                   .format(data
                                                                       .evaluationAmount),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
                                                               style:
                                                                   const TextStyle(
                                                                 color: Colors
                                                                     .black,
-                                                                fontSize: 18,
+                                                                fontSize: 16,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w500,
@@ -687,13 +696,13 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                                       child: Row(
                                                         children: [
                                                           const Expanded(
-                                                            flex: 3,
+                                                            flex: 2,
                                                             child: Text(
                                                               '총 수익률',
                                                               style: TextStyle(
                                                                 color: Color(
                                                                     0xFFC4C4C4),
-                                                                fontSize: 16,
+                                                                fontSize: 14,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w500,
@@ -706,6 +715,9 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                                               profitRate != 0
                                                                   ? '${NumberFormat("#,###.##").format(profitRate)}%'
                                                                   : '-- %',
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
                                                               style: TextStyle(
                                                                 color: profitRate ==
                                                                         0
@@ -717,7 +729,7 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                                                             .red
                                                                         : Colors
                                                                             .blue,
-                                                                fontSize: 18,
+                                                                fontSize: 16,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w500,
