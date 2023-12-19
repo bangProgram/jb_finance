@@ -575,9 +575,19 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
                                 ),
                                 child: Row(
                                   children: [
-                                    const CircleAvatar(
-                                      backgroundColor: Colors.blue,
-                                      radius: 30,
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: const Color(0xffefefef),
+                                        ),
+                                      ),
+                                      child: CircleAvatar(
+                                        radius: 30,
+                                        backgroundColor: Colors.white,
+                                        child: SvgPicture.asset(
+                                            'assets/svgs/icons/Icon_empty_corp.svg'),
+                                      ),
                                     ),
                                     const SizedBox(
                                       width: 10,

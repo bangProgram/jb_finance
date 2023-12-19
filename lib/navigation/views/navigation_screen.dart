@@ -9,7 +9,7 @@ import 'package:jb_finance/navigation/setting/views/setting_screen.dart';
 import 'package:jb_finance/navigation/trade/views/trade_screen.dart';
 import 'package:jb_finance/utils.dart';
 
-class NavigationScreen extends ConsumerStatefulWidget {
+class NavigationScreen extends StatefulWidget {
   static const String routeName = "navigation";
   static const String routeURL = "/finance";
 
@@ -18,16 +18,26 @@ class NavigationScreen extends ConsumerStatefulWidget {
   const NavigationScreen({super.key, required this.tap});
 
   @override
-  ConsumerState<NavigationScreen> createState() => _NavigationScreenState();
+  State<NavigationScreen> createState() => _NavigationScreenState();
 }
 
-class _NavigationScreenState extends ConsumerState<NavigationScreen>
+class _NavigationScreenState extends State<NavigationScreen>
     with SingleTickerProviderStateMixin {
+  final PageController _pageController = PageController();
+
   final taps = ['finance', 'planbook', 'portfolio', 'setting'];
+  int curPage = 0;
+  final List<Widget> page = [
+    const FinanceScreen(),
+    const PlanbookScreen(),
+    const TradeScreen(),
+    const AssetmanageScreen(),
+  ];
 
   void goNavigationScreen(int index) async {
     final url = '/${taps[index]}';
     print('url : $url / ${url.contains('setting')}');
+    _pageController.jumpToPage(index);
     context.replace(url);
   }
 
@@ -36,7 +46,15 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
     return GestureDetector(
       onTap: () => focusOut(context),
       child: Scaffold(
-        body: Stack(
+        body: PageView.builder(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            return page[index];
+          },
+        ),
+/* 
+            Stack(
           children: [
             Offstage(
               offstage: taps.indexOf(widget.tap) != 0,
@@ -56,6 +74,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
             ),
           ],
         ),
+ */
         bottomNavigationBar: BottomAppBar(
           surfaceTintColor: Colors.white,
           child: BottomNavigationBar(
@@ -87,7 +106,6 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen>
               ),
             ],
           ),
-
           // CupertinoActionSheet(
 
           //   actions: [

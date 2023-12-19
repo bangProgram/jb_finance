@@ -114,118 +114,115 @@ class _FinanceScreenState extends ConsumerState<FinanceScreen> {
 
     return DefaultTabController(
       length: 2,
-      child: GestureDetector(
-        onTap: () => focusOut(context),
-        child: Scaffold(
-          appBar: AppBar(
-            title: SvgPicture.asset('assets/svgs/logos/Logo_app_main.svg'),
-            elevation: 1,
-            backgroundColor: Colors.white,
-          ),
-          body: Column(
-            children: [
-              Container(
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => onTapCorpScreen(0),
-                          child: Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.only(
-                              top: 20,
-                              bottom: 10,
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: screenIndex == 0
-                                      ? Colors.black
-                                      : Colors.transparent,
-                                  width: 2,
-                                ),
-                              ),
-                            ),
-                            child: Text(
-                              '전체',
-                              style: TextStyle(
+      child: Scaffold(
+        appBar: AppBar(
+          title: SvgPicture.asset('assets/svgs/logos/Logo_app_main.svg'),
+          elevation: 1,
+          backgroundColor: Colors.white,
+        ),
+        body: Column(
+          children: [
+            Container(
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => onTapCorpScreen(0),
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.only(
+                            top: 20,
+                            bottom: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
                                 color: screenIndex == 0
                                     ? Colors.black
-                                    : const Color(0xFFE6E6E6),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
+                                    : Colors.transparent,
+                                width: 2,
                               ),
+                            ),
+                          ),
+                          child: Text(
+                            '전체',
+                            style: TextStyle(
+                              color: screenIndex == 0
+                                  ? Colors.black
+                                  : const Color(0xFFE6E6E6),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => onTapCorpScreen(1),
-                          child: Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.only(
-                              top: 20,
-                              bottom: 10,
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: screenIndex == 1
-                                      ? Colors.black
-                                      : Colors.transparent,
-                                  width: 2,
-                                ),
-                              ),
-                            ),
-                            child: Text(
-                              '관심',
-                              style: TextStyle(
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => onTapCorpScreen(1),
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.only(
+                            top: 20,
+                            bottom: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
                                 color: screenIndex == 1
                                     ? Colors.black
-                                    : const Color(0xFFE6E6E6),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
+                                    : Colors.transparent,
+                                width: 2,
                               ),
+                            ),
+                          ),
+                          child: Text(
+                            '관심',
+                            style: TextStyle(
+                              color: screenIndex == 1
+                                  ? Colors.black
+                                  : const Color(0xFFE6E6E6),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-              Expanded(
-                child: Container(
-                  child: Stack(
-                    children: [
-                      Offstage(
-                        offstage: screenIndex != 0,
-                        child: FinanceCorpScreen(
-                            interList: interList,
-                            toggleInterest: toggleInterest,
-                            tradeList: tradeList,
-                            toggleTrade: toggleTrade),
-                      ),
-                      Offstage(
-                        offstage: screenIndex != 1,
-                        child: FinanceInterestScreen(
-                            interList: interList,
-                            toggleInterest: toggleInterest,
-                            tradeList: tradeList,
-                            toggleTrade: toggleTrade),
-                      ),
-                    ],
-                  ),
+            ),
+            Expanded(
+              child: Container(
+                child: Stack(
+                  children: [
+                    Offstage(
+                      offstage: screenIndex != 0,
+                      child: FinanceCorpScreen(
+                          interList: interList,
+                          toggleInterest: toggleInterest,
+                          tradeList: tradeList,
+                          toggleTrade: toggleTrade),
+                    ),
+                    Offstage(
+                      offstage: screenIndex != 1,
+                      child: FinanceInterestScreen(
+                          interList: interList,
+                          toggleInterest: toggleInterest,
+                          tradeList: tradeList,
+                          toggleTrade: toggleTrade),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
