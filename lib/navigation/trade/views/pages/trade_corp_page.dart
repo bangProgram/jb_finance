@@ -113,7 +113,9 @@ class _TradeCorpPageState extends ConsumerState<TradeCorpPage> {
                                     Container(
                                       alignment: Alignment.center,
                                       child: Text(
-                                        corpData.changeDt,
+                                        DateFormat('yyyy-MM-dd').format(
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                                corpData.changeDt)),
                                         style: const TextStyle(
                                           color: Color(0xffc4c4c4),
                                           fontSize: 12,

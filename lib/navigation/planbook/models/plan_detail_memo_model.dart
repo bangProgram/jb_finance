@@ -7,7 +7,7 @@ class PlanDetailMemoModel {
   final String? gubn;
   final String memo;
   final int createDt;
-  final String changeDt;
+  final int changeDt;
 
   PlanDetailMemoModel({
     required this.corpCode,
@@ -41,7 +41,7 @@ class PlanDetailMemoModel {
         gubn = null,
         memo = "",
         createDt = 0,
-        changeDt = "";
+        changeDt = 0;
 
   Map<String, dynamic> toJson() {
     return {

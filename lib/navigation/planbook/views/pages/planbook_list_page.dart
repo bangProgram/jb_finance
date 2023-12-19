@@ -47,6 +47,7 @@ class _PlanbookListPageState extends ConsumerState<PlanbookListPage> {
         child: Text('error : $error'),
       ),
       loading: () {
+        print('planbook 로딩 ~~~~~~~~~~~~~');
         getPlanbookList();
         return const Center(child: CircularProgressIndicator());
       },

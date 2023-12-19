@@ -7,6 +7,7 @@ import 'package:jb_finance/navigation/assetmanage/view_models/assetmanage_vm.dar
 import 'package:jb_finance/navigation/assetmanage/view_models/page_view_models/aseetmanage_page_vm.dart';
 import 'package:jb_finance/navigation/assetmanage/views/pages/aseetmanage_list_page.dart';
 import 'package:jb_finance/navigation/assetmanage/views/pages/aseetmanage_proportion_page.dart';
+import 'package:jb_finance/navigation/setting/views/setting_screen.dart';
 import 'package:jb_finance/utils.dart';
 
 class AssetmanageScreen extends ConsumerStatefulWidget {
@@ -43,6 +44,12 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
     await ref.read(assetmanageProvider.notifier).getPortfolio();
   }
 
+  void goSettingScreen() {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => const SettingScreen(),
+    ));
+  }
+
   @override
   void dispose() {
     _pageController.dispose();
@@ -64,17 +71,23 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
               child: NestedScrollView(
                 headerSliverBuilder: (context, innerBoxIsScrolled) {
                   return [
-                    const SliverAppBar(
-                      title: Text(
+                    SliverAppBar(
+                      title: const Text(
                         '포트폴리오',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
+                      actions: [
+                        IconButton(
+                          onPressed: goSettingScreen,
+                          icon: const FaIcon(FontAwesomeIcons.gear),
+                        ),
+                      ],
                       centerTitle: true,
                       elevation: 1,
-                      foregroundColor: Color(0xFFA8A8A8),
+                      foregroundColor: const Color(0xFFA8A8A8),
                       backgroundColor: Colors.white,
                     ),
                     SliverToBoxAdapter(

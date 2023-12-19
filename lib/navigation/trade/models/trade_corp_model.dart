@@ -4,9 +4,9 @@ class TradeCorpModel {
   final String corpName;
   final String stockCode;
   final String createId;
-  final String createDt;
+  final int createDt;
   final String changeId;
-  final String changeDt;
+  final int changeDt;
   final int holdQuantity;
   final int avgPrice;
   final int befClsPrice;
@@ -50,9 +50,9 @@ class TradeCorpModel {
         corpName = "",
         stockCode = "",
         createId = "",
-        createDt = "",
+        createDt = 0,
         changeId = "",
-        changeDt = "",
+        changeDt = 0,
         holdQuantity = 0,
         avgPrice = 0,
         befClsPrice = 0,

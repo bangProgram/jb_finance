@@ -6,6 +6,7 @@ import 'package:jb_finance/navigation/finance/models/corporation_model.dart';
 import 'package:jb_finance/navigation/finance/repos/corporation_repo.dart';
 import 'package:jb_finance/navigation/finance/repos/interest_repo.dart';
 import 'package:jb_finance/navigation/finance/view_models/corporation_vm.dart';
+import 'package:jb_finance/navigation/planbook/view_models/planbook_vm.dart';
 import 'package:jb_finance/utils.dart';
 
 class InterestVM extends AsyncNotifier<List<CorporationModel>> {
@@ -63,12 +64,18 @@ class InterestVM extends AsyncNotifier<List<CorporationModel>> {
     await _interestRepo.addInterest(param);
 
     await getCorpList(param: {});
+
+    //목표관리 리스트 초기화
+    ref.read(planProvider.notifier).state = const AsyncValue.loading();
   }
 
   Future<void> delInterest(Map<String, dynamic> param) async {
     await _interestRepo.delInterest(param);
 
     await getCorpList(param: {});
+
+    //목표관리 리스트 초기화
+    ref.read(planProvider.notifier).state = const AsyncValue.loading();
   }
 
   Future<Map<String, dynamic>> initinterList() async {

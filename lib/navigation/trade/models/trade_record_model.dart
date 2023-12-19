@@ -14,7 +14,7 @@ class TradeRecordModel {
   final int tradePrice;
   final int tradeDate;
   final String changeId;
-  final String changeDate;
+  final int changeDate;
 
   TradeRecordModel({
     required this.seq,
@@ -69,7 +69,7 @@ class TradeRecordModel {
         tradePrice = 0,
         tradeDate = 0,
         changeId = "",
-        changeDate = "";
+        changeDate = 0;
 
   Map<String, dynamic> toJson() {
     return {

@@ -63,8 +63,7 @@ class TradeCorpListVM extends AsyncNotifier<List<TradeCorpModel>?> {
     //포트폴리오 초기화
     //ref.read(assetmanageProvider.notifier).state = const AsyncValue.loading();
     //ref.read(assetListProvider.notifier).state = const AsyncValue.loading();
-    //ref.read(assetProportionProvider.notifier).state =
-    const AsyncValue.loading();
+    //ref.read(assetProportionProvider.notifier).state = const AsyncValue.loading();
   }
 
   //종목찾기 > 포트폴리오 삭제
@@ -81,8 +80,7 @@ class TradeCorpListVM extends AsyncNotifier<List<TradeCorpModel>?> {
     //포트폴리오 초기화
     //ref.read(assetmanageProvider.notifier).state = const AsyncValue.loading();
     //ref.read(assetListProvider.notifier).state = const AsyncValue.loading();
-    //ref.read(assetProportionProvider.notifier).state =
-    const AsyncValue.loading();
+    //ref.read(assetProportionProvider.notifier).state =    const AsyncValue.loading();
   }
 }
 

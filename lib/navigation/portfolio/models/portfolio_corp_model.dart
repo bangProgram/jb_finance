@@ -5,9 +5,9 @@ class PortfolioCorpModel {
   final String stockCode;
   final String gubn;
   final String createId;
-  final String createDt;
+  final int createDt;
   final String changeId;
-  final String changeDt;
+  final int changeDt;
   final String memo;
   final String investOpinion;
   final String indutyName;
@@ -87,9 +87,9 @@ class PortfolioCorpModel {
         stockCode = "",
         gubn = "",
         createId = "",
-        createDt = "",
+        createDt = 0,
         changeId = "",
-        changeDt = "",
+        changeDt = 0,
         memo = "",
         investOpinion = "",
         indutyName = "",

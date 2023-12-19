@@ -1,12 +1,10 @@
-import 'dart:ffi';
-
 class PlanDetailInfoModel {
   final String corpCode;
   final String corpName;
   final String stockCode;
   final String userId;
   final String createId;
-  final String createDt;
+  final int createDt;
   final String changeId;
   final int changeDt;
   final int befClsPrice;
@@ -131,7 +129,7 @@ class PlanDetailInfoModel {
         stockCode = "",
         userId = "",
         createId = "",
-        createDt = "",
+        createDt = 0,
         changeId = "",
         changeDt = 0,
         befClsPrice = 0,

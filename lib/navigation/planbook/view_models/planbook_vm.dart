@@ -31,6 +31,7 @@ class PlanbookVM extends AsyncNotifier<List<PlanbookModel>?> {
     final List<dynamic> planbookList = resData['planbookList'];
     final int planbookCnt = resData['planbookCnt'];
 
+    print('planbookList : $planbookList');
     if (planbookCnt > 0) {
       final result = planbookList.map((planbook) {
         return PlanbookModel.fromJson(planbook);
