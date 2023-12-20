@@ -50,24 +50,6 @@ class Authentications {
       throw Exception('${responseData['message']}');
     }
   }
-
-  Future<void> setTokenForKisDev() async {
-    final response = await http.post(
-      Uri.parse("https://openapi.koreainvestment.com:9443/oauth2/tokenP"),
-      body: jsonEncode({
-        "grant_type": "client_credentials",
-        "appkey": Keys.kisDeveloperAppKey,
-        "appsecret": Keys.kisDeveloperAppSecretKey,
-      }),
-    );
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-      kisDevToken = data['access_token'];
-      print('정보 가져오기 성공 $kisDevToken');
-    } else {
-      throw Exception('KIS 토큰 발급 실패');
-    }
-  }
 }
 
 final authProvider = Provider((ref) => Authentications());

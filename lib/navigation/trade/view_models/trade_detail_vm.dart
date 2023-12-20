@@ -53,12 +53,49 @@ class TradeDetailVM
         return TradeRecordModel.fromJson(recordData);
       });
 
+      //거래일지 상세 상태초기화
       state = AsyncData(recordList.toList());
+      //거래일지 리스트 상태초기화
       ref.read(tradeCorpListProvider.notifier).state =
           const AsyncValue.loading();
+      //포트폴리오 리스트 초기화
       ref.read(assetListProvider.notifier).state = const AsyncValue.loading();
+      //포트폴리오 자산비중 초기화
       ref.read(assetProportionProvider.notifier).state =
           const AsyncValue.loading();
+      //포트폴리오 초기화
+      ref.read(assetmanageProvider.notifier).state = const AsyncValue.loading();
+    } else {
+      state = const AsyncData(null);
+    }
+
+    return detailInfo;
+  }
+
+  Future<Map<String, dynamic>> delTradeCorpDetail(int pSeq) async {
+    final resData = await _tradeDetailRepo
+        .delTradeCorpDetail({'pCorpCode': corpCode, 'pSeq': pSeq});
+
+    final List<dynamic> record = resData['assetRecord'];
+    final recordCnt = resData['assetRecordCnt'];
+    final Map<String, dynamic> detailInfo = resData['detailInfo'];
+
+    if (recordCnt > 0) {
+      final recordList = record.map((recordData) {
+        return TradeRecordModel.fromJson(recordData);
+      });
+
+      //거래일지 상세 상태초기화
+      state = AsyncData(recordList.toList());
+      //거래일지 리스트 상태초기화
+      ref.read(tradeCorpListProvider.notifier).state =
+          const AsyncValue.loading();
+      //포트폴리오 리스트 초기화
+      ref.read(assetListProvider.notifier).state = const AsyncValue.loading();
+      //포트폴리오 자산비중 초기화
+      ref.read(assetProportionProvider.notifier).state =
+          const AsyncValue.loading();
+      //포트폴리오 초기화
       ref.read(assetmanageProvider.notifier).state = const AsyncValue.loading();
     } else {
       state = const AsyncData(null);

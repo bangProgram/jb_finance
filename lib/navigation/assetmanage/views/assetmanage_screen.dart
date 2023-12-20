@@ -133,8 +133,23 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                           ),
                                         ),
                                         TextButton(
-                                            onPressed: mergePortfolio,
-                                            child: const Text('저장')),
+                                          onPressed: mergePortfolio,
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                const MaterialStatePropertyAll(
+                                                    Color(0xff333333)),
+                                            overlayColor:
+                                                MaterialStatePropertyAll(Colors
+                                                    .white
+                                                    .withOpacity(0.25)),
+                                          ),
+                                          child: const Text(
+                                            '저장',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),

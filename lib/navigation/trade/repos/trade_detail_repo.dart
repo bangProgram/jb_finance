@@ -24,6 +24,25 @@ class TradeDetailRepo {
     }
   }
 
+  Future<Map<String, dynamic>> delTradeCorpDetail(
+      Map<String, dynamic> param) async {
+    final response = await http.post(
+      Uri.parse("${Keys.forwardURL}/appApi/trade/corpDetail/del"),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(param),
+    );
+
+    print('response.statusCode : ${response.request}');
+    if (response.statusCode == 200) {
+      Map<String, dynamic> responseData = json.decode(response.body);
+      return responseData;
+    } else {
+      throw Exception('거래일지 삭제에 실패했습니다.');
+    }
+  }
+
   Future<Map<String, dynamic>> getTradeCorpDetailInfo(
       Map<String, dynamic> param) async {
     final response = await http.post(

@@ -78,6 +78,8 @@ class _TradeCorpDetailScreenState extends ConsumerState<TradeCorpDetailScreen> {
     final gubn = param['pTradeGubn'];
     if (param['pQuantity'] == '' || param['pTradePrice'] == '') {
       return;
+    } else if (param['pQuantity'] == '0' || param['pTradePrice'] == '0') {
+      return;
     }
 
     final paramAmount =
@@ -102,6 +104,20 @@ class _TradeCorpDetailScreenState extends ConsumerState<TradeCorpDetailScreen> {
     final detailInfo = await ref
         .read(tradeDetailProvider(widget.cropCode).notifier)
         .addTradeCorpDetail(param);
+
+    setState(() {
+      curAvgPrice = detailInfo['avgPrice'] ?? 0;
+      curHoldQuantity = detailInfo['holdQuantity'] ?? 0;
+      curDepositAmount = detailInfo['depositAmount'] ?? 0;
+    });
+  }
+
+  void delTradeCorpDetail(int pSeq) async {
+    Navigator.of(context).pop();
+
+    final detailInfo = await ref
+        .read(tradeDetailProvider(widget.cropCode).notifier)
+        .delTradeCorpDetail(pSeq);
 
     setState(() {
       curAvgPrice = detailInfo['avgPrice'] ?? 0;
@@ -424,26 +440,25 @@ class _TradeCorpDetailScreenState extends ConsumerState<TradeCorpDetailScreen> {
               // 저장버튼
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: GestureDetector(
-                  onTap: addTradeCorpDetail,
-                  child: Container(
-                    height: 45,
-                    decoration: BoxDecoration(
-                      color: const Color(0xff333333),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          '저장',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
+                child: SizedBox(
+                  height: 45,
+                  width: MediaQuery.of(context).size.width,
+                  child: TextButton(
+                    onPressed: addTradeCorpDetail,
+                    style: ButtonStyle(
+                        backgroundColor: const MaterialStatePropertyAll(
+                          Color(0xff333333),
                         ),
-                      ],
+                        overlayColor: MaterialStatePropertyAll(
+                          Colors.white.withOpacity(0.25),
+                        )),
+                    child: const Text(
+                      '저장',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
@@ -599,100 +614,178 @@ class _TradeCorpDetailScreenState extends ConsumerState<TradeCorpDetailScreen> {
                           return Column(
                             children: [
                               for (int i = 0; i < recordList.length; i++)
-                                Container(
-                                  padding: const EdgeInsets.only(
-                                    top: 10,
-                                    bottom: 20,
-                                    right: 27,
-                                    left: 27,
-                                  ),
-                                  decoration: const BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(
-                                        color: Color(0xffEFEFEF),
-                                        width: 1,
-                                      ),
-                                    ),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        DateFormat('yyyy. MM. dd').format(
-                                            DateTime.fromMillisecondsSinceEpoch(
-                                                recordList[i].tradeDate)),
-                                        style: const TextStyle(
-                                          color: Color(0xffC4C4C4),
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
+                                GestureDetector(
+                                  onLongPress: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        content: const Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text('삭제하시겠습니까?'),
+                                          ],
                                         ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          CircleAvatar(
-                                            radius: 25,
-                                            backgroundColor:
-                                                recordList[i].gubn == '0101'
-                                                    ? const Color(0xffFFDADE)
-                                                    : const Color.fromARGB(
-                                                        255, 213, 227, 255),
-                                            child: Text(
-                                              recordList[i].gubn == '0101'
-                                                  ? '매수'
-                                                  : '매도',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 18,
-                                                  color: recordList[i].gubn ==
-                                                          '0101'
-                                                      ? Colors.red
-                                                      : Colors.blue),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 20,
-                                          ),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  recordList[i].corpName,
-                                                  style: const TextStyle(
-                                                    color: Color(0xff333333),
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.w600,
+                                        actions: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Expanded(
+                                                child: TextButton(
+                                                  style: ButtonStyle(
+                                                    backgroundColor:
+                                                        MaterialStatePropertyAll(
+                                                      Colors.red.shade300,
+                                                    ),
+                                                    overlayColor:
+                                                        MaterialStatePropertyAll(
+                                                      Colors.white
+                                                          .withOpacity(0.3),
+                                                    ),
+                                                  ),
+                                                  onPressed: () =>
+                                                      delTradeCorpDetail(
+                                                          recordList[i].seq),
+                                                  child: const Text(
+                                                    '삭제',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                    ),
                                                   ),
                                                 ),
-                                                Text(
-                                                  recordList[i].gubn == '0101'
-                                                      ? '${NumberFormat('#,###').format(recordList[i].tradePrice)}원  ·  ${recordList[i].buyQuantity}주'
-                                                      : '${NumberFormat('#,###').format(recordList[i].tradePrice)}원  ·  ${recordList[i].sellQuantity}주',
-                                                  style: const TextStyle(
-                                                    color: Color(0xffC4C4C4),
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Text(
-                                              textAlign: TextAlign.right,
-                                              recordList[i].gubn == '0101'
-                                                  ? '${NumberFormat('#,###').format(recordList[i].buyAmount)} 원'
-                                                  : '${NumberFormat('#,###').format(recordList[i].sellAmount)} 원',
-                                              style: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600,
                                               ),
-                                            ),
-                                          ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Expanded(
+                                                child: TextButton(
+                                                  style: ButtonStyle(
+                                                    backgroundColor:
+                                                        const MaterialStatePropertyAll(
+                                                      Colors.grey,
+                                                    ),
+                                                    overlayColor:
+                                                        MaterialStatePropertyAll(
+                                                      Colors.white
+                                                          .withOpacity(0.3),
+                                                    ),
+                                                  ),
+                                                  onPressed: () =>
+                                                      Navigator.of(context)
+                                                          .pop(),
+                                                  child: const Text(
+                                                    '취소',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )
                                         ],
                                       ),
-                                    ],
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.only(
+                                      top: 10,
+                                      bottom: 20,
+                                      right: 27,
+                                      left: 27,
+                                    ),
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          color: Color(0xffEFEFEF),
+                                          width: 1,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          DateFormat('yyyy. MM. dd').format(
+                                              DateTime
+                                                  .fromMillisecondsSinceEpoch(
+                                                      recordList[i].tradeDate)),
+                                          style: const TextStyle(
+                                            color: Color(0xffC4C4C4),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        Row(
+                                          children: [
+                                            CircleAvatar(
+                                              radius: 25,
+                                              backgroundColor:
+                                                  recordList[i].gubn == '0101'
+                                                      ? const Color(0xffFFDADE)
+                                                      : const Color.fromARGB(
+                                                          255, 213, 227, 255),
+                                              child: Text(
+                                                recordList[i].gubn == '0101'
+                                                    ? '매수'
+                                                    : '매도',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 18,
+                                                    color: recordList[i].gubn ==
+                                                            '0101'
+                                                        ? Colors.red
+                                                        : Colors.blue),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 20,
+                                            ),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    recordList[i].corpName,
+                                                    style: const TextStyle(
+                                                      color: Color(0xff333333),
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    recordList[i].gubn == '0101'
+                                                        ? '${NumberFormat('#,###').format(recordList[i].tradePrice)}원  ·  ${recordList[i].buyQuantity}주'
+                                                        : '${NumberFormat('#,###').format(recordList[i].tradePrice)}원  ·  ${recordList[i].sellQuantity}주',
+                                                    style: const TextStyle(
+                                                      color: Color(0xffC4C4C4),
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                textAlign: TextAlign.right,
+                                                recordList[i].gubn == '0101'
+                                                    ? '${NumberFormat('#,###').format(recordList[i].buyAmount)} 원'
+                                                    : '${NumberFormat('#,###').format(recordList[i].sellAmount)} 원',
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                             ],

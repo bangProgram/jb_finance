@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:jb_finance/navigation/planbook/models/plan_detail_info_param_model.dart';
+import 'package:jb_finance/navigation/planbook/repos/planbook_repo.dart';
 import 'package:jb_finance/navigation/planbook/view_models/planbook_detail_vm.dart';
 
 class PlanDetailInfoPage extends ConsumerStatefulWidget {
@@ -37,6 +37,10 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
   late double? curOpinion4;
   late double? curOpinion5;
 
+  List<dynamic> epsList = [];
+  List<dynamic> perList = [];
+  List<dynamic> yearList = [];
+
   final double _counter = 0.0;
 
   Future<void> _refreshState() async {
@@ -63,8 +67,8 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
 
   @override
   void initState() {
-    super.initState();
     getNaverData1(widget.stockCode);
+    super.initState();
   }
 
   void selPeriod(String? val) {
@@ -85,21 +89,14 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
         .read(planDetailInfoProvider(widget.corpCode).notifier)
         .getNaverData1(stockCode);
 
-    final data1 = result['chartData1']['series'][0];
-    final data2 = result['chartData1']['categories'];
-    final data3 = result['chartData2']['series'][0];
+    final List<dynamic> data1 = result['chartData1']['series'][0]['data'];
+    final List<dynamic> data2 = result['chartData1']['categories'];
+    final List<dynamic> data3 = result['chartData2']['series'][0]['data'];
 
-    print(
-        ' =================================================================== ');
-    print(' $data1 ');
-    print(
-        ' =================================================================== ');
-    print(' $data2 ');
-    print(
-        ' =================================================================== ');
-    print(' $data3 ');
-    print(
-        ' =================================================================== ');
+    epsList = data1;
+    yearList = data2;
+    perList = data3;
+    setState(() {});
   }
 
   @override
@@ -128,9 +125,11 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
               ],
             ),
           ),
-          loading: () => const Center(
-            child: CircularProgressIndicator(),
-          ),
+          loading: () {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
           data: (data) {
             _paramModel.initPeriodGubn = data.periodGubn;
             curEps = int.parse(data.estimateEps ?? '1');
@@ -544,6 +543,173 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                       const SizedBox(
                         height: 40,
                       ),
+                      // 연간 EPS / PER
+
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 8),
+                        child: Text(
+                          '연간 EPS / PER',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: const Color(0xffe9e9e7),
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 50,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      decoration: const BoxDecoration(
+                                          color: Color(0xffF6F6F6)),
+                                      child: const Text(
+                                        '년도',
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  for (int i = 0; i < yearList.length - 1; i++)
+                                    Expanded(
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xffF6F6F6),
+                                          border: Border(
+                                            left: BorderSide(
+                                              color: Color(0xffE9E9E7),
+                                              width: 1.5,
+                                            ),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          yearList[i].toString().split('/')[0],
+                                          style: const TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            const Divider(
+                              height: 0,
+                              color: Color(0xffE9E9E7),
+                              thickness: 1,
+                            ),
+                            SizedBox(
+                              height: 50,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      decoration: const BoxDecoration(
+                                          color: Color(0xffF6F6F6)),
+                                      child: const Text(
+                                        'EPS',
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  for (int i = 0; i < epsList.length - 1; i++)
+                                    Expanded(
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        decoration: const BoxDecoration(
+                                          border: Border(
+                                            left: BorderSide(
+                                              color: Color(0xffE9E9E7),
+                                              width: 1.5,
+                                            ),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          NumberFormat('#,###')
+                                              .format(epsList[i]),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w300,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            const Divider(
+                              height: 0,
+                              color: Color(0xffE9E9E7),
+                              thickness: 1,
+                            ),
+                            SizedBox(
+                              height: 50,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      decoration: const BoxDecoration(
+                                          color: Color(0xffF6F6F6)),
+                                      child: const Text(
+                                        'PER',
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  for (int i = 0; i < perList.length - 1; i++)
+                                    Expanded(
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        decoration: const BoxDecoration(
+                                          border: Border(
+                                            left: BorderSide(
+                                              color: Color(0xffE9E9E7),
+                                              width: 1.5,
+                                            ),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          NumberFormat('#,###.##')
+                                              .format(perList[i]),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w300,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 40,
+                      ),
                       // EPS & PER
                       const Padding(
                         padding: EdgeInsets.only(bottom: 8),
@@ -577,9 +743,9 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                       alignment: Alignment.center,
                                       color: const Color(0xffF6F6F6),
                                       padding: const EdgeInsets.all(9),
-                                      child: const Row(
+                                      child: Row(
                                         children: [
-                                          Expanded(
+                                          const Expanded(
                                             flex: 3,
                                             child: Text(
                                               '추정 EPS',
@@ -592,10 +758,24 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                           ),
                                           Expanded(
                                             flex: 1,
-                                            child: Icon(
-                                              Icons.error_outline,
-                                              color: Color(0xffa7a7a7),
-                                              size: 19,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) => const InfoDialog(
+                                                      title:
+                                                          'EPS 란? (Earnings Per Share)',
+                                                      text:
+                                                          '주당순이익은 기업에서 벌어들인 순이익을\n발행주식수로 나눈 값으로,\n\n기업의 이익 대비 주가의 수준을 파악하는 지표로 사용할 수 있습니다.',
+                                                      imgURL:
+                                                          'assets/images/eps_info.PNG'),
+                                                );
+                                              },
+                                              child: const Icon(
+                                                Icons.error_outline,
+                                                color: Color(0xffa7a7a7),
+                                                size: 19,
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -670,9 +850,9 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                       alignment: Alignment.center,
                                       color: const Color(0xffF6F6F6),
                                       padding: const EdgeInsets.all(9),
-                                      child: const Row(
+                                      child: Row(
                                         children: [
-                                          Expanded(
+                                          const Expanded(
                                             flex: 3,
                                             child: Text(
                                               '추정 PER',
@@ -685,10 +865,24 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                           ),
                                           Expanded(
                                             flex: 1,
-                                            child: Icon(
-                                              Icons.error_outline,
-                                              color: Color(0xffa7a7a7),
-                                              size: 19,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) => const InfoDialog(
+                                                      title:
+                                                          'PER 이란? (Price Earning Ratio)',
+                                                      text:
+                                                          '주가수익비율은 현재주가를\n주당순이익으로 나눈 값으로,\n\n현재 주식가격의 평가치를 파악하는 지표로 사용할 수 있습니다.\nex)고 per : 주식이 비싸다. / 저 per : 주식이 저렴하다.',
+                                                      imgURL:
+                                                          'assets/images/per_info.PNG'),
+                                                );
+                                              },
+                                              child: const Icon(
+                                                Icons.error_outline,
+                                                color: Color(0xffa7a7a7),
+                                                size: 19,
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -774,14 +968,13 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                             border: OutlineInputBorder(
                                               borderSide: BorderSide.none,
                                             ),
-                                            hintText: '추정값',
+                                            hintText: '설정값',
                                             hintStyle: TextStyle(
                                               fontSize: 10,
                                             ),
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                              vertical: 0,
-                                              horizontal: 2,
+                                            contentPadding: EdgeInsets.only(
+                                              top: 0,
+                                              left: 10,
                                             ),
                                           ),
                                           onSaved: (newValue) {
@@ -815,14 +1008,13 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                             border: OutlineInputBorder(
                                               borderSide: BorderSide.none,
                                             ),
-                                            hintText: '추정값',
+                                            hintText: '설정값',
                                             hintStyle: TextStyle(
                                               fontSize: 10,
                                             ),
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                              vertical: 0,
-                                              horizontal: 2,
+                                            contentPadding: EdgeInsets.only(
+                                              top: 0,
+                                              left: 10,
                                             ),
                                           ),
                                           onSaved: (newValue) {
@@ -856,14 +1048,13 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                             border: OutlineInputBorder(
                                               borderSide: BorderSide.none,
                                             ),
-                                            hintText: '추정값',
+                                            hintText: '설정값',
                                             hintStyle: TextStyle(
                                               fontSize: 10,
                                             ),
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                              vertical: 0,
-                                              horizontal: 2,
+                                            contentPadding: EdgeInsets.only(
+                                              top: 0,
+                                              left: 10,
                                             ),
                                           ),
                                           onSaved: (newValue) {
@@ -897,14 +1088,13 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                             border: OutlineInputBorder(
                                               borderSide: BorderSide.none,
                                             ),
-                                            hintText: '추정값',
+                                            hintText: '설정값',
                                             hintStyle: TextStyle(
                                               fontSize: 10,
                                             ),
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                              vertical: 0,
-                                              horizontal: 2,
+                                            contentPadding: EdgeInsets.only(
+                                              top: 0,
+                                              left: 10,
                                             ),
                                           ),
                                           onSaved: (newValue) {
@@ -938,7 +1128,7 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                                             border: OutlineInputBorder(
                                               borderSide: BorderSide.none,
                                             ),
-                                            hintText: '추정값',
+                                            hintText: '설정값',
                                             hintStyle: TextStyle(
                                               fontSize: 10,
                                             ),
@@ -1222,5 +1412,105 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
             );
           },
         );
+  }
+}
+
+class InfoDialog extends StatefulWidget {
+  final String title;
+  final String text;
+  final String imgURL;
+
+  const InfoDialog({
+    super.key,
+    required this.title,
+    required this.text,
+    required this.imgURL,
+  });
+  @override
+  State<InfoDialog> createState() => _InfoDialogState();
+}
+
+class _InfoDialogState extends State<InfoDialog> {
+  final PageController _pageController = PageController();
+
+  int curPage = 0;
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      content: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.25,
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              widget.title,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const Divider(
+              color: Color(0xff333333),
+              thickness: 1.5,
+            ),
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: (value) {
+                  setState(() {
+                    curPage = value;
+                  });
+                },
+                children: [
+                  Text(
+                    widget.text,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black.withOpacity(0.5),
+                    ),
+                  ),
+                  Image.asset(
+                    widget.imgURL,
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              children: [
+                Container(
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                      color:
+                          curPage == 0 ? const Color(0xff333333) : Colors.grey,
+                      shape: BoxShape.circle),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Container(
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                      color:
+                          curPage == 1 ? const Color(0xff333333) : Colors.grey,
+                      shape: BoxShape.circle),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
