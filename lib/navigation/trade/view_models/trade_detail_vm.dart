@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jb_finance/navigation/assetmanage/view_models/assetmanage_vm.dart';
 import 'package:jb_finance/navigation/assetmanage/view_models/page_view_models/aseetmanage_page_vm.dart';
@@ -7,6 +8,7 @@ import 'package:jb_finance/navigation/trade/models/trade_record_model.dart';
 import 'package:jb_finance/navigation/trade/repos/trade_detail_repo.dart';
 import 'package:jb_finance/navigation/trade/repos/trade_repo.dart';
 import 'package:jb_finance/navigation/trade/view_models/trade_vm.dart';
+import 'package:jb_finance/utils.dart';
 
 //거래일지 상세 프로바이더
 class TradeDetailVM
@@ -38,11 +40,13 @@ class TradeDetailVM
   }
 
   //[기업] 거래일지 작성
-  Future<void> addTradeCorpDetail(Map<String, dynamic> param) async {
+  Future<Map<String, dynamic>> addTradeCorpDetail(
+      Map<String, dynamic> param) async {
     final resData = await _tradeDetailRepo.addTradeCorpDetail(param);
 
     final List<dynamic> record = resData['assetRecord'];
     final recordCnt = resData['assetRecordCnt'];
+    final Map<String, dynamic> detailInfo = resData['detailInfo'];
 
     if (recordCnt > 0) {
       final recordList = record.map((recordData) {
@@ -58,6 +62,21 @@ class TradeDetailVM
       ref.read(assetmanageProvider.notifier).state = const AsyncValue.loading();
     } else {
       state = const AsyncData(null);
+    }
+
+    return detailInfo;
+  }
+
+  Future<Map<String, dynamic>> getTradeCorpDetailInfo(
+      BuildContext context) async {
+    final responseData =
+        await _tradeDetailRepo.getTradeCorpDetailInfo({'pCorpCode': corpCode});
+    if (responseData['errMsg'] != null) {
+      serverMessage(context, responseData['errMsg']);
+      return {};
+    } else {
+      final Map<String, dynamic> detailInfo = responseData['detailInfo'];
+      return detailInfo;
     }
   }
 }

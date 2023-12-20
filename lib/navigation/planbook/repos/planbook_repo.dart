@@ -114,6 +114,23 @@ class PlanbookRepo {
       throw Exception('목표관리상세 기업정보 merge 실패');
     }
   }
+
+  Future<Map<String, dynamic>> getNaverData1(String stockCode) async {
+    final response = await http.get(
+      Uri.parse(
+          "https://navercomp.wisereport.co.kr/company/chart/c1030001.aspx?cmp_cd=$stockCode&rpt=6&finGubun=MAIN&frq=Y&chartType="),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    print('reponse : ${response.request}');
+    if (response.statusCode == 200) {
+      Map<String, dynamic> result = json.decode(response.body);
+      return result;
+    } else {
+      throw Exception('getNaverData1 Loading 실패');
+    }
+  }
 }
 
 final planbookRepo = Provider(

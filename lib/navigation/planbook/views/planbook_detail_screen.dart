@@ -9,6 +9,7 @@ import 'package:jb_finance/utils.dart';
 
 class PlanbookDetailScreen extends ConsumerStatefulWidget {
   final String corpCode;
+  final String stockCode;
   final String corpName;
   final int befClsPrice;
   final String? periodGubn;
@@ -16,6 +17,7 @@ class PlanbookDetailScreen extends ConsumerStatefulWidget {
   const PlanbookDetailScreen({
     super.key,
     required this.corpCode,
+    required this.stockCode,
     required this.corpName,
     required this.befClsPrice,
     required this.periodGubn,
@@ -202,6 +204,7 @@ class _PlanbookDetailScreenState extends ConsumerState<PlanbookDetailScreen> {
                 children: [
                   PlanDetailInfoPage(
                     corpCode: widget.corpCode,
+                    stockCode: widget.stockCode,
                     befClsPrice: widget.befClsPrice,
                     periodGubn: widget.periodGubn,
                   ),

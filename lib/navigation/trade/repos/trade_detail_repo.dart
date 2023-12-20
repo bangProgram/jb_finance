@@ -23,6 +23,25 @@ class TradeDetailRepo {
       throw Exception('거래일지 작성에 실패했습니다.');
     }
   }
+
+  Future<Map<String, dynamic>> getTradeCorpDetailInfo(
+      Map<String, dynamic> param) async {
+    final response = await http.post(
+      Uri.parse("${Keys.forwardURL}/appApi/trade/corpDetail/info"),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(param),
+    );
+    print('reponse : ${response.request}');
+    if (response.statusCode == 200) {
+      Map<String, dynamic> rsData = json.decode(response.body);
+      return rsData;
+    } else {
+      Map<String, dynamic> rsData = {'errMsg': '거래일지 상세 정보를 가져오지 못했습니다.'};
+      return rsData;
+    }
+  }
 }
 
 final tradeDetailRepo = Provider((ref) => TradeDetailRepo());

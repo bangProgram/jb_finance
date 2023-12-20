@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jb_finance/commons/repos/util_repo.dart';
 import 'package:jb_finance/navigation/planbook/models/plan_detail_info_model.dart';
 import 'package:jb_finance/navigation/planbook/models/plan_detail_info_param_model.dart';
 import 'package:jb_finance/navigation/planbook/models/plan_detail_memo_model.dart';
@@ -14,12 +15,16 @@ import 'package:jb_finance/utils.dart';
 class PlanDetailInfoVM
     extends FamilyAsyncNotifier<PlanDetailInfoModel, String> {
   late final PlanbookRepo _planbookRepo;
+  late final UtilRepo _utilRepo;
+  late String corpCode;
 
   @override
   FutureOr<PlanDetailInfoModel> build(String arg) async {
     _planbookRepo = ref.read(planbookRepo);
+    corpCode = arg;
 
-    final resData = await _planbookRepo.getPlanDetailInfo({'pCorpCode': arg});
+    final resData =
+        await _planbookRepo.getPlanDetailInfo({'pCorpCode': corpCode});
     final planDetailInfo = resData['planDetailInfo'];
 
     final result = PlanDetailInfoModel.fromJson(planDetailInfo);
@@ -33,7 +38,7 @@ class PlanDetailInfoVM
     state = await AsyncValue.guard(
       () async {
         final resData =
-            await _planbookRepo.getPlanDetailInfo({'pCorpCode': arg});
+            await _planbookRepo.getPlanDetailInfo({'pCorpCode': corpCode});
         final planDetailInfo = resData['planDetailInfo'];
         return PlanDetailInfoModel.fromJson(planDetailInfo);
       },
@@ -62,6 +67,13 @@ class PlanDetailInfoVM
 
     state = AsyncValue.data(result);
     successMessage(context, '저장 되었습니다.');
+  }
+
+  Future<Map<String, dynamic>> getNaverData1(String stockCode) async {
+    print('getNaverData11 : $stockCode');
+    final resData = await _planbookRepo.getNaverData1(stockCode);
+    print('getNaverData12 : $resData');
+    return resData;
   }
 }
 

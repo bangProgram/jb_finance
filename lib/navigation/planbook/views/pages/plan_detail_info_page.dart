@@ -7,13 +7,16 @@ import 'package:jb_finance/navigation/planbook/view_models/planbook_detail_vm.da
 
 class PlanDetailInfoPage extends ConsumerStatefulWidget {
   final String corpCode;
+  final String stockCode;
   final int befClsPrice;
   final String? periodGubn;
-  const PlanDetailInfoPage(
-      {super.key,
-      required this.corpCode,
-      required this.befClsPrice,
-      required this.periodGubn});
+  const PlanDetailInfoPage({
+    super.key,
+    required this.corpCode,
+    required this.stockCode,
+    required this.befClsPrice,
+    required this.periodGubn,
+  });
 
   @override
   ConsumerState<PlanDetailInfoPage> createState() => _PlanDetailInfoPageState();
@@ -58,6 +61,12 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
   late final DetailInfoParamModel _paramModel =
       DetailInfoParamModel.fromJson(param);
 
+  @override
+  void initState() {
+    super.initState();
+    getNaverData1(widget.stockCode);
+  }
+
   void selPeriod(String? val) {
     setState(() {
       param['periodGubn'] = val;
@@ -71,14 +80,28 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
         .mergePlaninfo(context, _paramModel);
   }
 
-/* 
-  @override
-  void deactivate() {
-    //mergePlaninfo();
-    print('PlanDetailInfo deactivate !!!!!!!!');
-    super.deactivate();
+  void getNaverData1(String stockCode) async {
+    final result = await ref
+        .read(planDetailInfoProvider(widget.corpCode).notifier)
+        .getNaverData1(stockCode);
+
+    final data1 = result['chartData1']['series'][0];
+    final data2 = result['chartData1']['categories'];
+    final data3 = result['chartData2']['series'][0];
+
+    print(
+        ' =================================================================== ');
+    print(' $data1 ');
+    print(
+        ' =================================================================== ');
+    print(' $data2 ');
+    print(
+        ' =================================================================== ');
+    print(' $data3 ');
+    print(
+        ' =================================================================== ');
   }
- */
+
   @override
   void dispose() {
     _perEditController.dispose();
@@ -199,8 +222,25 @@ class _PlanDetailInfoPageState extends ConsumerState<PlanDetailInfoPage> {
                           ),
                           Expanded(child: Container()),
                           TextButton(
-                              onPressed: mergePlaninfo,
-                              child: const Text('저장')),
+                            onPressed: mergePlaninfo,
+                            style: ButtonStyle(
+                              overlayColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  return Colors.white.withOpacity(0.5); // 터
+                                },
+                              ),
+                              backgroundColor: const MaterialStatePropertyAll(
+                                Color(0xff333333),
+                              ),
+                            ),
+                            child: const Text(
+                              '저장',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(

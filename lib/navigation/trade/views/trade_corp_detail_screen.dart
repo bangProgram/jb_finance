@@ -25,11 +25,15 @@ class TradeCorpDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _TradeCorpDetailScreenState extends ConsumerState<TradeCorpDetailScreen> {
+  final TextEditingController _quantityEditController = TextEditingController();
+  final TextEditingController _priceEditController = TextEditingController();
+
   DateTime now = DateTime.now();
   late DateTime curDate = now;
 
   late int curHoldQuantity = 0;
   late int curAvgPrice = 0;
+  late int curDepositAmount = 0;
 
   //서버에서 사용할 파라미터
   late Map<String, dynamic> param = {
@@ -39,6 +43,12 @@ class _TradeCorpDetailScreenState extends ConsumerState<TradeCorpDetailScreen> {
     'pTradePrice': '',
     'pQuantity': '',
   };
+
+  @override
+  void initState() {
+    super.initState();
+    getTradeCorpDetailInfo();
+  }
 
   void onTapTradeGubn(String gubn) {
     setState(() {
@@ -64,37 +74,59 @@ class _TradeCorpDetailScreenState extends ConsumerState<TradeCorpDetailScreen> {
 
   void addTradeCorpDetail() async {
     focusOut(context);
+
+    final gubn = param['pTradeGubn'];
     if (param['pQuantity'] == '' || param['pTradePrice'] == '') {
       return;
     }
-    print('test : $param');
-    await ref
+
+    final paramAmount =
+        int.parse(param['pQuantity']) * int.parse(param['pTradePrice']);
+    final paramQuantity = int.parse(param['pQuantity']);
+
+    if (gubn == '0101') {
+      if (paramAmount > curDepositAmount) {
+        serverMessage(context, '매수금이 예수금을 초과하였습니다.');
+        return;
+      }
+    } else {
+      if (paramQuantity > curHoldQuantity) {
+        serverMessage(context, '보유수량 초과매도를 할 수 없습니다.');
+        return;
+      }
+    }
+
+    _priceEditController.text = "";
+    _quantityEditController.text = "";
+
+    final detailInfo = await ref
         .read(tradeDetailProvider(widget.cropCode).notifier)
         .addTradeCorpDetail(param);
 
     setState(() {
-      if (param['pTradeGubn'] == '0101') {
-        if (curHoldQuantity == 0) {
-          curAvgPrice = ((widget.avgPrice * widget.holdQuantity) +
-                  (int.parse(param['pTradePrice']) *
-                      int.parse(param['pQuantity']))) ~/
-              (int.parse(param['pQuantity']) + widget.holdQuantity);
-          curHoldQuantity = widget.holdQuantity + int.parse(param['pQuantity']);
-        } else {
-          curAvgPrice = ((curAvgPrice * curHoldQuantity) +
-                  (int.parse(param['pTradePrice']) *
-                      int.parse(param['pQuantity']))) ~/
-              (int.parse(param['pQuantity']) + curHoldQuantity);
-          curHoldQuantity = curHoldQuantity + int.parse(param['pQuantity']);
-        }
-      } else {
-        if (curHoldQuantity == 0) {
-          curHoldQuantity = widget.holdQuantity - int.parse(param['pQuantity']);
-        } else {
-          curHoldQuantity = curHoldQuantity - int.parse(param['pQuantity']);
-        }
-      }
+      curAvgPrice = detailInfo['avgPrice'] ?? 0;
+      curHoldQuantity = detailInfo['holdQuantity'] ?? 0;
+      curDepositAmount = detailInfo['depositAmount'] ?? 0;
     });
+  }
+
+  Future<void> getTradeCorpDetailInfo() async {
+    final detailInfo = await ref
+        .read(tradeDetailProvider(widget.cropCode).notifier)
+        .getTradeCorpDetailInfo(context);
+
+    setState(() {
+      curAvgPrice = detailInfo['avgPrice'] ?? 0;
+      curHoldQuantity = detailInfo['holdQuantity'] ?? 0;
+      curDepositAmount = detailInfo['depositAmount'] ?? 0;
+    });
+  }
+
+  @override
+  void dispose() {
+    _priceEditController.dispose();
+    _quantityEditController.dispose();
+    super.dispose();
   }
 
   @override
@@ -267,6 +299,7 @@ class _TradeCorpDetailScreenState extends ConsumerState<TradeCorpDetailScreen> {
                               child: TextField(
                                 textAlign: TextAlign.center,
                                 keyboardType: TextInputType.number,
+                                controller: _quantityEditController,
                                 style: const TextStyle(
                                   color: Color(0xff333333),
                                   fontSize: 17,
@@ -309,6 +342,7 @@ class _TradeCorpDetailScreenState extends ConsumerState<TradeCorpDetailScreen> {
                               child: TextField(
                                 textAlign: TextAlign.center,
                                 keyboardType: TextInputType.number,
+                                controller: _priceEditController,
                                 style: const TextStyle(
                                   color: Color(0xff333333),
                                   fontSize: 17,
@@ -420,74 +454,104 @@ class _TradeCorpDetailScreenState extends ConsumerState<TradeCorpDetailScreen> {
                   vertical: 15,
                   horizontal: 10,
                 ),
-                child: Column(
-                  children: [
-                    Container(
-                      height: 50,
-                      clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: const Color(0xffEFEFEF),
-                          width: 1.5,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Container(
-                              alignment: Alignment.center,
-                              decoration: const BoxDecoration(
-                                color: Color(0xffFCFCFC),
-                                border: Border(
-                                  right: BorderSide(
-                                      color: Color(0xffefefef), width: 1.5),
-                                ),
-                              ),
-                              child: const Text('보유수량'),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              NumberFormat('#,###').format(curHoldQuantity == 0
-                                  ? widget.holdQuantity
-                                  : curHoldQuantity),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Container(
-                              alignment: Alignment.center,
-                              decoration: const BoxDecoration(
-                                color: Color(0xffFCFCFC),
-                                border: Border(
-                                  left: BorderSide(
-                                    color: Color(0xffefefef),
-                                    width: 1.5,
-                                  ),
-                                  right: BorderSide(
-                                      color: Color(0xffefefef), width: 1.5),
-                                ),
-                              ),
-                              child: const Text('평균단가'),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: Text(
-                              NumberFormat('#,###').format(curAvgPrice == 0
-                                  ? widget.avgPrice
-                                  : curAvgPrice),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: const Color(0xffEFEFEF),
+                      width: 1.5,
                     ),
-                  ],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 50,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Container(
+                                alignment: Alignment.center,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xffFCFCFC),
+                                  border: Border(
+                                    right: BorderSide(
+                                        color: Color(0xffefefef), width: 1.5),
+                                  ),
+                                ),
+                                child: const Text('예수금'),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 7,
+                              child: Text(
+                                NumberFormat('#,###').format(curDepositAmount),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Divider(
+                        height: 0,
+                        color: Color(0xffEFEFEF),
+                        thickness: 1,
+                      ),
+                      SizedBox(
+                        height: 50,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Container(
+                                alignment: Alignment.center,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xffFCFCFC),
+                                  border: Border(
+                                    right: BorderSide(
+                                        color: Color(0xffefefef), width: 1.5),
+                                  ),
+                                ),
+                                child: const Text('보유수량'),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                NumberFormat('#,###').format(curHoldQuantity),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Container(
+                                alignment: Alignment.center,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xffFCFCFC),
+                                  border: Border(
+                                    left: BorderSide(
+                                      color: Color(0xffefefef),
+                                      width: 1.5,
+                                    ),
+                                    right: BorderSide(
+                                        color: Color(0xffefefef), width: 1.5),
+                                  ),
+                                ),
+                                child: const Text('평균단가'),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 3,
+                              child: Text(
+                                NumberFormat('#,###').format(curAvgPrice),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               // 거래이력 리스트

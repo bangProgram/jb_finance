@@ -20,6 +20,23 @@ class UtilRepo {
       throw Exception('년도리스트 불러오기 실패');
     }
   }
+
+  Future<String> getStockCode(String corpCode) async {
+    final response = await http.post(
+      Uri.parse("${Keys.forwardURL}/appApi/util/stockCode"),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({'pCorpCode': corpCode}),
+    );
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+
+      return responseData['stockCode'];
+    } else {
+      throw Exception('StockCode 불러오기 실패');
+    }
+  }
 }
 
 final utilRepo = Provider((ref) => UtilRepo());
