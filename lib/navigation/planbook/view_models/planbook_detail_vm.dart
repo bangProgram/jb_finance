@@ -70,7 +70,6 @@ class PlanDetailInfoVM
   }
 
   Future<Map<String, dynamic>> getNaverData1(String stockCode) async {
-    print('getNaverData11 : $stockCode');
     final resData = await _planbookRepo.getNaverData1(stockCode);
     print('getNaverData12 : $resData');
     return resData;
