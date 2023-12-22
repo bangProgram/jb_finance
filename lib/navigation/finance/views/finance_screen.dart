@@ -117,8 +117,13 @@ class _FinanceScreenState extends ConsumerState<FinanceScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: SvgPicture.asset('assets/svgs/logos/Logo_app_main.svg'),
-          elevation: 1,
-          backgroundColor: Colors.white,
+          foregroundColor: const Color(0xFFA8A8A8),
+          shape: const Border(
+            bottom: BorderSide(
+              color: Color(0xFFA8A8A8),
+              width: 0.8,
+            ),
+          ),
         ),
         body: Column(
           children: [

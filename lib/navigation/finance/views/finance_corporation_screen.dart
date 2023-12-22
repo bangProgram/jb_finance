@@ -147,7 +147,9 @@ class _FinanceCorpScreenState extends ConsumerState<FinanceCorpScreen>
 
       periodData = _searchModel;
     }).toList();
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void setPeriodData(String type, String period, String? value) {

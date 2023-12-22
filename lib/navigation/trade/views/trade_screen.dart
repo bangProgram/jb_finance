@@ -29,13 +29,17 @@ class _TradeScreenState extends State<TradeScreen> {
             '거래일지',
             style: TextStyle(
               fontSize: 18,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
             ),
           ),
           centerTitle: true,
-          elevation: 1,
           foregroundColor: const Color(0xFFA8A8A8),
-          backgroundColor: Colors.white,
+          shape: const Border(
+            bottom: BorderSide(
+              color: Color(0xFFA8A8A8),
+              width: 0.8,
+            ),
+          ),
         ),
         body: Column(
           children: [

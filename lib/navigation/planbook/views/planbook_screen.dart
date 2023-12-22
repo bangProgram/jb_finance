@@ -44,15 +44,18 @@ class _PlanbookScreenState extends ConsumerState<PlanbookScreen> {
         title: const Text(
           '목표관리',
           style: TextStyle(
-            color: Color(0xffA8A8A8),
             fontSize: 18,
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w600,
           ),
         ),
         centerTitle: true,
-        elevation: 1,
         foregroundColor: const Color(0xFFA8A8A8),
-        backgroundColor: Colors.white,
+        shape: const Border(
+          bottom: BorderSide(
+            color: Color(0xFFA8A8A8),
+            width: 0.8,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(

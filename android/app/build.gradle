@@ -22,11 +22,14 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+// start of Gradle 서명 구성
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('app/key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
+// end of Gradle 서명 구성
+
 
 android {
     namespace "com.example.jb_finance"
@@ -34,12 +37,12 @@ android {
     ndkVersion flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
 
     sourceSets {
@@ -75,6 +78,7 @@ android {
 
             // start of 코드난독화 및 사이즈 축소
             minifyEnabled true
+            // flutter 신버전에서 미사용으로 주석처리
             // useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             // end of 코드난독화 및 사이즈 축소

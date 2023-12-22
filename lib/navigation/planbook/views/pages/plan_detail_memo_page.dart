@@ -61,7 +61,7 @@ class _PlanDetailMemoPageState extends ConsumerState<PlanDetailMemoPage> {
         Positioned.fill(
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 35,
+              horizontal: 20,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,6 +114,7 @@ class _PlanDetailMemoPageState extends ConsumerState<PlanDetailMemoPage> {
                                             ),
                                             // const MoreWidget(),
                                             PopupMenuButton(
+                                              elevation: 0.8,
                                               constraints: const BoxConstraints(
                                                 maxWidth: 80,
                                               ),
@@ -174,11 +175,12 @@ class _PlanDetailMemoPageState extends ConsumerState<PlanDetailMemoPage> {
           width: MediaQuery.of(context).size.width,
           bottom: 0,
           child: BottomAppBar(
+            elevation: 0,
             child: Container(
               height: 65,
               color: Colors.white,
               padding: const EdgeInsets.symmetric(
-                horizontal: 35,
+                horizontal: 15,
                 vertical: 5,
               ),
               child: Container(

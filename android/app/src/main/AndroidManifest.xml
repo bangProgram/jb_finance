@@ -1,9 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:label="jb_finance"
+        android:label="주토피아"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/jutopia_app_icon">
 
         <!-- Android 소셜 로그인 관련 추가 START -->
         <meta-data

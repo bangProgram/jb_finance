@@ -155,13 +155,17 @@ class _TradeCorpDetailScreenState extends ConsumerState<TradeCorpDetailScreen> {
             widget.corpName,
             style: const TextStyle(
               fontSize: 18,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
             ),
           ),
           centerTitle: true,
-          elevation: 1,
           foregroundColor: const Color(0xFFA8A8A8),
-          backgroundColor: Colors.white,
+          shape: const Border(
+            bottom: BorderSide(
+              color: Color(0xFFA8A8A8),
+              width: 0.8,
+            ),
+          ),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -619,6 +623,7 @@ class _TradeCorpDetailScreenState extends ConsumerState<TradeCorpDetailScreen> {
                                     showDialog(
                                       context: context,
                                       builder: (context) => AlertDialog(
+                                        elevation: 0,
                                         content: const Column(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [

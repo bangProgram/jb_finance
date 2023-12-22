@@ -148,7 +148,9 @@ class _FinanceInterestScreenState extends ConsumerState<FinanceInterestScreen>
 
       periodData = _searchModel;
     }).toList();
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void setPeriodData(String type, String period, String? value) {

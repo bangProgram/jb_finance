@@ -66,7 +66,20 @@ class JBFinance1 extends ConsumerWidget {
           title: "주토피아",
           theme: ThemeData(
             fontFamily: 'Pretendard',
-            colorScheme: const ColorScheme.light(background: Colors.white),
+            useMaterial3: true,
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.white,
+              foregroundColor: Color(0xFFA8A8A8),
+              elevation: 0,
+            ),
+            bottomAppBarTheme: const BottomAppBarTheme(
+              elevation: 0,
+            ),
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+            dialogTheme: const DialogTheme(
+              backgroundColor: Colors.white,
+            ),
+            dialogBackgroundColor: Colors.white,
           ),
           routerConfig: ref.watch(routerProvider),
         ),
