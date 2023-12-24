@@ -34,6 +34,8 @@ class _TradeScreenState extends State<TradeScreen> {
           ),
           centerTitle: true,
           foregroundColor: const Color(0xFFA8A8A8),
+          backgroundColor: Colors.white,
+          elevation: 0,
           shape: const Border(
             bottom: BorderSide(
               color: Color(0xFFA8A8A8),

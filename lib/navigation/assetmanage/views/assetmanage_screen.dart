@@ -87,6 +87,7 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                       ],
                       centerTitle: true,
                       foregroundColor: const Color(0xFFA8A8A8),
+                      backgroundColor: Colors.white,
                     ),
                     SliverToBoxAdapter(
                       child: ref.watch(assetmanageProvider).when(

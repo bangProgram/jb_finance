@@ -124,6 +124,8 @@ class _FinanceScreenState extends ConsumerState<FinanceScreen> {
               width: 0.8,
             ),
           ),
+          backgroundColor: Colors.white,
+          elevation: 0,
         ),
         body: Column(
           children: [
