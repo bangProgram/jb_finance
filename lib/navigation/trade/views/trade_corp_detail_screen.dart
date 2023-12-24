@@ -160,6 +160,7 @@ class _TradeCorpDetailScreenState extends ConsumerState<TradeCorpDetailScreen> {
           ),
           centerTitle: true,
           foregroundColor: const Color(0xFFA8A8A8),
+          backgroundColor: Colors.white,
           shape: const Border(
             bottom: BorderSide(
               color: Color(0xFFA8A8A8),

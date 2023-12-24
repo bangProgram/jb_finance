@@ -6,7 +6,7 @@ import 'package:jb_finance/navigation/planbook/repos/planbook_repo.dart';
 
 //목표관리 프로바이더
 class PlanbookVM extends AsyncNotifier<List<PlanbookModel>?> {
-  late final PlanbookRepo _planbookRepo;
+  late PlanbookRepo _planbookRepo;
 
   @override
   FutureOr<List<PlanbookModel>?> build() async {

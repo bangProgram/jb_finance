@@ -21,7 +21,7 @@ class SettingScreen extends ConsumerStatefulWidget {
 
 class _SettingScreenState extends ConsumerState<SettingScreen> {
   void memberLogout() async {
-    await ref.read(loginVMProvider.notifier).memberLogout(context);
+    await ref.read(loginVMProvider.notifier).memberLogout(context, ref);
   }
 
   void goProfileScreen() {

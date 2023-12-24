@@ -10,7 +10,7 @@ import 'package:jb_finance/navigation/planbook/view_models/planbook_vm.dart';
 import 'package:jb_finance/utils.dart';
 
 class InterestVM extends AsyncNotifier<List<CorporationModel>> {
-  late final InterestRepo _interestRepo;
+  late InterestRepo _interestRepo;
 
   @override
   FutureOr<List<CorporationModel>> build() async {

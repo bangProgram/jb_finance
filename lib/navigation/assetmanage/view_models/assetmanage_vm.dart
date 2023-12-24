@@ -10,17 +10,19 @@ import 'package:jb_finance/utils.dart';
 
 //자산관리 나의자산 프로바이더
 class AssetmanageVM extends AsyncNotifier<AssetmanageModel> {
-  late final Authentications _auth;
-  late final AssetmanageRepo _assetmanageRepo;
+  late Authentications _auth;
+  late AssetmanageRepo _assetmanageRepo;
 
   @override
   FutureOr<AssetmanageModel> build() async {
     _auth = ref.read(authProvider);
     _assetmanageRepo = ref.read(assetmanageRepo);
 
+    print('vm 빌드 안하나? assetmanageProvider');
     if (_auth.isLogin) {
       final responseData = await _assetmanageRepo.getAssetAmount();
       final portfolioData = responseData['portAmountData'];
+      print('vm 빌드 확인 : ${responseData['portAmountData']}');
       if (portfolioData != null) {
         return AssetmanageModel.fromJson(portfolioData);
       } else {

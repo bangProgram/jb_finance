@@ -7,7 +7,7 @@ import 'package:jb_finance/navigation/finance/repos/corporation_repo.dart';
 import 'package:jb_finance/utils.dart';
 
 class CorporationVM extends AsyncNotifier<List<CorporationModel>> {
-  late final CorporationRepo _corporationRepo;
+  late CorporationRepo _corporationRepo;
 
   @override
   FutureOr<List<CorporationModel>> build() async {

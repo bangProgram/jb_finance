@@ -12,7 +12,7 @@ import 'package:jb_finance/navigation/trade/repos/trade_repo.dart';
 
 //거래일지 기업 리스트 프로바이더
 class TradeCorpListVM extends AsyncNotifier<List<TradeCorpModel>?> {
-  late final TradeRepo _tradeRepo;
+  late TradeRepo _tradeRepo;
   @override
   FutureOr<List<TradeCorpModel>?> build() async {
     _tradeRepo = ref.read(tradeRepo);
@@ -91,7 +91,7 @@ final tradeCorpListProvider =
 
 //거래일지 거래기록 프로바이더
 class TradeRecordVM extends AsyncNotifier<List<TradeRecordModel>?> {
-  late final TradeRepo _tradeRepo;
+  late TradeRepo _tradeRepo;
 
   @override
   FutureOr<List<TradeRecordModel>?> build() async {

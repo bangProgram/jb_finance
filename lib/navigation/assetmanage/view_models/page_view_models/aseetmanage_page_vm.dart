@@ -11,8 +11,8 @@ import 'package:jb_finance/navigation/assetmanage/repos/page_repos/aseetmanage_p
 
 //포트폴리오 > 자산평가 리스트 프로바이더
 class AssetmanageListVM extends AsyncNotifier<List<AssetmanageListModel>> {
-  late final Authentications _auth;
-  late final AssetmanagePageRepo _assetmanagePageRepo;
+  late Authentications _auth;
+  late AssetmanagePageRepo _assetmanagePageRepo;
 
   @override
   FutureOr<List<AssetmanageListModel>> build() async {
@@ -60,7 +60,7 @@ final assetListProvider =
 //포트폴리오 > 자산비중 프로바이더
 class AssetmanageProportionVM
     extends AsyncNotifier<List<AssetmanageProportionModel>?> {
-  late final AssetmanagePageRepo _assetmanagePageRepo;
+  late AssetmanagePageRepo _assetmanagePageRepo;
 
   @override
   FutureOr<List<AssetmanageProportionModel>?> build() async {

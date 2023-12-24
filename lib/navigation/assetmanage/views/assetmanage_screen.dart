@@ -52,6 +52,7 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
 
   @override
   void dispose() {
+    print('AssetmanageScreen Dispose!!!!!!');
     _pageController.dispose();
     super.dispose();
   }
@@ -68,41 +69,48 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
             onTap: () => focusOut(context),
             child: DefaultTabController(
               length: 2,
-              child: NestedScrollView(
-                headerSliverBuilder: (context, innerBoxIsScrolled) {
-                  return [
-                    SliverAppBar(
-                      title: const Text(
-                        '포트폴리오',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      actions: [
-                        IconButton(
-                          onPressed: goSettingScreen,
-                          icon: const FaIcon(FontAwesomeIcons.gear),
-                        ),
-                      ],
-                      centerTitle: true,
-                      foregroundColor: const Color(0xFFA8A8A8),
-                      backgroundColor: Colors.white,
+              child: ref.watch(assetmanageProvider).when(
+                    loading: () {
+                      getPortfolio();
+                      return Container();
+                    },
+                    error: (error, stackTrace) => Container(
+                      child: Text('error $error'),
                     ),
-                    SliverToBoxAdapter(
-                      child: ref.watch(assetmanageProvider).when(
-                            loading: () {
-                              getPortfolio();
-                              return Container();
-                            },
-                            error: (error, stackTrace) => Container(
-                              child: Text('error $error'),
+                    data: (data) {
+                      int totalAmount = data.depositAmount +
+                          data.investAmount +
+                          data.reserveAmount;
+
+                      final profitRate = data.investAmount > 0
+                          ? (data.evaluationProfit / data.investAmount) * 100
+                          : 0;
+
+                      print('vm 빌드 data.depositAmount : ${data.depositAmount}');
+
+                      return NestedScrollView(
+                        headerSliverBuilder: (context, innerBoxIsScrolled) {
+                          return [
+                            SliverAppBar(
+                              title: const Text(
+                                '포트폴리오',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              actions: [
+                                IconButton(
+                                  onPressed: goSettingScreen,
+                                  icon: const FaIcon(FontAwesomeIcons.gear),
+                                ),
+                              ],
+                              centerTitle: true,
+                              foregroundColor: const Color(0xFFA8A8A8),
+                              backgroundColor: Colors.white,
                             ),
-                            data: (data) {
-                              int totalAmount = data.depositAmount +
-                                  data.investAmount +
-                                  data.reserveAmount;
-                              return Column(
+                            SliverToBoxAdapter(
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   SizedBox(
@@ -467,322 +475,316 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                                     color: Color(0xFFF4F4F4),
                                   ),
                                 ],
-                              );
-                            },
-                          ),
-                    ),
-                    SliverAppBar(
-                      backgroundColor: Colors.white,
-                      elevation: 0,
-                      title: Row(
-                        children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => onTapPageScreen(0),
-                              child: Container(
-                                alignment: Alignment.center,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  color: curPage == 0
-                                      ? const Color(0xFF333333)
-                                      : const Color(0xFFE7E7E7),
-                                  borderRadius: BorderRadius.circular(7),
-                                ),
-                                child: Text(
-                                  '자산평가',
-                                  style: TextStyle(
-                                    color: curPage == 0
-                                        ? Colors.white
-                                        : const Color(0xFFB1B1B1),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => onTapPageScreen(1),
-                              child: Container(
-                                alignment: Alignment.center,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  color: curPage == 1
-                                      ? const Color(0xFF333333)
-                                      : const Color(0xFFE7E7E7),
-                                  borderRadius: BorderRadius.circular(7),
-                                ),
-                                child: Text(
-                                  '자산비중',
-                                  style: TextStyle(
-                                    color: curPage == 1
-                                        ? Colors.white
-                                        : const Color(0xFFB1B1B1),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                        child: curPage == 0
-                            ? ref.watch(assetmanageProvider).when(
-                                  loading: () {
-                                    getPortfolio();
-                                    return Container();
-                                  },
-                                  error: (error, stackTrace) => Container(
-                                    child: Text('error $error'),
-                                  ),
-                                  data: (data) {
-                                    final profitRate = data.investAmount > 0
-                                        ? (data.evaluationProfit /
-                                                data.investAmount) *
-                                            100
-                                        : 0;
-                                    return Column(
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 20,
-                                            horizontal: 10,
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Container(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                        horizontal: 10,
-                                                      ),
-                                                      child: Row(
-                                                        children: [
-                                                          const Expanded(
-                                                            flex: 2,
-                                                            child: Text(
-                                                              '매입금액',
-                                                              style: TextStyle(
-                                                                color: Color(
-                                                                    0xFFC4C4C4),
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Expanded(
-                                                            flex: 4,
-                                                            child: Text(
-                                                              NumberFormat(
-                                                                      "#,###")
-                                                                  .format(data
-                                                                      .investAmount),
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style:
-                                                                  const TextStyle(
-                                                                color: Colors
-                                                                    .black,
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                              ),
-                                                            ),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Container(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                        horizontal: 10,
-                                                      ),
-                                                      child: Row(
-                                                        children: [
-                                                          const Expanded(
-                                                            flex: 2,
-                                                            child: Text(
-                                                              '평가손익',
-                                                              style: TextStyle(
-                                                                color: Color(
-                                                                    0xFFC4C4C4),
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Expanded(
-                                                            flex: 4,
-                                                            child: Text(
-                                                              NumberFormat(
-                                                                      "#,###")
-                                                                  .format(data
-                                                                      .evaluationProfit),
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: TextStyle(
-                                                                color: data.evaluationProfit ==
-                                                                        0
-                                                                    ? Colors
-                                                                        .black
-                                                                    : data.evaluationProfit >
-                                                                            0
-                                                                        ? Colors
-                                                                            .red
-                                                                        : Colors
-                                                                            .blue,
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                              const SizedBox(
-                                                height: 8,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Container(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                        horizontal: 10,
-                                                      ),
-                                                      child: Row(
-                                                        children: [
-                                                          const Expanded(
-                                                            flex: 2,
-                                                            child: Text(
-                                                              '평가금액',
-                                                              style: TextStyle(
-                                                                color: Color(
-                                                                    0xFFC4C4C4),
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Expanded(
-                                                            flex: 4,
-                                                            child: Text(
-                                                              NumberFormat(
-                                                                      "#,###")
-                                                                  .format(data
-                                                                      .evaluationAmount),
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style:
-                                                                  const TextStyle(
-                                                                color: Colors
-                                                                    .black,
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Container(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                        horizontal: 10,
-                                                      ),
-                                                      child: Row(
-                                                        children: [
-                                                          const Expanded(
-                                                            flex: 2,
-                                                            child: Text(
-                                                              '총 수익률',
-                                                              style: TextStyle(
-                                                                color: Color(
-                                                                    0xFFC4C4C4),
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Expanded(
-                                                            flex: 4,
-                                                            child: Text(
-                                                              profitRate != 0
-                                                                  ? '${NumberFormat("#,###.##").format(profitRate)}%'
-                                                                  : '-- %',
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: TextStyle(
-                                                                color: profitRate ==
-                                                                        0
-                                                                    ? Colors
-                                                                        .black
-                                                                    : profitRate >
-                                                                            0
-                                                                        ? Colors
-                                                                            .red
-                                                                        : Colors
-                                                                            .blue,
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                              ),
-                                                            ),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
+                            SliverAppBar(
+                              backgroundColor: Colors.white,
+                              elevation: 0,
+                              title: Row(
+                                children: [
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () => onTapPageScreen(0),
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                          color: curPage == 0
+                                              ? const Color(0xFF333333)
+                                              : const Color(0xFFE7E7E7),
+                                          borderRadius:
+                                              BorderRadius.circular(7),
+                                        ),
+                                        child: Text(
+                                          '자산평가',
+                                          style: TextStyle(
+                                            color: curPage == 0
+                                                ? Colors.white
+                                                : const Color(0xFFB1B1B1),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w700,
                                           ),
                                         ),
-                                        const Divider(
-                                          color: Color(0xFFF4F4F4),
-                                          height: 0,
-                                          thickness: 1,
-                                        )
-                                      ],
-                                    );
-                                  },
-                                )
-                            : Container()
-                        /* 20231211 거래내역 > 자산비중 으로 변경함으로 주석처리
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () => onTapPageScreen(1),
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                          color: curPage == 1
+                                              ? const Color(0xFF333333)
+                                              : const Color(0xFFE7E7E7),
+                                          borderRadius:
+                                              BorderRadius.circular(7),
+                                        ),
+                                        child: Text(
+                                          '자산비중',
+                                          style: TextStyle(
+                                            color: curPage == 1
+                                                ? Colors.white
+                                                : const Color(0xFFB1B1B1),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SliverToBoxAdapter(
+                                child: curPage == 0
+                                    ? Column(
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 20,
+                                              horizontal: 10,
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                          horizontal: 10,
+                                                        ),
+                                                        child: Row(
+                                                          children: [
+                                                            const Expanded(
+                                                              flex: 2,
+                                                              child: Text(
+                                                                '매입금액',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Color(
+                                                                      0xFFC4C4C4),
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              flex: 4,
+                                                              child: Text(
+                                                                NumberFormat(
+                                                                        "#,###")
+                                                                    .format(data
+                                                                        .investAmount),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style:
+                                                                    const TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                          horizontal: 10,
+                                                        ),
+                                                        child: Row(
+                                                          children: [
+                                                            const Expanded(
+                                                              flex: 2,
+                                                              child: Text(
+                                                                '평가손익',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Color(
+                                                                      0xFFC4C4C4),
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              flex: 4,
+                                                              child: Text(
+                                                                NumberFormat(
+                                                                        "#,###")
+                                                                    .format(data
+                                                                        .evaluationProfit),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: data.evaluationProfit ==
+                                                                          0
+                                                                      ? Colors
+                                                                          .black
+                                                                      : data.evaluationProfit >
+                                                                              0
+                                                                          ? Colors
+                                                                              .red
+                                                                          : Colors
+                                                                              .blue,
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 8,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                          horizontal: 10,
+                                                        ),
+                                                        child: Row(
+                                                          children: [
+                                                            const Expanded(
+                                                              flex: 2,
+                                                              child: Text(
+                                                                '평가금액',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Color(
+                                                                      0xFFC4C4C4),
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              flex: 4,
+                                                              child: Text(
+                                                                NumberFormat(
+                                                                        "#,###")
+                                                                    .format(data
+                                                                        .evaluationAmount),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style:
+                                                                    const TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                          horizontal: 10,
+                                                        ),
+                                                        child: Row(
+                                                          children: [
+                                                            const Expanded(
+                                                              flex: 2,
+                                                              child: Text(
+                                                                '총 수익률',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Color(
+                                                                      0xFFC4C4C4),
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              flex: 4,
+                                                              child: Text(
+                                                                profitRate != 0
+                                                                    ? '${NumberFormat("#,###.##").format(profitRate)}%'
+                                                                    : '-- %',
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: profitRate ==
+                                                                          0
+                                                                      ? Colors
+                                                                          .black
+                                                                      : profitRate >
+                                                                              0
+                                                                          ? Colors
+                                                                              .red
+                                                                          : Colors
+                                                                              .blue,
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          const Divider(
+                                            color: Color(0xFFF4F4F4),
+                                            height: 0,
+                                            thickness: 1,
+                                          )
+                                        ],
+                                      )
+                                    : Container()
+                                /* 20231211 거래내역 > 자산비중 으로 변경함으로 주석처리
                           Container(
                               padding: const EdgeInsets.symmetric(
                                 vertical: 10,
@@ -985,23 +987,25 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                               ),
                             ),
                            */
-                        )
-                  ];
-                },
-                body: PageView(
-                  controller: _pageController,
-                  physics: const NeverScrollableScrollPhysics(),
-                  onPageChanged: (value) {
-                    setState(() {
-                      curPage = value;
-                    });
-                  },
-                  children: [
-                    AssetmanageListPage(screenW: screenW),
-                    const AssetmanageProportionPage(),
-                  ],
-                ),
-              ),
+                                )
+                          ];
+                        },
+                        body: PageView(
+                          controller: _pageController,
+                          physics: const NeverScrollableScrollPhysics(),
+                          onPageChanged: (value) {
+                            setState(() {
+                              curPage = value;
+                            });
+                          },
+                          children: [
+                            AssetmanageListPage(screenW: screenW),
+                            const AssetmanageProportionPage(),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
             ),
           ),
         ),

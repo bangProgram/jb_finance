@@ -15,7 +15,7 @@ class AssetmanageRepo {
       body: jsonEncode({}),
     );
 
-    print('response.statusCode : ${response.request}');
+    print('vm 빌드 response.statusCode : ${response.request}');
     if (response.statusCode == 200) {
       Map<String, dynamic> responseData = json.decode(response.body);
       return responseData;

@@ -70,11 +70,13 @@ class LoginVM extends AsyncNotifier<MemberModel> {
       await _auth.setToken(token: token, userId: userId);
       // await _auth.setTokenForKisDev();
       ref.read(profileVMProvider.notifier).getMember();
+
+      await login(ref);
       context.go(FinanceScreen.routeURL);
     }
   }
 
-  Future<void> memberLogout(BuildContext context) async {
+  Future<void> memberLogout(BuildContext context, WidgetRef ref) async {
     final platForm = Platforms.loginPlatform;
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
@@ -149,36 +151,53 @@ class LoginVM extends AsyncNotifier<MemberModel> {
   Future<void> signinWithKAKAO(BuildContext context) async {
     late OAuthToken token;
     message = "";
+    print('카카오1');
     if (await isKakaoTalkInstalled()) {
+      print('카카오2');
       try {
+        print('카카오2-1');
         token = await UserApi.instance.loginWithKakaoTalk();
+        print('카카오톡으로 로그인 성공 ${token.accessToken}');
       } catch (error) {
+        print('카카오3');
         // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
         // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예: 뒤로 가기)
         if (error is PlatformException && error.code == 'CANCELED') {
+          print('카카오4');
           return;
         }
+        print('카카오5');
         // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인
         try {
+          print('카카오6');
           token = await UserApi.instance.loginWithKakaoAccount();
+          print('카카오계정으로 로그인 성공 ${token.accessToken}');
         } catch (error) {
+          print('카카오7');
           serverMessage(context, '카카오 로그인에 실패했습니다.');
           return;
         }
+        print('카카오8');
       }
     } else {
+      print('카카오9');
       try {
+        print('카카오10');
         token = await UserApi.instance.loginWithKakaoAccount();
       } catch (error) {
+        print('카카오11');
         serverMessage(context, '카카오 로그인에 실패했습니다.');
         return;
       }
     }
 
     if (token.accessToken != '') {
+      print('카카오12');
       try {
+        print('카카오13');
         final response = await _loginRepo.loginWithKAKAO(token.accessToken);
         if (response.isNotEmpty) {
+          print('카카오14');
           Platforms.loginPlatform = LoginPlatform.kakao;
           final accountData = response['kakao_account'];
           final userData = accountData['profile'];
@@ -188,7 +207,9 @@ class LoginVM extends AsyncNotifier<MemberModel> {
 
           //사용자 테이블에 회원이 존재하지 않으면 회원등록 프로세스 진행
           if (serverUserData.isEmpty) {
+            print('카카오15');
             if (accountData['has_email'] == true) {
+              print('카카오16');
               final String password =
                   '${Platforms.loginPlatform.name}$userEmail';
               //회원가입 모델 데이터 초기화
@@ -201,13 +222,16 @@ class LoginVM extends AsyncNotifier<MemberModel> {
 
               //초기화 한 회원가입모델 기준으로 회원등록 진행
               final createResult = await AsyncValue.guard(() async {
+                print('카카오17');
                 return await _signupRepo.createMember(signupModel.toJson());
               });
 
               //회원 등록이 에러없이 정상으로 처리 되었으면 로그인 프로세스 진행
               if (createResult.hasError) {
+                print('카카오18');
                 serverMessage(context, state.error.toString());
               } else {
+                print('카카오19');
                 final String password =
                     '${Platforms.loginPlatform.name}$userEmail';
                 LoginModel loginData =
@@ -215,18 +239,21 @@ class LoginVM extends AsyncNotifier<MemberModel> {
                 await memberLogin(context, loginData);
               }
             } else {
+              print('카카오20');
               serverMessage(context, '카카오계정에 이메일 등록이 되지 않은경우\n카카오로그인이 불가능합니다.');
               return;
             }
           }
           //사용자 테이블에 회원이 존재하면 로그인 프로세스 진행
           else {
+            print('카카오21');
             final String password = '${Platforms.loginPlatform.name}$userEmail';
             LoginModel loginData =
                 LoginModel(userId: userEmail, password: password);
             await memberLogin(context, loginData);
           }
         } else {
+          print('카카오22');
           serverMessage(context, '카카오 사용자정보 호출에 실패했습니다.');
           return;
         }
