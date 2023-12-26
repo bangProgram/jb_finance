@@ -1,4 +1,4 @@
-package com.example.jb_finance
+package com.jutopia.jb_finance
 
 import io.flutter.embedding.android.FlutterActivity
 
