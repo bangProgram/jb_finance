@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.jutopia.jb_finance">
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Required only if your app targets Android 13 or higher. -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
     <application
         android:label="주토피아"
         android:name="${applicationName}"
