@@ -266,10 +266,12 @@ class LoginVM extends AsyncNotifier<MemberModel> {
 
   Future<void> signinWithGoogle(BuildContext context) async {
     try {
+      print('구글1');
       final googleUser = await _googleSignIn.signIn();
       //구글 사용자 로그인 정보가 있을경우 로그인/회원등록 프로세스 진행
-
+      print('구글2');
       if (googleUser != null) {
+        print('구글3');
         Platforms.loginPlatform = LoginPlatform.google;
 
         final userEmail = googleUser.email;
@@ -278,6 +280,7 @@ class LoginVM extends AsyncNotifier<MemberModel> {
 
         //사용자 테이블에 회원이 존재하지 않으면 회원등록 프로세스 진행
         if (serverUserData.isEmpty) {
+          print('구글4');
           final String password = '${Platforms.loginPlatform.name}$userEmail';
           print('google password : $password');
           //회원가입 모델 데이터 초기화
@@ -306,6 +309,7 @@ class LoginVM extends AsyncNotifier<MemberModel> {
         }
         //사용자 테이블에 회원이 존재하면 로그인 프로세스 진행
         else {
+          print('구글5');
           final String password = '${Platforms.loginPlatform.name}$userEmail';
           LoginModel loginData =
               LoginModel(userId: userEmail, password: password);
@@ -313,6 +317,7 @@ class LoginVM extends AsyncNotifier<MemberModel> {
         }
       }
     } catch (error) {
+      print('구글6');
       serverMessage(context, '$error');
       print(error);
     }
