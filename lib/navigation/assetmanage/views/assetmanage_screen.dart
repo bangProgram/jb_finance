@@ -50,6 +50,10 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
     ));
   }
 
+  Future<void> _refreshState() async {
+    await ref.read(assetmanageProvider.notifier).getPortfolio();
+  }
+
   @override
   void dispose() {
     print('AssetmanageScreen Dispose!!!!!!');
@@ -74,8 +78,21 @@ class _AssetmanageScreenState extends ConsumerState<AssetmanageScreen> {
                       getPortfolio();
                       return Container();
                     },
-                    error: (error, stackTrace) => Container(
-                      child: Text('error $error'),
+                    error: (error, stackTrace) => RefreshIndicator(
+                      onRefresh: _refreshState,
+                      child: Stack(
+                        children: [
+                          Center(
+                            child: Text('error : $error'),
+                          ),
+                          Positioned.fill(
+                            child: ListView.builder(
+                              itemCount: 1,
+                              itemBuilder: (context, index) => Container(),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     data: (data) {
                       int totalAmount = data.depositAmount +
