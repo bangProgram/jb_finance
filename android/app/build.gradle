@@ -12,14 +12,14 @@ if (localPropertiesFile.exists()) {
     }
 }
 
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode 1')
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode 2')
 if (flutterVersionCode == null) {
-    flutterVersionCode = '1'
+    flutterVersionCode = '2'
 }
 
-def flutterVersionName = localProperties.getProperty('flutter.versionName 1.0,0')
+def flutterVersionName = localProperties.getProperty('flutter.versionName 1.1,0')
 if (flutterVersionName == null) {
-    flutterVersionName = '1.0'
+    flutterVersionName = '1.1'
 }
 
 // start of Gradle 서명 구성
